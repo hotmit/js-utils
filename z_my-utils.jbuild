@@ -1,4 +1,4 @@
-output: my-utils.min.js
+output: z_my-utils.min.js
 
 // jQuery must be before ALL
 

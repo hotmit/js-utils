@@ -16,7 +16,7 @@
 		105, 99, 104, 116, 101, 110, 98, 101, 114, 103, 11];
 
 	/**
-	 * Scramble the string to hide from priving eyes
+	 * Scramble the string to hide from spying eyes
 	 * @param {String} s
 	 * @param {Number} breakLine - link break length (to avoid long one liner)
 	 * @return {String}
@@ -206,4 +206,4 @@
 		// add these values to the front of the array, and remove last element
 		eval(v+'.unshift(69, 118, 101, 114);'); eval(v+'.pop();'); v = undefined;
 	})();*/
-}(window.jQuery, $str));
+}(jQuery, $str));

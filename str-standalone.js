@@ -1,8 +1,9 @@
-// :: ONLY REQ. jQ and nothing else.
+/*global jQuery */
+
+// STANDALONE
 
 var $str = {};
 
-/*global jQuery */
 (function($, $str){
 
 	/**
@@ -13,13 +14,11 @@ var $str = {};
 	 */
 	$str.empty = function (s) {
 		// s == undefined	 <= double equals is deliberate, check for null and undefined
-		if (s == undefined
-				|| s.length === 0
-				|| $str.trim(s).length === 0
-				|| !s){
-			return true;
-		}
-		return false;
+		return !!(s == undefined
+		|| s.length === 0
+		|| $str.trim(s).length === 0
+		|| !s);
+
 	};
 
 	/**
@@ -75,7 +74,8 @@ var $str = {};
 	 * Tests whether the beginning of a string matches pattern.
 	 * @param {String} s
 	 * @param {String} pattern to find
-	 * @return {Boolean} 
+	 * @param {Boolean} caseSensitive
+	 * @return {Boolean}
 	 */
 	$str.startsWith = function (s, pattern, caseSensitive) {
 		if (caseSensitive){
@@ -83,11 +83,12 @@ var $str = {};
 		}
 		return s.toLowerCase().indexOf(pattern.toLowerCase()) === 0;
 	};
-	
+
 	/**
 	 * Test if string ends with specified pattern
 	 * @param s
 	 * @param {String} pattern
+	 * @param {Boolean} caseSensitive
 	 * @returns {Boolean}
 	 */
 	$str.endsWith = function (s, pattern, caseSensitive) {
@@ -102,7 +103,8 @@ var $str = {};
 	 * Check if the string contains a substring.
 	 * @param {String} s
 	 * @param {String} needle
-	 * @return {Boolean} 
+	 * @param {Boolean} caseSensitive
+	 * @return {Boolean}
 	 */
 	$str.contains = function (s, needle, caseSensitive) {
 		if ($str.empty(s) || $str.empty(needle)){
@@ -117,8 +119,9 @@ var $str = {};
 	/**
 	 * Must contains all the element in the array.
 	 * @param {String} s
-	 * @param {Array} needles
-	 * @return {Boolean} 
+	 * @param {Array|String} needles
+	 * @param {Boolean} caseSensitive
+	 * @return {Boolean}
 	 */
 	$str.containsAll = function (s, needles, caseSensitive){
 		var i=0;
@@ -136,8 +139,9 @@ var $str = {};
 	/**
 	 * Must contains ANY the element in the array.
 	 * @param {String} s
-	 * @param {Array} needles
-	 * @return {Boolean} 
+	 * @param {Array|String} needles
+	 * @param {Boolean} caseSensitive
+	 * @return {Boolean}
 	 */
 	$str.containsAny = function (s, needles, caseSensitive) {
 		var i;
@@ -155,10 +159,11 @@ var $str = {};
 	/**
 	 * Trims white space from the beginning and end of a string.
 	 * @param {String} s
+	 * @param {String} c
 	 * @return {String}
 	 */
 	$str.trim = function (s, c) {
-		if (c == undefined){
+		if (c == undefined || c == ' '){
 			if (String.prototype.trim){
 				return String.prototype.trim.call(s);
 			}
@@ -170,7 +175,7 @@ var $str = {};
 	/**
 	 * Remove chars/$str from the start of the string
 	 * @param s
-	 * @param {String|Array|Char} c - supports $str.trimEnd(s, ['0x0', '0', 'x']);
+	 * @param {String|Array} c - supports $str.trimEnd(s, ['0x0', '0', 'x']);
 	 */
 	$str.trimStart = function (s, c){
 		if (c == undefined){
@@ -182,7 +187,7 @@ var $str = {};
 	/**
 	 * Remove chars/$str(s) from the end of the string
 	 * @param s
-	 * @param {String|Array|Char} c - supports $str.trimEnd(s, ['0x0', '0', 'x']);
+	 * @param {String|Array} c - supports $str.trimEnd(s, ['0x0', '0', 'x']);
 	 */
 	$str.trimEnd = function (s, c){
 		if (c == undefined){
@@ -192,10 +197,10 @@ var $str = {};
 	};
 
 	/**
-	 * Extended substring, support negative index (orginal js substring(startIndex, endIndex))
+	 * Extended substring, support negative index (ordinal js substring(startIndex, endIndex))
 	 * @param s
-	 * @param {Int} index - if negative take string from the right similar to php substr()
-	 * @param {Int} len - number of char to take starting from the index to the right (even when index is negative)
+	 * @param {Number} index - if negative take string from the right similar to php substr()
+	 * @param {Number} len - number of char to take starting from the index to the right (even when index is negative)
 	 */	
 	$str.subString = function (s, index, len){
 		if (s == undefined){
@@ -225,12 +230,13 @@ var $str = {};
 		}
 		return s.substring(start);
 	};
-		
+
 	/**
 	 * Count number of occurrences of an substring.
 	 * @param s - the big string
 	 * @param sub - the little string you want to find.
-	 * @returns {Int}
+	 * @param {Boolean} caseSensitive
+	 * @returns {Number}
 	 */
 	$str.subCount = function (s, sub, caseSensitive){
 		sub = $str.regexEscape(sub);
@@ -244,7 +250,7 @@ var $str = {};
 	/**
 	 * Concatenate count number of copies of s together and return result.
 	 * @param {String} s
-	 * @param {Integer} count - Number of times to repeat s
+	 * @param {Number} count - Number of times to repeat s
 	 * @return {String}
 	 */
 	$str.repeat = function (s, count) {
@@ -258,8 +264,8 @@ var $str = {};
 	/**
 	 * Pad left
 	 * @param {String} s 
-	 * @param {Integer} padStr - the padding
-	 * @param {Int} totalLength - the final legnth after padding
+	 * @param {String} padStr - the padding
+	 * @param {Number} totalLength - the final length after padding
 	 * @return {String}
 	 */	
 	$str.padLeft = function (s, padStr, totalLength){
@@ -269,8 +275,8 @@ var $str = {};
 	/**
 	 * Pad right
 	 * @param {String} s 
-	 * @param {Integer} padStr - the padding
-	 * @param {Int} totalLength - the final legnth after padding
+	 * @param {String} padStr - the padding
+	 * @param {Number} totalLength - the final length after padding
 	 * @return {String}
 	 */	
 	$str.padRight = function (s, padStr, totalLength){
@@ -339,4 +345,4 @@ var $str = {};
 		return s;
 	};
 		
-}(window.jQuery, $str));
+}(jQuery, $str));

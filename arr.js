@@ -1,12 +1,14 @@
 /*global jQuery */
 
+// STANDALONE
+
 // MUST SITS Before $pref
 var $arr = {};
 
 (function($, $arr){
 	
 	/**
-	 * Useful when run for IN loop, to determin the key is the property 
+	 * Useful when run for IN loop, to determine the key is the property
 	 * of that and not something inherited.
 	 * @param arr - the array
 	 * @param prop - property name/index/key
@@ -54,4 +56,4 @@ var $arr = {};
 		}
 	};
 
-}(window.jQuery, $arr));
+}(jQuery, $arr));

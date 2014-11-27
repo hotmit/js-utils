@@ -1,5 +1,7 @@
 /*global jQuery */
 
+// STANDALONE
+
 /**
 	// Source: http://www.php.net/manual/en/function.date.php
 
@@ -133,8 +135,7 @@ var $date = {};
 	{
 		// convert minute into ms
 		var offset = d.getTimezoneOffset() * 60000;
-		var utc = new Date(d.getTime() + offset);
-		return utc;
+		return new Date(d.getTime() + offset);
 	};
 	
 	/***
@@ -225,4 +226,4 @@ var $date = {};
 		return result;
 	};
 	
-}(window.jQuery, $date));
+}(jQuery, $date));

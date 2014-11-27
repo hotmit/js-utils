@@ -1,5 +1,7 @@
 /*global jQuery */
 
+// STANDALONE
+
 var $type = {};
 
 (function($, $type){
@@ -122,4 +124,4 @@ var $type = {};
             o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string";
     };
 	
-}(window.jQuery, $type));
+}(jQuery, $type));

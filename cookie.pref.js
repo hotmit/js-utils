@@ -66,4 +66,4 @@ var $pref = {};
 		$.removeCookie(name, opt);
 	};
 
-}(window.jQuery, $pref));
+}(jQuery, $pref));

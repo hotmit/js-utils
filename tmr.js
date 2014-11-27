@@ -1,4 +1,6 @@
-/*global jQuery */
+/*global jQuery, setTimeout */
+
+// STANDALONE
 
 var $tmr = {};
 
@@ -15,4 +17,4 @@ var $tmr = {};
 		return setTimeout(function(){ func.call(thisArg || this); }, delay);
 	};
 	
-}(window.jQuery, $tmr));
+}(jQuery, $tmr));
