@@ -1,0 +1,9 @@
+
+
+# files
+*.min.js
+*.gz
+
+
+# folders
++*/
