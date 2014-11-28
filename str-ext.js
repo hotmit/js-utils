@@ -100,9 +100,9 @@
 
 	/**
 	 * Convert hex string into string.
-	 * @param {String} s
+	 * @param {String} hex - the hex string
 	 * @return {String}
-	 */	
+	 */
 	$str.fromHex = function (hex){
 		var r = '', i;
 		for (i=0; i < hex.length; i+=2){
