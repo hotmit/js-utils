@@ -21,7 +21,7 @@
 	 * @param {Number} breakLine - link break length (to avoid long one liner)
 	 * @return {String}
 	 */	
-	$str.fuzzit = function (s, breakLine){
+	$str.fuzzit = function(s, breakLine){
 		/*jslint bitwise: true */
 		breakLine = $.type(breakLine) === 'undefined' ? breakLine : true;
 		
@@ -52,7 +52,7 @@
 	 * @param {String} s
 	 * @return {String}
 	 */	
-	$str.unfuzzit = function (s){
+	$str.unfuzzit = function(s){
 		/*jslint bitwise: true */
 		s = s.replace(/[^0-9a-gA-G]/g, '');
 		if (s.length%2 !== 0){
@@ -72,7 +72,7 @@
 	 * @param {String} s
 	 * @return {String}
 	 */	
-	$str.base64Encode = function (s){
+	$str.base64Encode = function(s){
 		return $.base64.encode(s);
 	};
 
@@ -81,7 +81,7 @@
 	 * @param {String} s
 	 * @return {String}
 	 */		
-	$str.base64Decode = function (s){
+	$str.base64Decode = function(s){
 		return $.base64.decode(s);
 	};
 
@@ -90,7 +90,7 @@
 	 * @param {String} s
 	 * @return {String}
 	 */			
-	$str.toHex = function (s){
+	$str.toHex = function(s){
 		var r = '', i;
 		for(i=0; i<s.length; i++){
 			r += s.charCodeAt(i).toString(16);
@@ -103,7 +103,7 @@
 	 * @param {String} hex - the hex string
 	 * @return {String}
 	 */
-	$str.fromHex = function (hex){
+	$str.fromHex = function(hex){
 		var r = '', i;
 		for (i=0; i < hex.length; i+=2){
 			r += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
@@ -117,7 +117,7 @@
 	 * @param {String} arg1, arg2, etc.
 	 * @return {String}
 	 */	
-	$str.format = function (s){
+	$str.format = function(s){
 		var args = arguments;	
 		
 		// Syntax: {0}	or 	{0:format string}
@@ -167,7 +167,7 @@
 	 * @param o {Object}
 	 * @param format {String}
 	 */	
-	$str.formatObject = function (o, format){
+	$str.formatObject = function(o, format){
 		if (o == undefined){
 			return '';
 		}

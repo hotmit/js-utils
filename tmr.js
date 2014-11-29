@@ -13,7 +13,7 @@ var $tmr = {};
      * @param thisArg
      * @returns {number} - setTimeout instance, use clearTimeout
      */
-	$tmr.run = function (func, delay, thisArg){
+	$tmr.run = function(func, delay, thisArg){
 		return setTimeout(function(){ func.call(thisArg || this); }, delay);
 	};
 	

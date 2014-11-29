@@ -12,7 +12,7 @@ var $str = {};
 	 * @returns {Boolean}
 	 * Unit Test: http://jsfiddle.net/wao20/TGP3N/
 	 */
-	$str.empty = function (s) {
+	$str.empty = function(s) {
 		// s == undefined	 <= double equals is deliberate, check for null and undefined
 		return !!(s == undefined
 		|| s.length === 0
@@ -47,7 +47,7 @@ var $str = {};
 	 * @param s
 	 * @returns {Boolean}
 	 */	
-	$str.boolVal = function (s) {
+	$str.boolVal = function(s) {
 		if ($str.empty(s)){
 			return false;
 		}
@@ -63,7 +63,7 @@ var $str = {};
 	 * @param s
 	 * @returns {String}
 	 */
-	$str.regexEscape = function (s){
+	$str.regexEscape = function(s){
 		if ($str.empty(s)){
 			return '';
 		}
@@ -77,7 +77,7 @@ var $str = {};
 	 * @param {Boolean} caseSensitive
 	 * @return {Boolean}
 	 */
-	$str.startsWith = function (s, pattern, caseSensitive) {
+	$str.startsWith = function(s, pattern, caseSensitive) {
 		if (caseSensitive){
 			return s.indexOf(pattern) === 0;
 		}
@@ -91,7 +91,7 @@ var $str = {};
 	 * @param {Boolean} caseSensitive
 	 * @returns {Boolean}
 	 */
-	$str.endsWith = function (s, pattern, caseSensitive) {
+	$str.endsWith = function(s, pattern, caseSensitive) {
 		var d = s.length - pattern.length;	
 		if (caseSensitive){
 			return d >= 0 && s.lastIndexOf(pattern) === d;
@@ -106,7 +106,7 @@ var $str = {};
 	 * @param {Boolean} caseSensitive
 	 * @return {Boolean}
 	 */
-	$str.contains = function (s, needle, caseSensitive) {
+	$str.contains = function(s, needle, caseSensitive) {
 		if ($str.empty(s) || $str.empty(needle)){
 			return false;
 		}
@@ -123,7 +123,7 @@ var $str = {};
 	 * @param {Boolean} caseSensitive
 	 * @return {Boolean}
 	 */
-	$str.containsAll = function (s, needles, caseSensitive){
+	$str.containsAll = function(s, needles, caseSensitive){
 		var i=0;
 		if ($.isArray(needles)){
 			for(i=0; i < needles.length; i++){
@@ -143,7 +143,7 @@ var $str = {};
 	 * @param {Boolean} caseSensitive
 	 * @return {Boolean}
 	 */
-	$str.containsAny = function (s, needles, caseSensitive) {
+	$str.containsAny = function(s, needles, caseSensitive) {
 		var i;
 		if ($.isArray(needles)){
 			for(i=0; i < needles.length; i++){
@@ -162,7 +162,7 @@ var $str = {};
 	 * @param {String} c
 	 * @return {String}
 	 */
-	$str.trim = function (s, c) {
+	$str.trim = function(s, c) {
 		if (c == undefined || c == ' '){
 			if (String.prototype.trim){
 				return String.prototype.trim.call(s);
@@ -177,7 +177,7 @@ var $str = {};
 	 * @param s
 	 * @param {String|Array} c - supports $str.trimEnd(s, ['0x0', '0', 'x']);
 	 */
-	$str.trimStart = function (s, c){
+	$str.trimStart = function(s, c){
 		if (c == undefined){
 			return s.replace(/^\s+/, '');
 		}		
@@ -189,7 +189,7 @@ var $str = {};
 	 * @param s
 	 * @param {String|Array} c - supports $str.trimEnd(s, ['0x0', '0', 'x']);
 	 */
-	$str.trimEnd = function (s, c){
+	$str.trimEnd = function(s, c){
 		if (c == undefined){
 			return s.replace(/\s+$/, '');
 		}	
@@ -202,7 +202,7 @@ var $str = {};
 	 * @param {Number} index - if negative take string from the right similar to php substr()
 	 * @param {Number} len - number of char to take starting from the index to the right (even when index is negative)
 	 */	
-	$str.subString = function (s, index, len){
+	$str.subString = function(s, index, len){
 		if (s == undefined){
 			return '';
 		}
@@ -238,7 +238,7 @@ var $str = {};
 	 * @param {Boolean} caseSensitive
 	 * @returns {Number}
 	 */
-	$str.subCount = function (s, sub, caseSensitive){
+	$str.subCount = function(s, sub, caseSensitive){
 		sub = $str.regexEscape(sub);
 		
 		if (caseSensitive){
@@ -253,7 +253,7 @@ var $str = {};
 	 * @param {Number} count - Number of times to repeat s
 	 * @return {String}
 	 */
-	$str.repeat = function (s, count) {
+	$str.repeat = function(s, count) {
 		var newS = "", i;
 		for (i=0; i<count; i++) {
 			newS += s;
@@ -268,7 +268,7 @@ var $str = {};
 	 * @param {Number} totalLength - the final length after padding
 	 * @return {String}
 	 */	
-	$str.padLeft = function (s, padStr, totalLength){
+	$str.padLeft = function(s, padStr, totalLength){
 		return s.length >= totalLength ? s : $str.repeat(padStr, (totalLength-s.length)/padStr.length) + s;
 	};
 
@@ -279,7 +279,7 @@ var $str = {};
 	 * @param {Number} totalLength - the final length after padding
 	 * @return {String}
 	 */	
-	$str.padRight = function (s, padStr, totalLength){
+	$str.padRight = function(s, padStr, totalLength){
 		return s.length >= totalLength  ? s : s + $str.repeat(padStr, (totalLength-s.length)/padStr.length);
 	};
 		
@@ -288,7 +288,7 @@ var $str = {};
 	 * @param {String} s 
 	 * @return {String}
 	 */
-	$str.stripTags = function (s) {
+	$str.stripTags = function(s) {
 		return s.replace(/<\/?[^>]+>/gi, '');
 	};	
 		
@@ -298,7 +298,7 @@ var $str = {};
 	 * @param {String} s
 	 * @return {String}
 	 */
-	$str.escapeHTML = function (s) {
+	$str.escapeHTML = function(s) {
 		s = s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 		return s;
 	};
@@ -309,7 +309,7 @@ var $str = {};
 	 * @param {String} s
 	 * @return {String}
 	 */
-	$str.unescapeHTML = function (s) {
+	$str.unescapeHTML = function(s) {
 		return $str.stripTags(s).replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
 	};	
 	
@@ -318,7 +318,7 @@ var $str = {};
 	 * @param {String} s
 	 * @return {String}
 	 */
-	$str.stripViet = function (s) {
+	$str.stripViet = function(s) {
 		/* 
 		data = data.replace(/[àáâãăạảấầẩẫậắằẳẵặ]/g, 'a');
 		data = data.replace(/[òóôõơọỏốồổỗộớờởỡợ]/g, 'o');

@@ -131,7 +131,7 @@ var $date = {};
 	 * Convert to utc, but the getTimezoneOffset() is not zero, but the date and time is utc.
 	 * @param d - local date object
 	 */
-	$date.toUtc = function (d)
+	$date.toUtc = function(d)
 	{
 		// convert minute into ms
 		var offset = d.getTimezoneOffset() * 60000;
@@ -156,7 +156,7 @@ var $date = {};
 	 * @param e2 - milliseconds since 1970 (unix epoch). Note php time() is in seconds notmillisecondss.
 	 * @returns {Boolean}
 	 */		
-	$date.epochSameDate = function (e1, e2){
+	$date.epochSameDate = function(e1, e2){
 		var d1 = new Date(e1);
 		var d2 = new Date(e2);
 		
@@ -168,7 +168,7 @@ var $date = {};
 	 * @param s - the number or string.
 	 * @returns {String}
 	 */
-	$date.padZero = function (s){
+	$date.padZero = function(s){
 		return s.length == 2 ? s : '0' + s;
 	};
 	
@@ -202,7 +202,7 @@ var $date = {};
 	 * @param format - format string, for format look up php date() (this function doesn't support all format)
 	 * MAKE SURE to double escape the backslash ie if you want to escape a letter 'h' => '\\h'
 	 */
-	$date.format = function (d, format){
+	$date.format = function(d, format){
 		if (!$date.isValid(d)){
 			return format;
 		}
