@@ -2,25 +2,11 @@ output: z_my-str.min.js
 
 // jQuery must be before ALL
 
-../ext/JSON-js/json2.js
-
-type.js
+ext/js-base64/base64.min.js
 
 // must be before $str
 date.js
 
-// must go before $pref
-arr.js
-
-// timer
-tmr.js
-
 // must go before "str-ext.js"
 str-standalone.js
 str-ext.js
-
-
-
-../jqext/jquery-cookie/jquery.cookie.js
-// must go after "str-ext.js"
-cookie.pref.js
