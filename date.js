@@ -10,20 +10,26 @@
 	D	Mon through Sun
 	j	1-31
 	l (lowercase 'L')	Sunday through Saturday
-	N	Thu Hai - Chua Nhat
-
+			N print number 1 (for Monday) through 7 (for Sunday) (Not implemented)
+	N	Ngay bang Tieng Viet => Thu Hai - Chua Nhat (Dup, Non Standard)
+	S  day of month st, nd, rd, th  (Not implemented)
+			w print number 1 (for Monday) through 7 (for Sunday) (Not implemented)
+			z day of year  (Not implemented)
+			W week number in the year
+			
 	// Month
 	F	January through December
 	m	01 through 12
 	M	Jan through Dec
 	n	1 through 12
-	T	Thang Mot - Thang Muoi Hai
-
+	T	Thang bang Tieng Viet => Thang Mot - Thang Muoi Hai (Non Standard)
+		t total number of days in the month  28 through 31 (Not implemented)
 
 	// Year
 	Y	1999 or 2003
 	y	99 or 03
-
+			L 1 if it is a leap year, 0 otherwise. (Not implemented)
+						
 	// Time
 	a	am or pm
 	A	AM or PM
@@ -41,9 +47,9 @@
 	// Time
 	c	2004-02-12 15:19:21+00:00	php=2004-02-12T15:19:21+00:00
 	r	Thu, 21 Dec 2000 16:01:07 +0200
-	q	2001-03-10 17:16:18	Y-m-d H:i:s	mysql date
-	o	2004-02-12		Y-m-d
-	t	5:34pm			g:ia
+	q	2001-03-10 17:16:18	Y-m-d H:i:s	mysql date  (Non Standard)
+	o	2004-02-12		Y-m-d  (Dup, Non Standard)
+	t	5:34pm			g:ia  (Dup, Non Standard)
 */
 var $date = {};
 
