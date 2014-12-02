@@ -1,0 +1,3 @@
+[submodule "ext/js-base64"]
+	path = ext/js-base64
+	url = https://github.com/dankogai/js-base64.git
