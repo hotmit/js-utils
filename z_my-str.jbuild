@@ -2,8 +2,9 @@ output: z_my-str.min.js
 
 // jQuery must be before ALL
 
-// base64 is package with this but it is not used inside the library
+// included but it is not use inside the library
 ext/js-base64/base64.min.js
+ext/json-js/json2.js
 
 // must be before $str
 date.js
