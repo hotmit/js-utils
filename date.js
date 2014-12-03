@@ -175,6 +175,7 @@ var $date = {};
 	 * @returns {String}
 	 */
 	$date.padZero = function(s){
+		s = '' + s;
 		return s.length == 2 ? s : '0' + s;
 	};
 	
