@@ -56,4 +56,33 @@ var $arr = {};
 		}
 	};
 
+	/**
+	 * Create an array out of a range of number.
+	 * eg. range(10) 	=> [0,2 .. 8, 9] len==10
+	 *     range(1,3) 	=> [1,2]
+	 *     range(1,7,2)	=> [1,3,5]
+	 *
+	 * @param start
+	 * @param end - non-inclusive
+	 * @param step
+	 */
+	$arr.range = function (start, end, step) {
+		if (end == undefined){
+			end = start;
+			start = 0;
+		}
+
+		if (step == undefined){
+			step = 1;
+		}
+
+		var arr = [], val=start;
+		while(val<end){
+			arr.push(val);
+			val+= step;
+		}
+
+		return arr;
+	};
+
 }(jQuery, $arr));

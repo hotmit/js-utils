@@ -344,5 +344,6 @@ var $str = {};
 		
 		return s;
 	};
+
 		
 }(jQuery, $str));
