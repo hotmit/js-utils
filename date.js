@@ -68,17 +68,18 @@ var $date = {};
 	 * @returns {Array}
 	 */
 	$date.getDateParts = function(d){
-		var o = [], j = d.getDate(),
+		var o = {}, j = d.getDate(),
 			w = d.getDay(), GG = d.getHours(),
-			n = d.getMonth(), Y = d.getFullYear();
+			n = d.getMonth(), Y = d.getFullYear(),
 		
-		// 12hour format
-		var g = GG <= 12 ? GG : GG - 12;
+			// 12 hour format
+			g = GG <= 12 ? GG : GG - 12,
+			tz = d.getTimezoneOffset() / 60,
+			tzSign = tz < 0 ? '-' : '+';
+
 		g = g == 0 ? 12 : g;
 		
 		// timezone
-		var tz = d.getTimezoneOffset() / 60;
-		var tzSign = tz < 0 ? '-' : '+';
 		tz = Math.abs(tz);
 		
 		o.d = $date.padZero(j);
@@ -122,8 +123,8 @@ var $date = {};
 	 * @param d - the local date time.
 	 */
 	$date.getUtcParts = function(d){
-		var utc = $date.toUtc(d);
-		var o = $date.getDateParts(utc);
+		var utc = $date.toUtc(d),
+			o = $date.getDateParts(utc);
 
 		o.O = '+0000';
 		o.P = '+00:00';
@@ -163,8 +164,8 @@ var $date = {};
 	 * @returns {Boolean}
 	 */		
 	$date.epochSameDate = function(e1, e2){
-		var d1 = new Date(e1);
-		var d2 = new Date(e2);
+		var d1 = new Date(e1),
+			d2 = new Date(e2);
 		
 		return $date.isSameDate(d1, d2);
 	};
@@ -175,7 +176,7 @@ var $date = {};
 	 * @returns {String}
 	 */
 	$date.padZero = function(s){
-		s = '' + s;
+		s = s.toString();
 		return s.length == 2 ? s : '0' + s;
 	};
 	
@@ -214,9 +215,8 @@ var $date = {};
 			return format;
 		}
 
-		var p = $date.getDateParts(d);
-		
-		var result = format.replace(/(\\?)([dDjlNFmMnTYyaAgGhHisOPcrqot])/g, function (whole, slash, key){
+		var p = $date.getDateParts(d),
+			result = format.replace(/(\\?)([dDjlNFmMnTYyaAgGhHisOPcrqot])/g, function (whole, slash, key){
 						// no slash
 						if (!slash){
 							return p[key];
