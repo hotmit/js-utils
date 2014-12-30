@@ -1,0 +1,18 @@
+output: D:\Clients\Infitrak\portal-source\infitrak_portal\global_static\global\js\util.js
+
+// jQuery must be before ALL
+
+arr.js
+
+// included but it is not use inside the library
+ext/js-base64/base64.min.js
+ext/json-js/json2.js
+
+// must be before $str
+date.js
+
+// must go before "str-ext.js"
+str-standalone.js
+str-ext.js
+
+bootstrap-ext.js

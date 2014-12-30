@@ -2,11 +2,19 @@
 
 // STANDALONE
 
-// MUST SITS Before Pref
 var Arr = {};
 
 (function($, Arr){
-	
+
+	/**
+     * Is array
+     * @param o
+     * @returns {boolean}
+     */
+	Arr.isArray = function(o){
+		return $.type(o) == 'array';
+	};
+
 	/**
 	 * Useful when run for IN loop, to determine the key is the property
 	 * of that and not something inherited.
@@ -87,6 +95,16 @@ var Arr = {};
 		}
 
 		return arr;
+	};
+
+	/**
+	 * Join the array together to make a string
+	 * @param {array<string>} arr
+	 * @param {string=} glue
+	 */
+	Arr.implode = function(arr, glue){
+		glue = glue || ', ';
+		return arr.join(glue);
 	};
 
 }(jQuery, Arr));

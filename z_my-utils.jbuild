@@ -2,8 +2,7 @@ output: z_my-utils.min.js
 
 // jQuery must be before ALL
 
-../ext/JSON-js/json2.js
-
+// base64, json2, date, str-standalone, str-ext
 z_my-str.jbuild
 str-fuzzy.js
 
@@ -15,7 +14,7 @@ arr.js
 // timer
 tmr.js
 
-../jqext/jquery-cookie/jquery.cookie.js
+jq-ext/jquery-cookie/src/jquery.cookie.js
 
 // must go after "str-fuzzy.js"
 cookie.pref.js

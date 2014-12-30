@@ -36,14 +36,12 @@
 	 * @return {string}
 	 */	
 	Str.format = function(s, args){
-		args = arguments;
+		args = Array.prototype.splice.call(arguments, 1);
 		
 		// Syntax: {0}	or 	{0:format string}
 		// Replace place holder with actual value from the parameters
 		s = s.replace(/\{(\d+)(:([^}]+?))?\}/g, function (match, index, format, style) {
-			index++;
-			
-			if (index in args && args[index] != undefined){
+			if (index < args.length && args[index] != undefined){
 				if (!format){
 					return args[index];
 				}
@@ -52,12 +50,11 @@
 			return match;
 		});
 		
-		// Syntax: {0.index}	or 	{0.index:format string}
+		// Syntax: {index.key}	or 	{index.key:format string}
+		// 		eg. {0.name}
 		// Index of object or an array
 		s = s.replace(/\{(\d+)\.([a-zA-Z0-9_]+)(:([^}]+?))?\}/g, function (match, index, key, format, style) {
-			index++;
-			
-			if (index in args && args[index] != undefined && key in args[index]){
+			if (index < args.length && args[index] != undefined && args[index].hasOwnProperty(key)){
 				if (!format){
 					return args[index][key];
 				}

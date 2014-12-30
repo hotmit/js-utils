@@ -1,9 +1,8 @@
+/*global Str, test, equal, ok */
+
 test('Str.subString', function (){
 	var txt = "héllố wờrld";
-	var data = [
-		
-	];
-	
+
 	equal(Str.subString(null), '', 'Null string, return ""');
 	equal(Str.subString(undefined), '', 'Undefied string, return ""');
 	
@@ -36,20 +35,20 @@ test('Str.subString', function (){
 
 
 test('Str.format', function (){
-	var data = {
-		name: 'joe',
-		age: 27,
-		bday: new Date(2000, 9, 27, 3, 20, 20, 999),
-		balance: 30.293,
-		grade: 0.73
-	};
+	var obj = {
+			name: 'joe',
+			age: 27,
+			bday: new Date(2000, 9, 27, 3, 20, 20, 999),
+			balance: 30.293,
+			grade: 0.73
+		},
+		array = ['a', 'b', 'c'];
 
-	var array = ['a', 'b', 'c'];
+	ok(obj.hasOwnProperty('age'), 'hasOwnProperty');
+	ok(array.hasOwnProperty(1), 'index in array');
+	ok(!array.hasOwnProperty('b'), 'value NOT in array');
 	
-	ok(1 in array, 'index in array');
-	ok(!('b' in array), 'value NOT in array');
-	
-	equal(Str.format('{0} + {1}', 1, 2), '1 + 2', 'value sub');
+	equal(Str.format('{0} + {1}', 7, 4), '7 + 4', 'value sub');
 
 	/*
 	var a = str.format("hello {0} {1} {0} {0}", "yo", "dude");
@@ -57,8 +56,8 @@ test('Str.format', function (){
 	a = str.format("hello {0.1} {0.0}", ["first", "last"]);
 	*/
 	equal(Str.format("hello {0} {1} {0} {0}", "yo", "dude"), 'hello yo dude yo yo', 'sub multiple objects');
-	equal(Str.format("hello {0.name} {0.age}", data), 'hello joe 27', 'index sub');
-	equal(Str.format("hello {0.name} {0.age} {0.ink}", data), 'hello joe 27 {0.ink}', 'index sub, index doesn\'t exits');
+	equal(Str.format("hello {0.name} {0.age}", obj), 'hello joe 27', 'index sub');
+	equal(Str.format("hello {0.name} {0.age} {0.ink}", obj), 'hello joe 27 {0.ink}', 'index sub, index doesn\'t exits');
 	equal(Str.format("hello {0.1} {0.0}", ["first", "last"]), 'hello last first', 'index numeric property');
 
 	/*

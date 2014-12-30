@@ -345,5 +345,32 @@ var Str = {};
 		return s;
 	};
 
+	/**
+	 * Use this to constructs multi lines string
+	 *
+	 * eg. Str.multiLines(true,
+	 * 						'hello',
+	 * 						'world'
+	 * 						);
+	 * 					returns: "hello\nworld"
+	 * @param {string} glue - the separator between each line (eg. '\n', ', ' or ' ')
+	 * @param {...string} args - each line
+	 */
+	Str.multiLines = function (glue, args) {
+		args = Array.prototype.splice.call(arguments, 1);
+		return args.join(glue);
+	};
+
+	/**
+	 * Django gettext function place holder. If use gettext if exist else return as is.
+	 * @param {string} s
+	 * @returns {string}
+	 */
+	Str.gettext = function(s){
+		if (document.gettext){
+			return document.gettext(s);
+		}
+		return s;
+	};
 		
 }(jQuery, Str));

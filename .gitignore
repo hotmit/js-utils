@@ -1,9 +1,9 @@
 
 
 # files
-*inf-*
 *.min.js
 *.gz
+*.lnk
 
 
 # folders
