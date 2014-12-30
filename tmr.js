@@ -2,19 +2,19 @@
 
 // STANDALONE
 
-var $tmr = {};
+var Tmr = {};
 
-(function($, $tmr){
+(function($, Tmr){
 
     /**
      * Just like setTimeout except it has the argument to override the this instance
-     * @param func
-     * @param delay - in millisecond
-     * @param thisArg
+     * @param {function} func - "this" is the specified "thisArg"
+     * @param {number} delay - in millisecond
+     * @param {object=} thisArg - similar to $.proxy, supply "this" for func
      * @returns {number} - setTimeout instance, use clearTimeout
      */
-	$tmr.run = function(func, delay, thisArg){
+	Tmr.run = function(func, delay, thisArg){
 		return setTimeout(function(){ func.call(thisArg || this); }, delay);
 	};
 	
-}(jQuery, $tmr));
+}(jQuery, Tmr));

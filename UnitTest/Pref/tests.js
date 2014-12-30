@@ -4,8 +4,8 @@ test('Equals', function (){
 	for(var i=0; i<data.length; i++){
 		var d = data[i];
 		
-		$pref.set('test', d);
-		var value = $pref.get('test', 'default value');
+		Pref.set('test', d);
+		var value = Pref.get('test', 'default value');
 		
 		equal(value, d, 'get with [name] ' + d);
 	}
@@ -19,8 +19,8 @@ test('Not Deep Equals', function (){
 	for(var i=0; i<data.length; i++){
 		var d = data[i];
 		
-		$pref.set('test', d);
-		var value = $pref.get('test', 'default value');
+		Pref.set('test', d);
+		var value = Pref.get('test', 'default value');
 		
 		notDeepEqual(value, d, 'get with [name] ' + d);
 	}
@@ -34,8 +34,8 @@ test('Test Default Value', function (){
 	for(var i=0; i<data.length; i++){
 		var d = data[i];
 		
-		$pref.set('test', d);
-		var value = $pref.get('test', 'default value');
+		Pref.set('test', d);
+		var value = Pref.get('test', 'default value');
 		
 		equal(value, 'default value', 'get with [name] ' + d);
 	}

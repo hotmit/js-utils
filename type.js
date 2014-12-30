@@ -1,16 +1,16 @@
-/*global jQuery */
+/*global jQuery, Node, HTMLElement */
 
 // STANDALONE
 
-var $type = {};
+var Tp = {};
 
-(function($, $type){
+(function($, Tp){
     /**
      * Is jQuery object
      * @param o
      * @returns {boolean}
      */
-	$type.isJquery = function(o){
+	Tp.isJquery = function(o){
 		return o instanceof jQuery;
 	};
 
@@ -19,7 +19,7 @@ var $type = {};
      * @param o
      * @returns {boolean}
      */
-	$type.isObj = function(o){
+	Tp.isObj = function(o){
 		return $.type(o) === 'object';
 	};
 
@@ -28,7 +28,7 @@ var $type = {};
      * @param o
      * @returns {boolean}
      */
-	$type.isStr = function(o){
+	Tp.isStr = function(o){
 		return $.type(o) === 'string';
 	};
 
@@ -37,7 +37,7 @@ var $type = {};
      * @param o
      * @returns {boolean}
      */
-	$type.isFunc = function(o){
+	Tp.isFunc = function(o){
 		return $.type(o) === 'function';
 	};
 
@@ -46,16 +46,16 @@ var $type = {};
      * @param o
      * @returns {boolean}
      */
-	$type.isRegex = function(o){
+	Tp.isRegex = function(o){
 		return $.type(o) === 'regexp';
 	};
 
     /**
-     * is number
+     * Is number
      * @param o
      * @returns {boolean}
      */
-	$type.isNum = function(o){
+	Tp.isNumber = function(o){
 		return $.type(o) === 'number';
 	};
 
@@ -64,8 +64,8 @@ var $type = {};
      * @param o
      * @returns {boolean}
      */
-	$type.isInt = function(o){
-		return $type.isNumber(o) && o%1 === 0;
+	Tp.isInt = function(o){
+		return Tp.isNumber(o) && o%1 === 0;
 	};
 
     /**
@@ -73,8 +73,8 @@ var $type = {};
      * @param o
      * @returns {boolean}
      */
-	$type.isFloat = function(o){
-		return $type.isNumber(o) && !$type.isInt(o);
+	Tp.isFloat = function(o){
+		return Tp.isNumber(o) && !Tp.isInt(o);
 	};
 
     /**
@@ -82,7 +82,7 @@ var $type = {};
      * @param o
      * @returns {boolean}
      */
-	$type.isDate = function(o){
+	Tp.isDate = function(o){
 		return $.type(o) === 'date';
 	};
 
@@ -91,7 +91,7 @@ var $type = {};
      * @param o
      * @returns {boolean}
      */
-	$type.isBool = function(o){
+	Tp.isBool = function(o){
 		return $.type(o) === 'boolean';
 	};
 
@@ -100,7 +100,7 @@ var $type = {};
      * @param o
      * @returns {boolean}
      */
-	$type.isArray = function(o){
+	Tp.isArray = function(o){
 		return $.type(o) == 'array';
 	};
 
@@ -109,7 +109,7 @@ var $type = {};
      * @param o
      * @returns {boolean}
      */
-    $type.isNode = function(o){
+    Tp.isNode = function(o){
         return typeof Node === "object" ? o instanceof Node :
             o && typeof o === "object" && typeof o.nodeType === "number" && typeof o.nodeName === "string";
     };
@@ -119,9 +119,9 @@ var $type = {};
      * @param o
      * @returns {boolean}
      */
-    $type.isElement = function(o){
+    Tp.isElement = function(o){
         return typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
             o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string";
     };
 	
-}(jQuery, $type));
+}(jQuery, Tp));

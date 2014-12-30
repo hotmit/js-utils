@@ -2,33 +2,33 @@
 
 // STANDALONE
 
-var $str = {};
+var Str = {};
 
-(function($, $str){
+(function($, Str){
 
 	/**
 	 * Check for undefined, null, zero length, blanks or s is false.
-	 * @param s
-	 * @returns {Boolean}
+	 * @param {string|object} s - string, array or object to test.
+	 * @returns {boolean}
 	 * Unit Test: http://jsfiddle.net/wao20/TGP3N/
 	 */
-	$str.empty = function(s) {
+	Str.empty = function(s) {
 		// s == undefined	 <= double equals is deliberate, check for null and undefined
 		return !!(s == undefined
-		|| s.length === 0
-		|| $str.trim(s).length === 0
-		|| !s);
+			|| s.length === 0
+			|| Str.trim(s).length === 0
+			|| !s);
 
 	};
 
 	/**
 	 * Compare to strings
-	 * @param s1
-	 * @param s2
-	 * @param caseSensitive
-	 * @returns {Boolean}
+	 * @param {?string} s1
+	 * @param {?string} s2
+	 * @param {boolean=} caseSensitive
+	 * @returns {boolean}
 	 */	
-	$str.equals = function(s1, s2, caseSensitive)
+	Str.equals = function(s1, s2, caseSensitive)
 	{
 		if (s1 == undefined || s2 == undefined)
 		{
@@ -44,14 +44,14 @@ var $str = {};
 	
 	/**
 	 * empty(), '0', '0.0', 'false' => false. Otherwise return !!s.
-	 * @param s
-	 * @returns {Boolean}
+	 * @param {string} s
+	 * @returns {boolean}
 	 */	
-	$str.boolVal = function(s) {
-		if ($str.empty(s)){
+	Str.boolVal = function(s) {
+		if (Str.empty(s)){
 			return false;
 		}
-		s = $str.trim(s).toLowerCase();
+		s = Str.trim(s).toLowerCase();
 		if (s == '0' || s == '0.0' || s == 'false'){
 			return false;
 		}
@@ -60,11 +60,11 @@ var $str = {};
 
 	/**
 	 * Escape the string to be use as a literal in regex expression.
-	 * @param s
-	 * @returns {String}
+	 * @param {string} s
+	 * @returns {string}
 	 */
-	$str.regexEscape = function(s){
-		if ($str.empty(s)){
+	Str.regexEscape = function(s){
+		if (Str.empty(s)){
 			return '';
 		}
 		return s.replace(/([.?*+\^$\[\]\\(){}|\-])/g, "\\$1");
@@ -72,12 +72,12 @@ var $str = {};
 
 	/**
 	 * Tests whether the beginning of a string matches pattern.
-	 * @param {String} s
-	 * @param {String} pattern to find
-	 * @param {Boolean} caseSensitive
-	 * @return {Boolean}
+	 * @param {string} s
+	 * @param {string} pattern to find
+	 * @param {boolean=} caseSensitive
+	 * @return {boolean}
 	 */
-	$str.startsWith = function(s, pattern, caseSensitive) {
+	Str.startsWith = function(s, pattern, caseSensitive) {
 		if (caseSensitive){
 			return s.indexOf(pattern) === 0;
 		}
@@ -86,12 +86,12 @@ var $str = {};
 
 	/**
 	 * Test if string ends with specified pattern
-	 * @param s
-	 * @param {String} pattern
-	 * @param {Boolean} caseSensitive
-	 * @returns {Boolean}
+	 * @param {string} s
+	 * @param {string} pattern
+	 * @param {boolean=} caseSensitive
+	 * @returns {boolean}
 	 */
-	$str.endsWith = function(s, pattern, caseSensitive) {
+	Str.endsWith = function(s, pattern, caseSensitive) {
 		var d = s.length - pattern.length;	
 		if (caseSensitive){
 			return d >= 0 && s.lastIndexOf(pattern) === d;
@@ -101,13 +101,13 @@ var $str = {};
 
 	/**
 	 * Check if the string contains a substring.
-	 * @param {String} s
-	 * @param {String} needle
-	 * @param {Boolean} caseSensitive
-	 * @return {Boolean}
+	 * @param {string} s
+	 * @param {string} needle
+	 * @param {boolean=} caseSensitive
+	 * @return {boolean}
 	 */
-	$str.contains = function(s, needle, caseSensitive) {
-		if ($str.empty(s) || $str.empty(needle)){
+	Str.contains = function(s, needle, caseSensitive) {
+		if (Str.empty(s) || Str.empty(needle)){
 			return false;
 		}
 		if (caseSensitive){
@@ -118,66 +118,66 @@ var $str = {};
 		
 	/**
 	 * Must contains all the element in the array.
-	 * @param {String} s
-	 * @param {Array|String} needles
-	 * @param {Boolean} caseSensitive
-	 * @return {Boolean}
+	 * @param {string} s
+	 * @param {array|string} needles
+	 * @param {boolean=} caseSensitive
+	 * @return {boolean}
 	 */
-	$str.containsAll = function(s, needles, caseSensitive){
+	Str.containsAll = function(s, needles, caseSensitive){
 		var i=0;
 		if ($.isArray(needles)){
 			for(i=0; i < needles.length; i++){
-				if (!$str.contains(s, needles[i], caseSensitive)){
+				if (!Str.contains(s, needles[i], caseSensitive)){
 					return false;
 				}
 			}
 			return true;
 		}
-		return $str.contains(s, needles, caseSensitive);
+		return Str.contains(s, needles, caseSensitive);
 	};
 
 	/**
 	 * Must contains ANY the element in the array.
-	 * @param {String} s
-	 * @param {Array|String} needles
-	 * @param {Boolean} caseSensitive
-	 * @return {Boolean}
+	 * @param {string} s
+	 * @param {array|string} needles
+	 * @param {boolean=} caseSensitive
+	 * @return {boolean}
 	 */
-	$str.containsAny = function(s, needles, caseSensitive) {
+	Str.containsAny = function(s, needles, caseSensitive) {
 		var i;
 		if ($.isArray(needles)){
 			for(i=0; i < needles.length; i++){
-				if ($str.contains(s, needles[i], caseSensitive)){
+				if (Str.contains(s, needles[i], caseSensitive)){
 					return true;
 				}
 			}
 			return false;
 		}
-		return $str.contains(s, needles, caseSensitive);
+		return Str.contains(s, needles, caseSensitive);
 	};
 
 	/**
 	 * Trims white space from the beginning and end of a string.
-	 * @param {String} s
-	 * @param {String} c
-	 * @return {String}
+	 * @param {string} s
+	 * @param {string=} c
+	 * @return {string}
 	 */
-	$str.trim = function(s, c) {
+	Str.trim = function(s, c) {
 		if (c == undefined || c == ' '){
 			if (String.prototype.trim){
 				return String.prototype.trim.call(s);
 			}
 			return s.replace(/^\s+/, '').replace(/\s+$/, '');
 		}	
-		return $str.trimStart($str.trimEnd(s, c), c);
+		return Str.trimStart(Str.trimEnd(s, c), c);
 	};
 		
 	/**
-	 * Remove chars/$str from the start of the string
+	 * Remove chars/Str from the start of the string
 	 * @param s
-	 * @param {String|Array} c - supports $str.trimEnd(s, ['0x0', '0', 'x']);
+	 * @param {string|array=} c - supports Str.trimEnd(s, ['0x0', '0', 'x']);
 	 */
-	$str.trimStart = function(s, c){
+	Str.trimStart = function(s, c){
 		if (c == undefined){
 			return s.replace(/^\s+/, '');
 		}		
@@ -185,11 +185,11 @@ var $str = {};
 	};
 		
 	/**
-	 * Remove chars/$str(s) from the end of the string
-	 * @param s
-	 * @param {String|Array} c - supports $str.trimEnd(s, ['0x0', '0', 'x']);
+	 * Remove chars/Str(s) from the end of the string
+	 * @param {string} s
+	 * @param {string|array=} c - supports Str.trimEnd(s, ['0x0', '0', 'x']);
 	 */
-	$str.trimEnd = function(s, c){
+	Str.trimEnd = function(s, c){
 		if (c == undefined){
 			return s.replace(/\s+$/, '');
 		}	
@@ -198,11 +198,11 @@ var $str = {};
 
 	/**
 	 * Extended substring, support negative index (ordinal js substring(startIndex, endIndex))
-	 * @param s
-	 * @param {Number} index - if negative take string from the right similar to php substr()
-	 * @param {Number} len - number of char to take starting from the index to the right (even when index is negative)
+	 * @param {string} s
+	 * @param {number} index - if negative take string from the right similar to php substr()
+	 * @param {number=} len - number of char to take starting from the index to the right (even when index is negative)
 	 */	
-	$str.subString = function(s, index, len){
+	Str.subString = function(s, index, len){
 		if (s == undefined){
 			return '';
 		}
@@ -233,13 +233,13 @@ var $str = {};
 
 	/**
 	 * Count number of occurrences of an substring.
-	 * @param s - the big string
-	 * @param sub - the little string you want to find.
-	 * @param {Boolean} caseSensitive
-	 * @returns {Number}
+	 * @param {string} s - the big string
+	 * @param {string} sub - the little string you want to find.
+	 * @param {boolean=} caseSensitive
+	 * @returns {number}
 	 */
-	$str.subCount = function(s, sub, caseSensitive){
-		sub = $str.regexEscape(sub);
+	Str.subCount = function(s, sub, caseSensitive){
+		sub = Str.regexEscape(sub);
 		
 		if (caseSensitive){
 			return s.split(sub).length - 1;
@@ -249,11 +249,11 @@ var $str = {};
 		
 	/**
 	 * Concatenate count number of copies of s together and return result.
-	 * @param {String} s
-	 * @param {Number} count - Number of times to repeat s
-	 * @return {String}
+	 * @param {string} s
+	 * @param {number} count - Number of times to repeat s
+	 * @return {string}
 	 */
-	$str.repeat = function(s, count) {
+	Str.repeat = function(s, count) {
 		var newS = "", i;
 		for (i=0; i<count; i++) {
 			newS += s;
@@ -263,42 +263,42 @@ var $str = {};
 
 	/**
 	 * Pad left
-	 * @param {String} s 
-	 * @param {String} padStr - the padding
-	 * @param {Number} totalLength - the final length after padding
-	 * @return {String}
+	 * @param {!string} s
+	 * @param {!string} padStr - the padding
+	 * @param {!number} totalLength - the final length after padding
+	 * @return {string}
 	 */	
-	$str.padLeft = function(s, padStr, totalLength){
-		return s.length >= totalLength ? s : $str.repeat(padStr, (totalLength-s.length)/padStr.length) + s;
+	Str.padLeft = function(s, padStr, totalLength){
+		return s.length >= totalLength ? s : Str.repeat(padStr, (totalLength-s.length)/padStr.length) + s;
 	};
 
 	/**
 	 * Pad right
-	 * @param {String} s 
-	 * @param {String} padStr - the padding
-	 * @param {Number} totalLength - the final length after padding
-	 * @return {String}
+	 * @param {string} s 
+	 * @param {string} padStr - the padding
+	 * @param {number} totalLength - the final length after padding
+	 * @return {string}
 	 */	
-	$str.padRight = function(s, padStr, totalLength){
-		return s.length >= totalLength  ? s : s + $str.repeat(padStr, (totalLength-s.length)/padStr.length);
+	Str.padRight = function(s, padStr, totalLength){
+		return s.length >= totalLength  ? s : s + Str.repeat(padStr, (totalLength-s.length)/padStr.length);
 	};
 		
 	/**
-	 * Strips a string of any HTML tags.
-	 * @param {String} s 
-	 * @return {String}
+	 * Strips any HTML tags from the specified string.
+	 * @param {string} s 
+	 * @return {string}
 	 */
-	$str.stripTags = function(s) {
+	Str.stripTags = function(s) {
 		return s.replace(/<\/?[^>]+>/gi, '');
 	};	
 		
 	/**
 	 * escapeHTML from Prototype-1.6.0.2 -- If it's good enough for Webkit and IE, it's good enough for Gecko!
 	 * Converts HTML special characters to their entity equivalents.
-	 * @param {String} s
-	 * @return {String}
+	 * @param {string} s
+	 * @return {string}
 	 */
-	$str.escapeHTML = function(s) {
+	Str.escapeHTML = function(s) {
 		s = s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 		return s;
 	};
@@ -306,19 +306,19 @@ var $str = {};
 	/**
 	 * unescapeHTML from Prototype-1.6.0.2 -- If it's good enough for Webkit and IE, it's good enough for Gecko!
 	 * Strips tags and converts the entity forms of special HTML characters to their normal form.
-	 * @param {String} s
-	 * @return {String}
+	 * @param {string} s
+	 * @return {string}
 	 */
-	$str.unescapeHTML = function(s) {
-		return $str.stripTags(s).replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+	Str.unescapeHTML = function(s) {
+		return Str.stripTags(s).replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
 	};	
 	
 	/**
-	 * Remove all viet's accents and replace it with the latin based alphabet
-	 * @param {String} s
-	 * @return {String}
+	 * Remove all Viet's accents and replace it with the latin based alphabet
+	 * @param {string} s
+	 * @return {string}
 	 */
-	$str.stripViet = function(s) {
+	Str.stripViet = function(s) {
 		/* 
 		data = data.replace(/[àáâãăạảấầẩẫậắằẳẵặ]/g, 'a');
 		data = data.replace(/[òóôõơọỏốồổỗộớờởỡợ]/g, 'o');
@@ -329,7 +329,7 @@ var $str = {};
 		data = data.replace(/[đðĐ]/g, 'd');
 		*/
 
-		if ($str.empty(s))
+		if (Str.empty(s))
 		{
 			return s;
 		}
@@ -346,4 +346,4 @@ var $str = {};
 	};
 
 		
-}(jQuery, $str));
+}(jQuery, Str));

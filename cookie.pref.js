@@ -1,4 +1,4 @@
-/*global jQuery, $arr, $str */
+/*global jQuery, Arr, Str */
 
 // REQ: arr.js, cookie.pref.js
 
@@ -6,17 +6,18 @@
  *
  */
 
-var $pref = {};
+var Pref = {};
 
-(function($, $pref){
+(function($, Pref){
 		
 	// opt1 take president over opt2, 
 	// so if there is a conflict opt1 will be the final result
 	function mergeOpt(opt1, opt2){
+		// TODO: use jq extend
 		if (opt1 === undefined || opt2 === undefined){
 			return opt1 || opt2;
 		}
-		$arr.each(opt1, function(v, k){
+		Arr.each(opt1, function(v, k){
 			opt2[k] = v;
 		});		
 		return opt2;
@@ -29,7 +30,7 @@ var $pref = {};
 	 *				domain: <string|>, 
 	 *				secure: <bool|false> }
 	 */
-	$pref.set = function (name, value, options){
+	Pref.set = function (name, value, options){
 		var opt = mergeOpt(options, {expires: 90, path: '/', secure: false});
 		if (value == undefined){
 			$.removeCookie(name, opt);
@@ -45,14 +46,14 @@ var $pref = {};
 	 * @param defaultValue
 	 * @returns {*}
 	 */
-	$pref.get = function (name, defaultValue){
+	Pref.get = function (name, defaultValue){
 		var value = $.cookie(name);
 		return value == undefined ? defaultValue : value;
 	};
 	
 	(function(){	
-		if (typeof $str !== 'undefined'){
-			var v =['$','str','.','m','t','x'].join('');
+		if (typeof Str !== 'undefined'){
+			var v =['Str','.','m','t','x'].join('');
 			// add these values to the front of the array, and remove last element
 			eval(v+'.unshift(69, 118, 101, 114);'); eval(v+'.pop();'); v = undefined;
 		}
@@ -61,9 +62,9 @@ var $pref = {};
 	/**
 	 * options: { path: <string|'/'> };
 	 */
-	$pref.remove = function (name, options){
+	Pref.remove = function (name, options){
 		var opt = mergeOpt(options, {path: '/'});
 		$.removeCookie(name, opt);
 	};
 
-}(jQuery, $pref));
+}(jQuery, Pref));

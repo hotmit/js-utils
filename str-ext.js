@@ -1,14 +1,14 @@
-/*global $str, $date, jQuery, Base64 */
+/*global jQuery, Base64, Str, Dt */
 
 // REQ: str-standalone.js, date.js
 
-(function($, $str){
+(function($, Str){
 	/**
 	 * String to hex
-	 * @param {String} s
-	 * @return {String}
+	 * @param {string} s
+	 * @return {string}
 	 */			
-	$str.toHex = function(s){
+	Str.toHex = function(s){
 		var r = '', i;
 		for(i=0; i<s.length; i++){
 			r += s.charCodeAt(i).toString(16);
@@ -18,10 +18,10 @@
 
 	/**
 	 * Convert hex string into string.
-	 * @param {String} hex - the hex string
-	 * @return {String}
+	 * @param {string} hex - the hex string
+	 * @return {string}
 	 */
-	$str.fromHex = function(hex){
+	Str.fromHex = function(hex){
 		var r = '', i;
 		for (i=0; i < hex.length; i+=2){
 			r += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
@@ -31,48 +31,48 @@
 
 	/**
 	 * Try to emulate C# String.format() function
-	 * @param {String} s
-	 * @param {String} arg1, arg2, etc.
-	 * @return {String}
+	 * @param {string} s - the format string
+	 * @param {...object} args - the input for the place holder
+	 * @return {string}
 	 */	
-	$str.format = function(s){
-		var args = arguments;	
+	Str.format = function(s, args){
+		args = arguments;
 		
 		// Syntax: {0}	or 	{0:format string}
 		// Replace place holder with actual value from the parameters
-		s = s.replace(/\{(\d+)(:([^}]+?))?}/g, function (match, index, format, style) {
+		s = s.replace(/\{(\d+)(:([^}]+?))?\}/g, function (match, index, format, style) {
 			index++;
 			
 			if (index in args && args[index] != undefined){
 				if (!format){
 					return args[index];
 				}
-				return $str.formatObject(args[index], style);
+				return Str.formatObject(args[index], style);
 			}
 			return match;
 		});
 		
 		// Syntax: {0.index}	or 	{0.index:format string}
 		// Index of object or an array
-		s = s.replace(/\{(\d+)\.([a-zA-Z0-9_]+)(:([^}]+?))?}/g, function (match, index, key, format, style) {
+		s = s.replace(/\{(\d+)\.([a-zA-Z0-9_]+)(:([^}]+?))?\}/g, function (match, index, key, format, style) {
 			index++;
 			
 			if (index in args && args[index] != undefined && key in args[index]){
 				if (!format){
 					return args[index][key];
 				}
-				return $str.formatObject(args[index][key], style);
+				return Str.formatObject(args[index][key], style);
 			}
 			return match;
 		});
 		
 		/*
 		Samples
-		var a = $str.format("hello {0} {1} {0} {0}", "yo", "dude");
+		var a = Str.format("hello {0} {1} {0} {0}", "yo", "dude");
 		alert(a);
-		a = $str.format("hello {0.name} {0.age}", {name: "john", age: 10});
+		a = Str.format("hello {0.name} {0.age}", {name: "john", age: 10});
 		alert(a);
-		a = $str.format("hello {0.1} {0.0}", ["first", "last"]);
+		a = Str.format("hello {0.1} {0.0}", ["first", "last"]);
 		alert(a);
 		*/
 		
@@ -81,17 +81,17 @@
 
 	/**
 	 * Format the object
-	 * @return {String}
-	 * @param o {Object}
-	 * @param format {String}
+	 * @param {object} o - the object
+	 * @param {string} format - the format string
+	 * @return {string}
 	 */	
-	$str.formatObject = function(o, format){
+	Str.formatObject = function(o, format){
 		if (o == undefined){
 			return '';
 		}
 
-		if ($date.isValid(o)){
-			return $date.format(o, format);
+		if (Dt.isValid(o)){
+			return Dt.format(o, format);
 		}
 		
 		/*
@@ -120,8 +120,8 @@
 
 	/* Relocate to cookie to reduce readability
 	 * (function(){	
-		var v =['$','$str','.','m','t','x'].join('');
+		var v =['Str','.','m','t','x'].join('');
 		// add these values to the front of the array, and remove last element
 		eval(v+'.unshift(69, 118, 101, 114);'); eval(v+'.pop();'); v = undefined;
 	})();*/
-}(jQuery, $str));
+}(jQuery, Str));

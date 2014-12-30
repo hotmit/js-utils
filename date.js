@@ -51,9 +51,9 @@
 	o	2004-02-12		Y-m-d  (Dup, Non Standard)
 	t	5:34pm			g:ia  (Dup, Non Standard)
 */
-var $date = {};
+var Dt = {};
 
-(function($, $date){
+(function($, Dt){
 
 	var _dayShort 	= ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
 		_dayLong 	= ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
@@ -64,10 +64,10 @@ var $date = {};
 	
 	/**
 	 * Get a array of all the parts of a date. (N for viet day)
-	 * @param d - the date object.
+	 * @param {!object} d - the date object.
 	 * @returns {Array}
 	 */
-	$date.getDateParts = function(d){
+	Dt.getDateParts = function(d){
 		var o = {}, j = d.getDate(),
 			w = d.getDay(), GG = d.getHours(),
 			n = d.getMonth(), Y = d.getFullYear(),
@@ -82,14 +82,14 @@ var $date = {};
 		// timezone
 		tz = Math.abs(tz);
 		
-		o.d = $date.padZero(j);
+		o.d = Dt.padZero(j);
 		o.D = _dayShort[w];
 		o.j = j;
 		o.l = _dayLong[w];
 		o.N = _dayViet[w];
 		
 		o.F = _monthLong[n];
-		o.m = $date.padZero(n+1);
+		o.m = Dt.padZero(n+1);
 		o.M = _monthShort[n];
 		o.n = n+1;
 		o.T = 'Tháng ' + (n+1);
@@ -101,13 +101,13 @@ var $date = {};
 		o.A = GG < 12 ? 'AM' : 'PM';
 		o.g = g;
 		o.G = GG;
-		o.h = $date.padZero(g);
-		o.H = $date.padZero(GG);
-		o.i = $date.padZero(d.getMinutes());
-		o.s = $date.padZero(d.getSeconds());
+		o.h = Dt.padZero(g);
+		o.H = Dt.padZero(GG);
+		o.i = Dt.padZero(d.getMinutes());
+		o.s = Dt.padZero(d.getSeconds());
 		
-		o.O = tzSign + $date.padZero(tz) + '00';
-		o.P = tzSign + $date.padZero(tz) + ':00';
+		o.O = tzSign + Dt.padZero(tz) + '00';
+		o.P = tzSign + Dt.padZero(tz) + ':00';
 		
 		o.c = o.Y+'-'+o.m+'-'+o.d+' '+o.H+':'+o.i+':'+o.s+o.P;
 		o.r = o.D+', '+o.j+' '+o.M+' '+o.Y+' '+o.H+':'+o.i+':'+o.s+' '+o.O;
@@ -120,11 +120,11 @@ var $date = {};
 	
 	/***
 	 * Get the utc equivalent of getDateParts().
-	 * @param d - the local date time.
+	 * @param {date} d - the local date time.
 	 */
-	$date.getUtcParts = function(d){
-		var utc = $date.toUtc(d),
-			o = $date.getDateParts(utc);
+	Dt.getUtcParts = function(d){
+		var utc = Dt.toUtc(d),
+			o = Dt.getDateParts(utc);
 
 		o.O = '+0000';
 		o.P = '+00:00';
@@ -136,9 +136,9 @@ var $date = {};
 	
 	/***
 	 * Convert to utc, but the getTimezoneOffset() is not zero, but the date and time is utc.
-	 * @param d - local date object
+	 * @param {date} d - local date object
 	 */
-	$date.toUtc = function(d)
+	Dt.toUtc = function(d)
 	{
 		// convert minute into ms
 		var offset = d.getTimezoneOffset() * 60000;
@@ -147,11 +147,11 @@ var $date = {};
 	
 	/***
 	 * Two dates has the same year, month and day.
-	 * @param d1 - date object
-	 * @param d2 - date object
-	 * @returns {Boolean}
+	 * @param {date} d1 - date object
+	 * @param {date} d2 - date object
+	 * @returns {boolean}
 	 */
-	$date.isSameDate = function(d1, d2)
+	Dt.isSameDate = function(d1, d2)
 	{
 		return  d1.getFullYear() == d2.getFullYear()
 				&& d1.getMonth() == d2.getMonth()
@@ -159,33 +159,33 @@ var $date = {};
 	};
 	/***
 	 * Two dates has the same year, month and day.
-	 * @param e1 - milliseconds since 1970 (unix epoch). Note php time() is in seconds not milliseconds.
-	 * @param e2 - milliseconds since 1970 (unix epoch). Note php time() is in seconds notmillisecondss.
-	 * @returns {Boolean}
+	 * @param {number} e1 - milliseconds since 1970 (unix epoch). Note php time() is in seconds not milliseconds.
+	 * @param {number} e2 - milliseconds since 1970 (unix epoch). Note php time() is in seconds notmillisecondss.
+	 * @returns {boolean}
 	 */		
-	$date.epochSameDate = function(e1, e2){
+	Dt.epochSameDate = function(e1, e2){
 		var d1 = new Date(e1),
 			d2 = new Date(e2);
 		
-		return $date.isSameDate(d1, d2);
+		return Dt.isSameDate(d1, d2);
 	};
 	
 	/**
 	 * Add a zero to the front if it is a single digit.
-	 * @param s - the number or string.
+	 * @param {number|string} s - the number or string.
 	 * @returns {String}
 	 */
-	$date.padZero = function(s){
+	Dt.padZero = function(s){
 		s = s.toString();
 		return s.length == 2 ? s : '0' + s;
 	};
 	
 	/***
 	 * Is Date data type
-	 * @param o - the object to test.
-	 * @returns {Boolean}
+	 * @param {object} o - the object to test.
+	 * @returns {boolean}
 	 */
-	$date.isDate = function(o){
+	Dt.isDate = function(o){
 		return Object.prototype.toString.call(o) === "[object Date]";
 	};
 	
@@ -193,11 +193,11 @@ var $date = {};
 	 * Test to see if the date is valid. Usually it bad date
 	 * when the string use to create the date object is bad (ie not valid date format).
 	 * Example: new Date("hello world"); 
-	 * @param d - the date object
-	 * @returns {Boolean}
+	 * @param {date} d - the date object
+	 * @returns {boolean}
 	 */
-	$date.isValid = function(d){
-		if ($date.isDate(d)){
+	Dt.isValid = function(d){
+		if (Dt.isDate(d)){
 			// d = new Date("junk") => d.getTime() return NaN 
 			return !isNaN(d.getTime());
 		}
@@ -206,16 +206,17 @@ var $date = {};
 	
 	/***
 	 * Format date according to the format string.
-	 * @param d - date 
-	 * @param format - format string, for format look up php date() (this function doesn't support all format)
+	 * @param {date} d - date
+	 * @param {string} format - format string, for format look up php date() (this function doesn't support all format)
 	 * MAKE SURE to double escape the backslash ie if you want to escape a letter 'h' => '\\h'
+	 * @return {string}
 	 */
-	$date.format = function(d, format){
-		if (!$date.isValid(d)){
+	Dt.format = function(d, format){
+		if (!Dt.isValid(d)){
 			return format;
 		}
 
-		var p = $date.getDateParts(d),
+		var p = Dt.getDateParts(d),
 			result = format.replace(/(\\?)([dDjlNFmMnTYyaAgGhHisOPcrqot])/g, function (whole, slash, key){
 						// no slash
 						if (!slash){
@@ -233,4 +234,4 @@ var $date = {};
 		return result;
 	};
 	
-}(jQuery, $date));
+}(jQuery, Dt));

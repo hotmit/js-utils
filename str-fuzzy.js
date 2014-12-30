@@ -1,9 +1,9 @@
-/*global jQuery, $str, $date */
+/*global jQuery, Str, Dt */
 
 // REQ: str-standalone.js
 
-(function ($) {
-    $str.mtx = [121, 111, 110, 101, 32, 105, 115, 32, 97,
+(function ($, Str) {
+    Str.mtx = [121, 111, 110, 101, 32, 105, 115, 32, 97,
 		32, 103, 101, 110, 105, 117, 115, 32, 97, 116, 32, 108, 101,
 		97, 115, 116, 32, 111, 110, 99, 101, 32, 97, 32, 121, 101,
 		97, 114, 46, 32, 84, 104, 101, 32, 114, 101, 97, 108, 32, 103,
@@ -16,20 +16,20 @@
 		105, 99, 104, 116, 101, 110, 98, 101, 114, 103, 11];
 
 	/**
-	 * Scramble the string to hide from spying eyes
-	 * @param {String} s
-	 * @param {Number} breakLine - link break length (to avoid long one liner)
-	 * @return {String}
+	 * Scramble the string to hide content from spying eyes
+	 * @param {string} s
+	 * @param {boolean=} breakLine - link break to avoid long one liner
+	 * @return {string}
 	 */
-	$str.fuzzit = function(s, breakLine){
+	Str.fuzzit = function(s, breakLine){
 		/*jslint bitwise: true */
-		breakLine = $.type(breakLine) === 'undefined' ? breakLine : true;
+		breakLine = breakLine === 'undefined' ? breakLine : true;
 
 		var r = '', k=s.length, jk=[3,5,8,13,21,34,55,89,144], j=0,
-				sl=k, ch=0, i, c, ml=$str.mtx.length;
+				sl=k, ch=0, i, c, ml=Str.mtx.length;
 		for(i=0; i<s.length; i++,k++){
-			c = s.charCodeAt(i) ^ $str.mtx[k%ml];
-			r += $str.padLeft(c.toString(16), String.fromCharCode(103), 2);
+			c = s.charCodeAt(i) ^ Str.mtx[k%ml];
+			r += Str.padLeft(c.toString(16), String.fromCharCode(103), 2);
 			ch++;
 			if (ch%20===0&&ch!==0&&breakLine){
 			r += "\r\n";
@@ -48,22 +48,22 @@
 	};
 
 	/**
-	 * Decode $str.fuzzit() function
-	 * @param {String} s
-	 * @return {String}
+	 * Decode Str.fuzzit() function
+	 * @param {string} s - the obfuscated string
+	 * @return {string}
 	 */
-	$str.unfuzzit = function(s){
+	Str.unfuzzit = function(s){
 		/*jslint bitwise: true */
 		s = s.replace(/[^0-9a-gA-G]/g, '');
 		if (s.length%2 !== 0){
 			return 'error';
 		}
-		var r = '',k=s.length/2, i, c, ml=$str.mtx.length;
+		var r = '',k=s.length/2, i, c, ml=Str.mtx.length;
 		for(i=0; i<s.length; i+=2,k++){
 			c = ((s[i]=='g'||s[i]=='G')?'0':s[i])+s[i+1];
-			r += String.fromCharCode(parseInt(c, 16) ^ $str.mtx[k%ml]);
+			r += String.fromCharCode(parseInt(c, 16) ^ Str.mtx[k%ml]);
 		}
 		/*jslint bitwise: false */
 		return r;
 	};
-}(jQuery, $str));
+}(jQuery, Str));

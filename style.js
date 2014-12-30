@@ -2,16 +2,16 @@
 
 // STANDALONE
 
-var $style = {};
+var Stl = {};
 
-(function($, $style){
+(function($, Stl){
 
     /**
      * Add the style to the head (string -> css style text)
      * @param {String} style
      */
-	$style.add = function(style){
+	Stl.add = function(style){
 		$('<style type="text/css"> ' + style + ' </style>').appendTo('head');
 	};
 
-}(jQuery, $style));
+}(jQuery, Stl));
