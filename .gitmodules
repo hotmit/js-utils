@@ -4,3 +4,6 @@
 [submodule "ext/json-js"]
 	path = ext/json-js
 	url = https://github.com/douglascrockford/JSON-js.git
+[submodule "jq-ext/jquery-cookie"]
+	path = jq-ext/jquery-cookie
+	url = https://github.com/carhartl/jquery-cookie.git
