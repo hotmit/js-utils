@@ -8,7 +8,7 @@ var Arr = {};
 
 	/**
      * Is array
-     * @param o
+     * @param o {object}
      * @returns {boolean}
      */
 	Arr.isArray = function(o){
@@ -18,8 +18,8 @@ var Arr = {};
 	/**
 	 * Useful when run for IN loop, to determine the key is the property
 	 * of that and not something inherited.
-	 * @param {array} arr - the array
-	 * @param prop - property name/index/key
+	 * @param arr {Array} - the array
+	 * @param prop {string} - property name/index/key
 	 * @return {boolean}
 	 */
 	Arr.isProp = function(arr, prop){
@@ -28,8 +28,8 @@ var Arr = {};
 	
 	/**
 	 * Loop through the array and check for the hasOwnProperty() as well.
-	 * @param {array} arr - the array
-	 * @param {function(this:Array, item, asc_key:string, index:number):boolean} func
+	 * @param arr {Array} - the array
+	 * @param func {function(this:Array, item, asc_key:string, index:number):boolean}
 	 * 		- "this" refer to the arr, return false to break the loop
 	 */
 	Arr.each = function(arr, func){
@@ -48,8 +48,8 @@ var Arr = {};
 	
 	/**
 	 * Loop through the list of jQuery objects.
-	 * @param {jQuery} jqObj - the jQuery list
-	 * @param {function(this:jQuery, jqElm:jQuery, domElm:HTMLElement, index:number):boolean} func
+	 * @param jqObj {jQuery} - the jQuery list
+	 * @param func {function(this:jQuery, jqElm:jQuery, domElm:HTMLElement, index:number):boolean}
 	 * 		- "this" refer to the jqObj collection, return false to break the loop
 	 */
 	Arr.eachJq = function(jqObj, func){
@@ -73,10 +73,10 @@ var Arr = {};
 	 *     range(1,3) 	=> [1,2]
 	 *     range(1,7,2)	=> [1,3,5]
 	 *
-	 * @param {!number} start
-	 * @param {?number=} end - non-inclusive
-	 * @param {?number=} step
-	 * @return {array}
+	 * @param start {!number}
+	 * @param end {?number=} - non-inclusive
+	 * @param step {?number=}
+	 * @return {Array}
 	 */
 	Arr.range = function (start, end, step) {
 		if (end == undefined){
@@ -99,8 +99,8 @@ var Arr = {};
 
 	/**
 	 * Join the array together to make a string
-	 * @param {array<string>} arr
-	 * @param {string=} glue
+	 * @param arr {Array<string>}
+	 * @param glue {string=}
 	 */
 	Arr.implode = function(arr, glue){
 		glue = glue || ', ';

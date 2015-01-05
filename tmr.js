@@ -8,9 +8,9 @@ var Tmr = {};
 
     /**
      * Just like setTimeout except it has the argument to override the this instance
-     * @param {function} func - "this" is the specified "thisArg"
-     * @param {number} delay - in millisecond
-     * @param {object=} thisArg - similar to $.proxy, supply "this" for func
+     * @param func {function} - "this" is the specified "thisArg"
+     * @param delay {number} - in millisecond
+     * @param thisArg {object=} - similar to $.proxy, supply "this" for func
      * @returns {number} - setTimeout instance, use clearTimeout
      */
 	Tmr.run = function(func, delay, thisArg){

@@ -5,7 +5,8 @@
 (function($, Str){
 	/**
 	 * String to hex
-	 * @param {string} s
+	 *
+	 * @param s {string}
 	 * @return {string}
 	 */			
 	Str.toHex = function(s){
@@ -18,7 +19,8 @@
 
 	/**
 	 * Convert hex string into string.
-	 * @param {string} hex - the hex string
+	 *
+	 * @param hex {string} - the hex string
 	 * @return {string}
 	 */
 	Str.fromHex = function(hex){
@@ -31,8 +33,8 @@
 
 	/**
 	 * Try to emulate C# String.format() function
-	 * @param {string} s - the format string
-	 * @param {...object} args - the input for the place holder
+	 * @param s {string} - the format string
+	 * @param args {...object} - the input for the place holder
 	 * @return {string}
 	 */	
 	Str.format = function(s, args){
@@ -78,8 +80,8 @@
 
 	/**
 	 * Format the object
-	 * @param {object} o - the object
-	 * @param {string} format - the format string
+	 * @param o {object} - the object
+	 * @param format {string} - the format string
 	 * @return {string}
 	 */	
 	Str.formatObject = function(o, format){

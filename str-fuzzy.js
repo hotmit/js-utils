@@ -17,8 +17,8 @@
 
 	/**
 	 * Scramble the string to hide content from spying eyes
-	 * @param {string} s
-	 * @param {boolean=} breakLine - link break to avoid long one liner
+	 * @param s {string}
+	 * @param breakLine {boolean=} - link break to avoid long one liner
 	 * @return {string}
 	 */
 	Str.fuzzit = function(s, breakLine){
@@ -49,7 +49,7 @@
 
 	/**
 	 * Decode Str.fuzzit() function
-	 * @param {string} s - the obfuscated string
+	 * @param s {string} - the obfuscated string
 	 * @return {string}
 	 */
 	Str.unfuzzit = function(s){

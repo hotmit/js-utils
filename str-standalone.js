@@ -8,7 +8,7 @@ var Str = {};
 
 	/**
 	 * Check for undefined, null, zero length, blanks or s is false.
-	 * @param {string|object} s - string, array or object to test.
+	 * @param s {string|object} - string, array or object to test.
 	 * @returns {boolean}
 	 * Unit Test: http://jsfiddle.net/wao20/TGP3N/
 	 */
@@ -23,9 +23,9 @@ var Str = {};
 
 	/**
 	 * Compare to strings
-	 * @param {?string} s1
-	 * @param {?string} s2
-	 * @param {boolean=} caseSensitive
+	 * @param s1 {?string}
+	 * @param s2 {?string}
+	 * @param caseSensitive {boolean=}
 	 * @returns {boolean}
 	 */	
 	Str.equals = function(s1, s2, caseSensitive)
@@ -44,7 +44,8 @@ var Str = {};
 	
 	/**
 	 * empty(), '0', '0.0', 'false' => false. Otherwise return !!s.
-	 * @param {string} s
+	 * 
+	 * @param s {?string}
 	 * @returns {boolean}
 	 */	
 	Str.boolVal = function(s) {
@@ -60,7 +61,7 @@ var Str = {};
 
 	/**
 	 * Escape the string to be use as a literal in regex expression.
-	 * @param {string} s
+	 * @param s {string}
 	 * @returns {string}
 	 */
 	Str.regexEscape = function(s){
@@ -72,9 +73,9 @@ var Str = {};
 
 	/**
 	 * Tests whether the beginning of a string matches pattern.
-	 * @param {string} s
-	 * @param {string} pattern to find
-	 * @param {boolean=} caseSensitive
+	 * @param s {string}
+	 * @param pattern {string} - to find
+	 * @param caseSensitive {boolean=}
 	 * @return {boolean}
 	 */
 	Str.startsWith = function(s, pattern, caseSensitive) {
@@ -86,9 +87,9 @@ var Str = {};
 
 	/**
 	 * Test if string ends with specified pattern
-	 * @param {string} s
-	 * @param {string} pattern
-	 * @param {boolean=} caseSensitive
+	 * @param s {string}
+	 * @param pattern {string}
+	 * @param caseSensitive {boolean=} 
 	 * @returns {boolean}
 	 */
 	Str.endsWith = function(s, pattern, caseSensitive) {
@@ -101,9 +102,9 @@ var Str = {};
 
 	/**
 	 * Check if the string contains a substring.
-	 * @param {string} s
-	 * @param {string} needle
-	 * @param {boolean=} caseSensitive
+	 * @param s {string}
+	 * @param needle {string}
+	 * @param caseSensitive {boolean=} 
 	 * @return {boolean}
 	 */
 	Str.contains = function(s, needle, caseSensitive) {
@@ -118,9 +119,9 @@ var Str = {};
 		
 	/**
 	 * Must contains all the element in the array.
-	 * @param {string} s
-	 * @param {array|string} needles
-	 * @param {boolean=} caseSensitive
+	 * @param s {string}
+	 * @param needles {Array|string}
+	 * @param caseSensitive {boolean=} 
 	 * @return {boolean}
 	 */
 	Str.containsAll = function(s, needles, caseSensitive){
@@ -138,9 +139,9 @@ var Str = {};
 
 	/**
 	 * Must contains ANY the element in the array.
-	 * @param {string} s
-	 * @param {array|string} needles
-	 * @param {boolean=} caseSensitive
+	 * @param s {string}
+	 * @param needles {Array|string}
+	 * @param caseSensitive {boolean=} 
 	 * @return {boolean}
 	 */
 	Str.containsAny = function(s, needles, caseSensitive) {
@@ -158,8 +159,8 @@ var Str = {};
 
 	/**
 	 * Trims white space from the beginning and end of a string.
-	 * @param {string} s
-	 * @param {string=} c
+	 * @param s {string}
+	 * @param c {string=}
 	 * @return {string}
 	 */
 	Str.trim = function(s, c) {
@@ -175,7 +176,7 @@ var Str = {};
 	/**
 	 * Remove chars/Str from the start of the string
 	 * @param s
-	 * @param {string|array=} c - supports Str.trimEnd(s, ['0x0', '0', 'x']);
+	 * @param c {string|Array=} - supports Str.trimEnd(s, ['0x0', '0', 'x']);
 	 */
 	Str.trimStart = function(s, c){
 		if (c == undefined){
@@ -186,8 +187,8 @@ var Str = {};
 		
 	/**
 	 * Remove chars/Str(s) from the end of the string
-	 * @param {string} s
-	 * @param {string|array=} c - supports Str.trimEnd(s, ['0x0', '0', 'x']);
+	 * @param s {string}
+	 * @param c {string|Array=} - supports Str.trimEnd(s, ['0x0', '0', 'x']);
 	 */
 	Str.trimEnd = function(s, c){
 		if (c == undefined){
@@ -198,9 +199,10 @@ var Str = {};
 
 	/**
 	 * Extended substring, support negative index (ordinal js substring(startIndex, endIndex))
-	 * @param {string} s
-	 * @param {number} index - if negative take string from the right similar to php substr()
-	 * @param {number=} len - number of char to take starting from the index to the right (even when index is negative)
+	 * @param s {string}
+	 * @param index {number} - if negative take string from the right similar to php substr()
+	 * @param len {number=} - number of char to take starting from the index to the right (even when index is negative)
+	 * @return {string}
 	 */	
 	Str.subString = function(s, index, len){
 		if (s == undefined){
@@ -233,9 +235,9 @@ var Str = {};
 
 	/**
 	 * Count number of occurrences of an substring.
-	 * @param {string} s - the big string
-	 * @param {string} sub - the little string you want to find.
-	 * @param {boolean=} caseSensitive
+	 * @param s {string} - the big string
+	 * @param sub {string} - the little string you want to find.
+	 * @param caseSensitive {boolean=} 
 	 * @returns {number}
 	 */
 	Str.subCount = function(s, sub, caseSensitive){
@@ -249,8 +251,8 @@ var Str = {};
 		
 	/**
 	 * Concatenate count number of copies of s together and return result.
-	 * @param {string} s
-	 * @param {number} count - Number of times to repeat s
+	 * @param s {string}
+	 * @param count {number} - Number of times to repeat s
 	 * @return {string}
 	 */
 	Str.repeat = function(s, count) {
@@ -263,9 +265,9 @@ var Str = {};
 
 	/**
 	 * Pad left
-	 * @param {!string} s
-	 * @param {!string} padStr - the padding
-	 * @param {!number} totalLength - the final length after padding
+	 * @param s {!string}
+	 * @param padStr {!string} - the padding
+	 * @param totalLength {!number} - the final length after padding
 	 * @return {string}
 	 */	
 	Str.padLeft = function(s, padStr, totalLength){
@@ -274,9 +276,9 @@ var Str = {};
 
 	/**
 	 * Pad right
-	 * @param {string} s 
-	 * @param {string} padStr - the padding
-	 * @param {number} totalLength - the final length after padding
+	 * @param s {string} 
+	 * @param padStr {string} - the padding
+	 * @param totalLength {number} - the final length after padding
 	 * @return {string}
 	 */	
 	Str.padRight = function(s, padStr, totalLength){
@@ -285,7 +287,7 @@ var Str = {};
 		
 	/**
 	 * Strips any HTML tags from the specified string.
-	 * @param {string} s 
+	 * @param s {string} 
 	 * @return {string}
 	 */
 	Str.stripTags = function(s) {
@@ -295,7 +297,8 @@ var Str = {};
 	/**
 	 * escapeHTML from Prototype-1.6.0.2 -- If it's good enough for Webkit and IE, it's good enough for Gecko!
 	 * Converts HTML special characters to their entity equivalents.
-	 * @param {string} s
+	 *
+	 * @param s {string}
 	 * @return {string}
 	 */
 	Str.escapeHTML = function(s) {
@@ -306,7 +309,8 @@ var Str = {};
 	/**
 	 * unescapeHTML from Prototype-1.6.0.2 -- If it's good enough for Webkit and IE, it's good enough for Gecko!
 	 * Strips tags and converts the entity forms of special HTML characters to their normal form.
-	 * @param {string} s
+	 *
+	 * @param s {string}
 	 * @return {string}
 	 */
 	Str.unescapeHTML = function(s) {
@@ -315,7 +319,7 @@ var Str = {};
 	
 	/**
 	 * Remove all Viet's accents and replace it with the latin based alphabet
-	 * @param {string} s
+	 * @param s {string}
 	 * @return {string}
 	 */
 	Str.stripViet = function(s) {
@@ -353,8 +357,9 @@ var Str = {};
 	 * 						'world'
 	 * 						);
 	 * 					returns: "hello\nworld"
-	 * @param {string} glue - the separator between each line (eg. '\n', ', ' or ' ')
-	 * @param {...string} args - each line
+	 *
+	 * @param glue {string} - the separator between each line (eg. '\n', ', ' or ' ')
+	 * @param args {...string} - each line
 	 */
 	Str.multiLines = function (glue, args) {
 		args = Array.prototype.splice.call(arguments, 1);
@@ -363,7 +368,7 @@ var Str = {};
 
 	/**
 	 * Django gettext function place holder. If use gettext if exist else return as is.
-	 * @param {string} s
+	 * @param s {string}
 	 * @returns {string}
 	 */
 	Str.gettext = function(s){
@@ -372,5 +377,26 @@ var Str = {};
 		}
 		return s;
 	};
-		
+
+	/**
+	 * Try to parse the json, if valid return the object else return defaultValue
+	 *
+	 * @param s {string} - json string
+	 * @param defaultValue {boolean|object=} - if not specified defaultValue=false
+	 * @returns {boolean|object}
+	 */
+	Str.parseJson = function(s, defaultValue){
+		defaultValue = defaultValue === undefined ? false : defaultValue;
+		if (Str.empty(s)){
+			return defaultValue;
+		}
+
+		try {
+			return $.parseJSON(s);
+		}
+		catch(err){
+			return defaultValue;
+		}
+	};
+
 }(jQuery, Str));
