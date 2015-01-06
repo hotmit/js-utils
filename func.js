@@ -20,4 +20,25 @@ var Fn = {};
         }
     };
 
+    /**
+     * Combine multiple functions together to run at once,
+     * all functions must have the same parameters.
+     *
+     * @param thisArg {object}
+     * @param arrArray {Array} - pass the arguments of the previous function
+     * @param args {Array<function>}
+     */
+    Fn.chain = function(thisArg, arrArray, args){
+        var f;
+        args = Array.prototype.splice.call(arguments, 2);
+
+        for (f in args) {
+            if (args.hasOwnProperty(f)){
+                if (f != undefined && $.type(f) === 'function') {
+                    f.apply(thisArg, arrArray);
+                }
+            }
+        }
+    };
+
 }(jQuery, Fn));

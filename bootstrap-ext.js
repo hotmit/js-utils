@@ -120,7 +120,7 @@ var Bs = {};
                         '<div class="modal-body">{1}</div>',
                         '<div class="modal-footer">',
                         '    <button type="button" class="btn btn-default" data-dismiss="modal">{2}</button>',
-                        '</div>)');
+                        '</div>');
 
             modalBody = Str.format(modalBody,
                 title,

@@ -10,55 +10,96 @@ var UI = {};
      *      process the json
      * 3. if html is return, replace the form with the html provided
      *
-     * @param form {selector|jQuery}
-     * @param ajaxOpt {object=} - $.ajax(ajaxOpt)
-     * @param done {function=} - $.ajax.done()
-     * @param fail {function=} - $.ajax.fail()
-     * @param always {function=} - $.ajax.always()
+     * @param form {selector} - this selector must work on the content of the ajax data as well
+     * @param ajaxOpt {object=} - $.ajax(ajaxOpt). If the form has file upload $(form).ajaxForm(ajaxOpt)
+     *
+     * Support file upload through the use of https://github.com/malsup/form.git
      */
-    UI.submitDjangoForm = function(form, ajaxOpt, done, fail, always){
-        var $frm = $(form);
+    UI.submitDjangoForm = function(form, ajaxOpt){
+        var $frm = $(form),
+            hasFileUpload = $frm.find("input[type='file']").length;
+
+        if (hasFileUpload && !$.fn.hasOwnProperty('ajaxForm')){
+            Bs.modalMessage(
+                Str.gettext('UI.submitDjangoForm Error'),
+                Str.gettext("The form contains file upload, you'll need https://github.com/malsup/form.git."));
+            return;
+        }
+
+        /**
+         * Parse the data from the server, if json display/redirect/refresh
+         * If html replace the current form with form from server.
+         *
+         * @param data
+         */
+        function parseData(data) {
+            var newFormContent, result = Str.parseJson(data, false),
+                $result;
+
+            // false ie html not a json
+            if (result === false) {
+                $result = $(data);
+                newFormContent = $result.find($frm.selector + ' > *');
+                if (!newFormContent.length) {
+                    newFormContent = $result.find('form > *');
+                }
+                $frm.empty().append(newFormContent);
+            }
+            else {
+                UI.parseMessage(result);
+            }
+        }
 
         $frm.submit(function(){
+            var defaultOpt, opt, userSuccessFunc;
+
             if ($.fn.validate !== undefined && $frm.hasOwnProperty('valid'))
             {
                 if (!$frm.isValid()){
-                    return;
+                    return false;
                 }
             }
 
-            var defaultOpt = {
+            if (hasFileUpload)
+            {
+                userSuccessFunc = ajaxOpt.hasOwnProperty('success') ? ajaxOpt.success : undefined;
+                defaultOpt = {
+                    url: this.action,
+                    dataType: 'html',
+                    type: this.method,
+                    error: function(err){
+                        Bs.modalMessage(Str.gettext('$.ajaxForm() Error'), err);
+                    }
+                };
+
+                opt = $.extend({}, defaultOpt, ajaxOpt, {
+                    success: function(data, textStatus, jqXHR){
+                        parseData(data);
+
+                        if (userSuccessFunc != undefined){
+                            userSuccessFunc.apply(this, arguments);
+                        }
+                    }
+                });
+
+                $frm.ajaxForm(opt);
+            } // End hasFileUpload
+            else {
+                defaultOpt = {
                     url: this.action,
                     method: this.method,
                     data: $frm.serialize()
-                },
+                };
                 opt = $.extend({}, defaultOpt, ajaxOpt);
 
-            $.ajax(opt)
-                .done(function(data, textStatus, jqXHR){
-                    var newFormContent, result = Str.parseJson(data, false);
-                    if (result === false){
-                        newFormContent = $(result).find($frm.selector + ' > *');
-                        $frm.empty().append(newFormContent);
-                    }
-                    else {
-                        UI.parseMessage(result);
-                    }
-
-                    if (done !== undefined){
-                        done.apply(this, arguments);
-                    }
-                })
-                .fail(function(jqXHR, textStatus, errorThrown){
-                    if (fail !== undefined){
-                        fail.apply(this, arguments);
-                    }
-                })
-                .always(function(){     // data|jqXHR, textStatus, jqXHR|errorThrown
-                    if (always !== undefined){
-                        always.apply(this, arguments);
-                    }
-                });
+                $.ajax(opt)
+                    .done(function (data, textStatus, jqXHR) {
+                        parseData(data);
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                        Bs.modalMessage(Str.gettext('Error'), errorThrown);
+                    });
+            } // End hasFileUpload else
 
             return false;
         });

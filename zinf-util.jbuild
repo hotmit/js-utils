@@ -2,6 +2,7 @@ output: D:\Clients\Infitrak\portal-source\infitrak_portal\global_static\global\j
 
 // jQuery must be before ALL
 
+type.js
 func.js
 arr.js
 
