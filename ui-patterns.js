@@ -45,13 +45,19 @@ var UI = {};
                         UI.parseMessage(result);
                     }
 
-                    done.apply(this, arguments);
+                    if (done !== undefined){
+                        done.apply(this, arguments);
+                    }
                 })
                 .fail(function(jqXHR, textStatus, errorThrown){
-                    fail.apply(this, arguments);
+                    if (fail !== undefined){
+                        fail.apply(this, arguments);
+                    }
                 })
                 .always(function(){     // data|jqXHR, textStatus, jqXHR|errorThrown
-                    always.apply(this, arguments);
+                    if (always !== undefined){
+                        always.apply(this, arguments);
+                    }
                 });
 
             return false;

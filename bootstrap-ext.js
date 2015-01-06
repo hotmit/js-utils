@@ -55,16 +55,20 @@ var Bs = {};
      *                  (if doesn't exist this function will create)
      * @param ajax_opts  {object|string}- $.ajax(ajax_opts) OR url
      * @param options {object} - support options: .fade:bool, .size:string[''|lg|sm], .destroyOnClose:bool
+     * @param shown {?function} - when the modal is visible
+     * @param done {?function} - ajax.done, called after the content already filled
      * @param fail {?function} - ajax.fail
      */
-    Bs.modalAjax = function (id, ajax_opts, options, fail){
+    Bs.modalAjax = function (id, ajax_opts, options, shown, done, fail){
         // Ref: http://getbootstrap.com/javascript/#modals
         var $modal = Bs.createModalDom(id, options);
 
         $.ajax(ajax_opts)
             .done(function(data, textStatus, jqXHR){
                 $modal.find('.modal-content').html(data);
-                $modal.modal('show');
+                if (done !== undefined){
+                    done.apply(this, arguments);
+                }
             }).fail(function(jqXHR, textStatus, errorThrown){
                 if (fail != undefined){
                     fail.apply($modal, arguments);
@@ -87,6 +91,12 @@ var Bs = {};
                     );
 
                     $modal.find('.modal-content').html(errorMsg);
+                }
+            })
+            .always(function(){
+                $modal.modal('show');
+                if (shown !== undefined){
+                    shown.apply(this, arguments);
                 }
             });
 
