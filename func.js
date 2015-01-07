@@ -15,7 +15,7 @@ var Fn = {};
      * @returns {*}
      */
     Fn.apply = function (func, thisArg, arrArray){
-        if (func != undefined){
+        if (func != undefined && $.type(func) === 'function'){
             return func.apply(thisArg, arrArray);
         }
     };

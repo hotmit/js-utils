@@ -69,17 +69,16 @@ var Bs = {};
         $.ajax(ajaxOpts)
             .done(function(data, textStatus, jqXHR){
                 $modal.find('.modal-content').html(data);
-                if (done !== undefined){
-                    done.apply(this, arguments);
-                }
+                Fn.apply(done, $modal, arguments);
             }).fail(function(jqXHR, textStatus, errorThrown){
                 if (fail != undefined){
-                    fail.apply($modal, arguments);
+                    Fn.apply(fail, $modal, arguments);
                 }
                 else {
                     var errorMsg = Str.multiLines('\n',
                         '<div class="modal-header">',
-                        '    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>',
+                        '    <button type="button" class="close" data-dismiss="modal" aria-label="Close">',
+                        '       <span aria-hidden="true">&times;</span></button>',
                         '    <h4 class="modal-title">{0}</h4>',
                         '</div>',
                         '<div class="modal-body">{1}</div>',
@@ -101,9 +100,7 @@ var Bs = {};
                 $modal.on('hidden.bs.modal', function(){
                     Fn.apply(hidden, $modal, arguments);
                 });
-                if (shown !== undefined){
-                    shown.apply(this, arguments);
-                }
+                Fn.apply(shown, $modal, arguments);
             });
 
     }; // End modal()
@@ -114,13 +111,14 @@ var Bs = {};
      * @param title {string}
      * @param message {string}
      * @param closed {function=}
-     * @param options {object=}
+     * @param options {object} - supported options: .fade:bool, .size:string[''|lg|sm], .destroyOnClose:bool(default true)
      */
     Bs.modalMessage = function(title, message, closed, options){
         var $modal = Bs.createModalDom('modal-message-' + new Date().getTime(), options),
             modalBody = Str.multiLines('\n',
                         '<div class="modal-header">',
-                        '    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>',
+                        '    <button type="button" class="close" data-dismiss="modal" aria-label="Close">',
+                        '       <span aria-hidden="true">&times;</span></button>',
                         '    <h4 class="modal-title">{0}</h4>',
                         '</div>',
                         '<div class="modal-body">{1}</div>',
@@ -140,9 +138,7 @@ var Bs = {};
                 $(this).removeData('modal');
                 $modal.remove();
 
-                if (closed !== undefined){
-                    closed.call(this);
-                }
+                Fn.apply(closed, $modal, arguments);
             });
     };
 
