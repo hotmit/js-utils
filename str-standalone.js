@@ -22,7 +22,7 @@ var Str = {};
 	};
 
 	/**
-	 * Compare to strings
+	 * Compare two strings
 	 * @param s1 {?string}
 	 * @param s2 {?string}
 	 * @param caseSensitive {boolean=}
@@ -372,8 +372,8 @@ var Str = {};
 	 * @returns {string}
 	 */
 	Str.gettext = function(s){
-		if (document.gettext){
-			return document.gettext(s);
+		if (window.gettext){
+			return window.gettext(s);
 		}
 		return s;
 	};
