@@ -1,5 +1,7 @@
 /*global jQuery, Str, Bs */
 
+// REQ: str-standalone.js, bootstrap-ext.js
+
 var UI = {};
 
 (function($, UI){
@@ -10,14 +12,15 @@ var UI = {};
      *      process the json
      * 3. if html is return, replace the form with the html provided
      *
-     * @param form {selector} - this selector must work on the content of the ajax data as well
+     * @param formSelector {selector} - this selector must work on the content of the ajax data as well
      * @param ajaxOpt {object=} - $.ajax(ajaxOpt). If the form has file upload $(form).ajaxForm(ajaxOpt)
      *
      * Support file upload through the use of https://github.com/malsup/form.git
      */
-    UI.submitDjangoForm = function(form, ajaxOpt){
-        var $frm = $(form),
-            hasFileUpload = $frm.find("input[type='file']").length;
+    UI.submitDjangoForm = function(formSelector, ajaxOpt){
+        var $frm = $(formSelector),
+            hasFileUpload = $frm.find("input[type='file']").length,
+            defaultOpt, opt, userSuccessFunc;
 
         if (hasFileUpload && !$.fn.hasOwnProperty('ajaxForm')){
             Bs.modalMessage(
@@ -50,41 +53,37 @@ var UI = {};
             }
         }
 
-        $frm.submit(function(){
-            var defaultOpt, opt, userSuccessFunc;
-
-            if ($.fn.validate !== undefined && $frm.hasOwnProperty('valid'))
-            {
-                if (!$frm.isValid()){
-                    return false;
+        if (hasFileUpload)
+        {
+            userSuccessFunc = ajaxOpt != undefined && ajaxOpt.hasOwnProperty('success') ? ajaxOpt.success : undefined;
+            defaultOpt = {
+                dataType: 'html',
+                error: function(err){
+                    Bs.modalMessage(Str.gettext('$.ajaxForm() Error'), err);
                 }
-            }
+            };
 
-            if (hasFileUpload)
-            {
-                userSuccessFunc = ajaxOpt.hasOwnProperty('success') ? ajaxOpt.success : undefined;
-                defaultOpt = {
-                    url: this.action,
-                    dataType: 'html',
-                    type: this.method,
-                    error: function(err){
-                        Bs.modalMessage(Str.gettext('$.ajaxForm() Error'), err);
+            opt = $.extend({}, defaultOpt, ajaxOpt, {
+                success: function(data, textStatus, jqXHR){
+                    parseData(data);
+
+                    if (userSuccessFunc != undefined){
+                        userSuccessFunc.apply(this, arguments);
                     }
-                };
+                }
+            });
 
-                opt = $.extend({}, defaultOpt, ajaxOpt, {
-                    success: function(data, textStatus, jqXHR){
-                        parseData(data);
-
-                        if (userSuccessFunc != undefined){
-                            userSuccessFunc.apply(this, arguments);
-                        }
+            $frm.ajaxForm(opt);
+        } // End hasFileUpload
+        else {
+            $frm.submit(function(){
+                if ($.fn.validate !== undefined && $frm.hasOwnProperty('valid'))
+                {
+                    if (!$frm.isValid()){
+                        return false;
                     }
-                });
+                }
 
-                $frm.ajaxForm(opt);
-            } // End hasFileUpload
-            else {
                 defaultOpt = {
                     url: this.action,
                     method: this.method,
@@ -99,17 +98,16 @@ var UI = {};
                     .fail(function (jqXHR, textStatus, errorThrown) {
                         Bs.modalMessage(Str.gettext('Error'), errorThrown);
                     });
-            } // End hasFileUpload else
 
-            return false;
-        });
-
-    };
+                return false;
+            });
+         } // End hasFileUpload else
+    }; // End submitDjangoForm
 
     /**
      * Parse the json, if message is present display the message.
      * status:  success|info|warning|danger
-     * action:  display, message
+     * action:  display, message, [redirect=url|refresh=true]
      *          refresh
      *          forward, url
      *
@@ -119,15 +117,24 @@ var UI = {};
         var action = json.action ? json.action.toLowerCase() : 'display';
 
         if (action == 'display'){
-            Bs.modalMessage(Str.gettext('Message'), json.message);
+            Bs.modalMessage(Str.gettext('Message'), json.message, function(){
+                if (json.hasOwnProperty('refresh') ||
+                    (json.hasOwnProperty('redirect') && Str.empty(json.redirect))){
+                    window.location.reload(true);
+                    window.location = window.location.toString();
+                }
+                else if (json.hasOwnProperty('redirect')) {
+                    window.location = json.redirect;
+                }
+            });
         }
         else if (action == 'refresh'){
             window.location.reload(true);
+            window.location = window.location.toString();
         }
         else if (action == 'forward'){
             window.location = json.url;
         }
-
     };
 
 }(jQuery, UI));

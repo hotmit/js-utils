@@ -7,12 +7,12 @@ var Bs = {};
     /**
      * Generate the dom for the modal dialog div.modal.
      *
-     * @param id {id}- the id of the modal box place holder ie. div.modal
+     * @param modalBoxId {id}- the the id for the new modal box (ie. div.modal place holder)
      *                  (if doesn't exist this function will create)
-     * @param options {object} - supported options: .fade:bool, .size:string[''|lg|sm], .destroyOnClose:bool
+     * @param options {object} - supported options: .fade:bool, .size:string[''|lg|sm], .destroyOnClose:bool(default true)
      */
-    Bs.createModalDom = function(id, options){
-        var $m = $('#' + id),
+    Bs.createModalDom = function(modalBoxId, options){
+        var $m = $('#' + modalBoxId),
             template = Str.multiLines('\n',
                 '<div class="modal{0}" id="{1}" tabindex="-1" role="dialog" aria-hidden="true">',
                 '  <div class="modal-dialog{2}">',
@@ -31,7 +31,7 @@ var Bs = {};
         if (!$m.length){
             modalDialog = Str.format(template,
                 options.fade ? ' fade' : '',
-                id,
+                modalBoxId,
                 options.size ? ' modal-' + options.size : ''
             );
 
@@ -51,19 +51,19 @@ var Bs = {};
 
     /**
      * Show modal dialog using ajax call
-     * @param id - the id of the modal box place holder ie. div.modal
+     * @param modalBoxId {id} - the id of the new modal box place holder ie. div.modal
      *                  (if doesn't exist this function will create)
-     * @param ajax_opts  {object|string}- $.ajax(ajax_opts) OR url
-     * @param options {object} - support options: .fade:bool, .size:string[''|lg|sm], .destroyOnClose:bool
+     * @param ajaxOpts  {object|string}- $.ajax(ajaxOpts) OR url
+     * @param options {object} - support options: .fade:bool, .size:string[''|lg|sm], .destroyOnClose:bool(default true)
      * @param shown {?function} - when the modal is visible
      * @param done {?function} - ajax.done, called after the content already filled
      * @param fail {?function} - ajax.fail
      */
-    Bs.modalAjax = function (id, ajax_opts, options, shown, done, fail){
+    Bs.modalAjax = function (modalBoxId, ajaxOpts, options, shown, done, fail){
         // Ref: http://getbootstrap.com/javascript/#modals
-        var $modal = Bs.createModalDom(id, options);
+        var $modal = Bs.createModalDom(modalBoxId, options);
 
-        $.ajax(ajax_opts)
+        $.ajax(ajaxOpts)
             .done(function(data, textStatus, jqXHR){
                 $modal.find('.modal-content').html(data);
                 if (done !== undefined){
