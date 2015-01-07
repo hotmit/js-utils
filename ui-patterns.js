@@ -134,7 +134,7 @@ var UI = {};
             window.location.reload(true);
             window.location = window.location.toString();
         }
-        else if (action == 'forward'){
+        else if (action == 'redirect'){
             window.location = json.url;
         }
     };

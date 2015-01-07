@@ -1,4 +1,6 @@
-/*global jQuery, Str, Arr */
+/*global jQuery, Str, Arr, Fn */
+
+// REQ: func.js
 
 var Bs = {};
 
@@ -56,10 +58,11 @@ var Bs = {};
      * @param ajaxOpts  {object|string}- $.ajax(ajaxOpts) OR url
      * @param options {object} - support options: .fade:bool, .size:string[''|lg|sm], .destroyOnClose:bool(default true)
      * @param shown {?function} - when the modal is visible
+     * @param hidden (?function) - the the modal box is close/hidden
      * @param done {?function} - ajax.done, called after the content already filled
      * @param fail {?function} - ajax.fail
      */
-    Bs.modalAjax = function (modalBoxId, ajaxOpts, options, shown, done, fail){
+    Bs.modalAjax = function (modalBoxId, ajaxOpts, options, shown, hidden, done, fail){
         // Ref: http://getbootstrap.com/javascript/#modals
         var $modal = Bs.createModalDom(modalBoxId, options);
 
@@ -95,6 +98,9 @@ var Bs = {};
             })
             .always(function(){
                 $modal.modal('show');
+                $modal.on('hidden.bs.modal', function(){
+                    Fn.apply(hidden, $modal, arguments);
+                });
                 if (shown !== undefined){
                     shown.apply(this, arguments);
                 }
