@@ -1,6 +1,6 @@
-/*global jQuery, Str, Bs */
+/*global jQuery, Str, Bs, Fn */
 
-// REQ: str-standalone.js, bootstrap-ext.js
+// REQ: str-standalone.js, bootstrap-ext.js, func.js
 
 var UI = {};
 
@@ -14,10 +14,11 @@ var UI = {};
      *
      * @param formSelector {selector} - this selector must work on the content of the ajax data as well
      * @param ajaxOpt {object=} - $.ajax(ajaxOpt). If the form has file upload $(form).ajaxForm(ajaxOpt)
+     * @param response {function(data)=} - data can be json or return html
      *
      * Support file upload through the use of https://github.com/malsup/form.git
      */
-    UI.submitDjangoForm = function(formSelector, ajaxOpt){
+    UI.submitDjangoForm = function(formSelector, ajaxOpt, response){
         var $frm = $(formSelector),
             hasFileUpload = $frm.find("input[type='file']").length,
             defaultOpt, opt, userSuccessFunc;
@@ -49,9 +50,12 @@ var UI = {};
                     newFormContent = $result.find('form > *');
                 }
                 $frm.empty().append(newFormContent);
+
+                Fn.apply(response, this, [data]);
             }
             else {
                 UI.parseMessage(result);
+                Fn.apply(response, this, [result]);
             }
         }
 
@@ -116,16 +120,16 @@ var UI = {};
      * @param json {{status, action, value}}
      */
     UI.parseMessage = function(json){
-        var action = json.action ? json.action.toLowerCase() : 'display';
+        var action = json.hasOwnProperty('action') && json.action != undefined
+            ? json.action.toLowerCase() : '';
 
         if (action == 'display'){
             Bs.modalMessage(Str.gettext('Message'), json.message, function(){
-                if (json.hasOwnProperty('refresh') ||
-                    (json.hasOwnProperty('redirect') && Str.empty(json.redirect))){
+                if (json.refresh || Str.empty(json.redirect)){
                     window.location.reload(true);
                     window.location = window.location.toString();
                 }
-                else if (json.hasOwnProperty('redirect')) {
+                else if (!Str.empty(json.redirect)){
                     window.location = json.redirect;
                 }
             });
@@ -134,7 +138,7 @@ var UI = {};
             window.location.reload(true);
             window.location = window.location.toString();
         }
-        else if (action == 'redirect'){
+        else if (action == 'redirect' && !Str.empty(json.url)){
             window.location = json.url;
         }
     };
