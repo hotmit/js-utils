@@ -41,7 +41,9 @@ var UI = {};
 
             // false ie html not a json
             if (result === false) {
-                $result = $(data);
+                // $('<div id="outter"><span>Hello</span></div>').find('#outter > *')   // this will return nothing
+                // $('<div><div id="outter"><span>Hello</span></div></div>').find('#outter > *')   // this will return div#outtter children
+                $result = $(data).wrap('<div></div>');
                 newFormContent = $result.find($frm.selector + ' > *');
                 if (!newFormContent.length) {
                     newFormContent = $result.find('form > *');
