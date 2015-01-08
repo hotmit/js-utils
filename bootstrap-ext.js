@@ -84,7 +84,7 @@ var Bs = {};
                         '<div class="modal-body">{1}</div>',
                         '<div class="modal-footer">',
                         '    <button type="button" class="btn btn-default" data-dismiss="modal">{2}</button>',
-                        '</div>)');
+                        '</div>');
 
                     errorMsg = Str.format(errorMsg,
                         Str.gettext('Error'),
@@ -125,6 +125,10 @@ var Bs = {};
                         '<div class="modal-footer">',
                         '    <button type="button" class="btn btn-default" data-dismiss="modal">{2}</button>',
                         '</div>');
+
+            if ($.type(message) !== 'string' && JSON != undefined){
+                message = JSON.stringify(message);
+            }
 
             modalBody = Str.format(modalBody,
                 title,

@@ -1,6 +1,6 @@
 /*global jQuery, Str, Bs, Fn */
 
-// REQ: str-standalone.js, bootstrap-ext.js, func.js
+// REQ: str-standalone.js, bootstrap-ext.js, func.js, Json2.js
 
 var UI = {};
 

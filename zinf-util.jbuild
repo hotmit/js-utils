@@ -8,6 +8,8 @@ arr.js
 
 // included but it is not use inside the library
 ext/js-base64/base64.min.js
+
+// use by bootstrap-ext.js
 ext/json-js/json2.js
 
 // must be before $str
