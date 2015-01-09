@@ -51,7 +51,11 @@
 	o	2004-02-12		Y-m-d  (Dup, Non Standard)
 	t	5:34pm			g:ia  (Dup, Non Standard)
 */
-var Dt = {};
+
+if (typeof window.Dt === 'undefined')
+{
+    window.Dt = {};
+}
 
 (function($, Dt){
 
@@ -238,4 +242,4 @@ var Dt = {};
 		return result;
 	};
 	
-}(jQuery, Dt));
+}(jQuery, window.Dt));

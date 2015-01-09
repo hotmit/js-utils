@@ -2,10 +2,17 @@
 
 // REQ: str-standalone.js, bootstrap-ext.js, func.js, Json2.js
 
-var UI = {};
+if (typeof window.UI === 'undefined')
+{
+    window.UI = {};
+}
 
-(function($, UI){
+if (typeof window.UI.Patterns === 'undefined')
+{
+    window.UI.Patterns = {};
+}
 
+(function($, Patterns, UI, Str, Bs, Fn){
     /**
      * 1. submit to form.action using ajax
      * 2. if json is return {status, message, action}
@@ -13,22 +20,27 @@ var UI = {};
      * 3. if html is return, replace the form with the html provided
      *
      * @param formSelector {selector} - this selector must work on the content of the ajax data as well
-     * @param ajaxOpt {object=} - $.ajax(ajaxOpt). If the form has file upload $(form).ajaxForm(ajaxOpt)
-     * @param response {function(data)=} - data can be json or return html
+     * @param targetSelector {selector} - which element to extract/update when the data is returned from an ajax call.
+     * @param ajaxOptions {object=} - $.ajax(ajaxOptions). If the form has file upload $(form).ajaxForm(ajaxOptions)
+     *                                      If undefined the form target is use
+     * @param response {function(data)=} - data can be json or return html.
      *
      * Support file upload through the use of https://github.com/malsup/form.git
      */
-    UI.submitDjangoForm = function(formSelector, ajaxOpt, response){
+    Patterns.submitForm = function(formSelector, targetSelector, ajaxOptions, response, blockOptions){
         var $frm = $(formSelector),
+            $targetParent = $(formSelector).parent(),
             hasFileUpload = $frm.find("input[type='file']").length,
-            defaultOpt, opt, userSuccessFunc;
+            defaultAjaxOptions, ajaxOpts, ajaxFormOpts, userSuccessFunc;
 
         if (hasFileUpload && !$.fn.hasOwnProperty('ajaxForm')){
             Bs.modalMessage(
-                Str.gettext('UI.submitDjangoForm Error'),
-                Str.gettext("The form contains file upload, you'll need https://github.com/malsup/form.git."));
+                Str.gettext('UI.Patterns.submitForm Error'),
+                Str.gettext("The form contains file upload, you'll need jQuery Form (https://github.com/malsup/form.git)."));
             return;
         }
+
+        targetSelector = targetSelector || formSelector;
 
         /**
          * Parse the data from the server, if json display/redirect/refresh
@@ -37,110 +49,153 @@ var UI = {};
          * @param data
          */
         function parseData(data) {
-            var newFormContent, result = Str.parseJson(data, false),
+            var newAjaxContent, result = Str.parseJson(data, false),
                 $result;
 
             // false ie html not a json
             if (result === false) {
                 // $('<div id="outter"><span>Hello</span></div>').find('#outter > *')   // this will return nothing
                 // $('<div><div id="outter"><span>Hello</span></div></div>').find('#outter > *')   // this will return div#outtter children
-                $result = $(data).wrap('<div></div>');
-                newFormContent = $result.find($frm.selector + ' > *');
-                if (!newFormContent.length) {
-                    newFormContent = $result.find('form > *');
-                }
-                $frm.empty().append(newFormContent);
+                $result = $('<div></div>').append(data);
+
+                newAjaxContent = $result.find(targetSelector);
+                $(targetSelector).replaceWith(newAjaxContent);
+
+                // reload the frm instance, it could be replaced by the ajax content
+                $frm = $($frm.selector);
+                $frm.ajaxForm(ajaxFormOpts);
 
                 Fn.apply(response, this, [data]);
             }
             else {
-                UI.parseMessage(result);
+                Patterns.parseMessage(result, targetSelector);
                 Fn.apply(response, this, [result]);
             }
         }
 
         if (hasFileUpload)
         {
-            userSuccessFunc = ajaxOpt != undefined && ajaxOpt.hasOwnProperty('success') ? ajaxOpt.success : undefined;
-            defaultOpt = {
+            userSuccessFunc = ajaxOptions != undefined && ajaxOptions.hasOwnProperty('success') ? ajaxOptions.success : undefined;
+            defaultAjaxOptions = {
                 dataType: 'html',
-                error: function(err){
-                    Bs.modalMessage(Str.gettext('$.ajaxForm() Error'), err);
+                error: function(jqXHR, textStatus, errorThrown){
+                    UI.unblockElement(targetSelector);
+                    Bs.modalMessage(Str.gettext('$.ajaxForm() Error'), errorThrown);
                 }
             };
 
-            opt = $.extend({}, defaultOpt, ajaxOpt, {
+            ajaxFormOpts = $.extend({}, defaultAjaxOptions, ajaxOptions, {
+                beforeSubmit: function(){
+                    UI.blockElement(targetSelector, blockOptions);
+                },
                 success: function(data, textStatus, jqXHR){
+                    UI.unblockElement(targetSelector);
                     parseData(data);
-
-                    if (userSuccessFunc != undefined){
-                        userSuccessFunc.apply(this, arguments);
-                    }
+                    Fn.apply(userSuccessFunc, this, arguments);
                 }
             });
 
-            $frm.ajaxForm(opt);
+            $frm.ajaxForm(ajaxFormOpts);
         } // End hasFileUpload
         else {
-            $frm.submit(function(){
-                if ($.fn.validate !== undefined && $frm.hasOwnProperty('valid'))
+            $targetParent.on('submit', formSelector, function(){
+                if ($.fn.validate !== undefined && $frm.hasOwnProperty('isValid'))
                 {
                     if (!$frm.isValid()){
                         return false;
                     }
                 }
 
-                defaultOpt = {
+                UI.blockElement(targetSelector, blockOptions);
+
+                defaultAjaxOptions = {
                     url: this.action,
                     method: this.method,
                     data: $frm.serialize()
                 };
-                opt = $.extend({}, defaultOpt, ajaxOpt);
+                ajaxOpts = $.extend({}, defaultAjaxOptions, ajaxOptions);
 
-                $.ajax(opt)
+                $.ajax(ajaxOpts)
                     .done(function (data, textStatus, jqXHR) {
+                        UI.unblockElement(targetSelector);
                         parseData(data);
                     })
                     .fail(function (jqXHR, textStatus, errorThrown) {
-                        Bs.modalMessage(Str.gettext('Error'), errorThrown);
+                        UI.unblockElement(targetSelector);
+                        Bs.modalMessage(Str.gettext('$.ajax() Error'), errorThrown);
                     });
 
                 return false;
             });
          } // End hasFileUpload else
-    }; // End submitDjangoForm
+    }; // End submitForm
 
     /**
-     * Parse the json, if message is present display the message.
+     * Parse the jsonCommand, if message is present display the message.
      * status:  success|info|warning|danger
      * action:  display, message, [redirect=url|refresh=true]
      *          refresh
      *          forward, url
      *
-     * @param json {{status, action, value}}
+     * @param jsonCommand {{status, action, value}}
+     * @param blockTarget {selector=} - the block target for "block-ui" command
      */
-    UI.parseMessage = function(json){
-        var action = json.hasOwnProperty('action') && json.action != undefined
-            ? json.action.toLowerCase() : '';
+    Patterns.parseMessage = function(jsonCommand, blockTarget){
+        var action = jsonCommand.hasOwnProperty('action') && jsonCommand.action != undefined
+            ? jsonCommand.action.toLowerCase() : '',
+            method = jsonCommand.method || 'modal',
+            defaultBlockUiOptions, blockOptions,
+            data = jsonCommand.data || {};
 
-        if (action == 'display'){
-            Bs.modalMessage(Str.gettext('Message'), json.message, function(){
-                if (json.refresh || Str.empty(json.redirect)){
-                    window.location.reload(true);
-                    window.location = window.location.toString();
+        function executeDisplayActions(jsonCommand) {
+            if (jsonCommand.refresh || Str.empty(jsonCommand.redirect)) {
+                window.location.reload(true);
+                //window.location = window.location.toString();
+            }
+            else if (!Str.empty(jsonCommand.redirect)) {
+                window.location = jsonCommand.redirect;
+            }
+        }
+
+        if (action == 'display') {
+            if (method == 'modal') {
+                Bs.modalMessage(Str.gettext('Message'), jsonCommand.message, function () {
+                    executeDisplayActions(jsonCommand);
+                });
+            }
+            else if (method == 'block-ui')
+            {
+                defaultBlockUiOptions = {
+                    overlayCSS: UI.darkOverlayCSS,
+                    blockTarget: blockTarget,
+                    delay: 400
+                };
+                blockOptions = $.extend({}, defaultBlockUiOptions, data);
+                if (blockOptions.blockTarget) {
+                    UI.blockElement(blockOptions.blockTarget, blockOptions);
                 }
-                else if (!Str.empty(json.redirect)){
-                    window.location = json.redirect;
+                else {
+                    UI.blockScreen(blockOptions);
                 }
-            });
+
+                if (jsonCommand.redirect || jsonCommand.refresh){
+                    setTimeout(function(){
+                        executeDisplayActions(jsonCommand);
+                    }, blockOptions.delay);
+                }
+            }
+            else {
+                alert(jsonCommand.message);
+            }
         }
         else if (action == 'refresh'){
             window.location.reload(true);
-            window.location = window.location.toString();
+            //window.location = window.location.toString();
         }
-        else if (action == 'redirect' && !Str.empty(json.url)){
-            window.location = json.url;
+        else if (action == 'redirect' && !Str.empty(jsonCommand.url)){
+            window.location = jsonCommand.url;
         }
     };
 
-}(jQuery, UI));
+    // $, Patterns,             UI,         Str,        Bs,         Fn
+}(jQuery, window.UI.Patterns, window.UI, window.Str, window.UI.Bs, window.Fn));

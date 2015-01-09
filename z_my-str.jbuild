@@ -4,7 +4,9 @@ output: z_my-str.min.js
 
 // included but it is not use inside the library
 ext/js-base64/base64.min.js
+
 ext/json-js/json2.js
+jq-ext/blockui/jquery.blockUI.js
 
 // must be before $str
 date.js
@@ -12,3 +14,6 @@ date.js
 // must go before "str-ext.js"
 str-standalone.js
 str-ext.js
+
+ui.js
+ui-patterns.js

@@ -2,7 +2,10 @@
 
 // STANDALONE
 
-var Tmr = {};
+if (typeof window.Tmr === 'undefined')
+{
+    window.Tmr = {};
+}
 
 (function($, Tmr){
 
@@ -17,4 +20,4 @@ var Tmr = {};
 		return setTimeout(function(){ func.call(thisArg || this); }, delay);
 	};
 	
-}(jQuery, Tmr));
+}(jQuery, window.Tmr));

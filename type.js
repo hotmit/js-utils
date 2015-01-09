@@ -2,7 +2,10 @@
 
 // STANDALONE
 
-var Tp = {};
+if (typeof window.Tp === 'undefined')
+{
+    window.Tp = {};
+}
 
 (function($, Tp){
     /**
@@ -124,4 +127,4 @@ var Tp = {};
             o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string";
     };
 	
-}(jQuery, Tp));
+}(jQuery, window.Tp));

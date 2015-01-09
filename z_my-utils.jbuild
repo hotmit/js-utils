@@ -19,5 +19,7 @@ jq-ext/jquery-cookie/src/jquery.cookie.js
 // must go after "str-fuzzy.js"
 cookie.pref.js
 
-bootstrap-ext.js
 ui-patterns.js
+
+// must go after ui-patterns
+bootstrap-ext.js

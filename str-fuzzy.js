@@ -2,6 +2,11 @@
 
 // REQ: str-standalone.js
 
+if (typeof window.Str === 'undefined')
+{
+    window.Str = {};
+}
+
 (function ($, Str) {
     Str.mtx = [121, 111, 110, 101, 32, 105, 115, 32, 97,
 		32, 103, 101, 110, 105, 117, 115, 32, 97, 116, 32, 108, 101,
@@ -66,4 +71,4 @@
 		/*jslint bitwise: false */
 		return r;
 	};
-}(jQuery, Str));
+}(jQuery, window.Str));

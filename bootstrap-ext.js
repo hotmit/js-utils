@@ -1,8 +1,15 @@
-/*global jQuery, Str, Arr, Fn */
+/*global jQuery, Str, Arr, Fn, Ui */
 
-// REQ: func.js
+// REQ: ui-patterns.js, func.js
 
-var Bs = {};
+if (typeof window.UI === 'undefined')
+{
+    window.UI = {};
+}
+else if (typeof window.UI.Bs === 'undefined')
+{
+    window.UI.Bs = {};
+}
 
 (function($, Bs){
 
@@ -114,7 +121,7 @@ var Bs = {};
      * @param options {object} - supported options: .fade:bool, .size:string[''|lg|sm], .destroyOnClose:bool(default true)
      */
     Bs.modalMessage = function(title, message, closed, options){
-        var $modal = Bs.createModalDom('modal-message-' + new Date().getTime(), options),
+        var $modal = Bs.createModalDom('modal-message-' + (new Date().getTime()), options),
             modalBody = Str.multiLines('\n',
                         '<div class="modal-header">',
                         '    <button type="button" class="close" data-dismiss="modal" aria-label="Close">',
@@ -146,4 +153,4 @@ var Bs = {};
             });
     };
 
-}(jQuery, Bs));
+}(jQuery, window.UI.Bs));

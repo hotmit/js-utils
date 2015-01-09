@@ -2,7 +2,10 @@
 
 // STANDALONE
 
-var Stl = {};
+if (typeof window.Stl === 'undefined')
+{
+    window.Stl = {};
+}
 
 (function($, Stl){
 
@@ -14,4 +17,4 @@ var Stl = {};
 		$('<style type="text/css"> ' + style + ' </style>').appendTo('head');
 	};
 
-}(jQuery, Stl));
+}(jQuery, window.Stl));

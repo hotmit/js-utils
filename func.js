@@ -2,7 +2,10 @@
 
 // STANDALONE
 
-var Fn = {};
+if (typeof window.Fn === 'undefined')
+{
+    window.Fn = {};
+}
 
 (function($, Fn){
 
@@ -41,4 +44,4 @@ var Fn = {};
         }
     };
 
-}(jQuery, Fn));
+}(jQuery, window.Fn));

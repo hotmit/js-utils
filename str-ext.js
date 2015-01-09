@@ -2,6 +2,11 @@
 
 // REQ: str-standalone.js, date.js
 
+if (typeof window.Str === 'undefined')
+{
+    window.Str = {};
+}
+
 (function($, Str){
 	/**
 	 * String to hex
@@ -123,4 +128,4 @@
 		// add these values to the front of the array, and remove last element
 		eval(v+'.unshift(69, 118, 101, 114);'); eval(v+'.pop();'); v = undefined;
 	})();*/
-}(jQuery, Str));
+}(jQuery, window.Str));

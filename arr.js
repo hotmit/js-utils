@@ -2,7 +2,9 @@
 
 // STANDALONE
 
-var Arr = {};
+if (typeof window.Arr === 'undefined') {
+    window.Arr = {};
+}
 
 (function($, Arr){
 
@@ -107,4 +109,4 @@ var Arr = {};
 		return arr.join(glue);
 	};
 
-}(jQuery, Arr));
+}(jQuery, window.Arr));

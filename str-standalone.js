@@ -2,7 +2,14 @@
 
 // STANDALONE
 
-var Str = {};
+if (typeof window.Dt === 'undefined')
+{
+    window.Dt = {};
+}
+if (typeof window.Str === 'undefined')
+{
+    window.Str = {};
+}
 
 (function($, Str){
 
@@ -399,4 +406,4 @@ var Str = {};
 		}
 	};
 
-}(jQuery, Str));
+}(jQuery, window.Str));
