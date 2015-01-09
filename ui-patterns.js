@@ -26,6 +26,7 @@ if (typeof window.UI.Patterns === 'undefined')
      * @param response {function(data)=} - data can be json or return html.
      *
      * Support file upload through the use of https://github.com/malsup/form.git
+     * @param blockOptions {object} - blockUI options
      */
     Patterns.submitForm = function(formSelector, targetSelector, ajaxOptions, response, blockOptions){
         var $frm = $(formSelector),
@@ -170,7 +171,7 @@ if (typeof window.UI.Patterns === 'undefined')
                     blockTarget: blockTarget,
                     delay: 400
                 };
-                blockOptions = $.extend({}, defaultBlockUiOptions, data);
+                blockOptions = $.extend({}, defaultBlockUiOptions, jsonCommand);
                 if (blockOptions.blockTarget) {
                     UI.blockElement(blockOptions.blockTarget, blockOptions);
                 }
