@@ -2,25 +2,19 @@ output: D:\Clients\Infitrak\portal-source\infitrak_portal\global_static\global\j
 
 // jQuery must be before ALL
 
-type.js
-func.js
-arr.js
 
 // included but it is not use inside the library
 ext/js-base64/base64.min.js
-
-// use by bootstrap-ext.js
+jq-ext/jquery-cookie/src/jquery.cookie.js
 ext/json-js/json2.js
 
-// must be before $str
-date.js
 
-// must go before "str-ext.js"
+arr.js
+bootstrap-ext.js
+date.js
+func.js
 str-standalone.js
 str-ext.js
-
+type.js
 ui.js
 ui-patterns.js
-
-// must go after ui-paatern
-bootstrap-ext.js

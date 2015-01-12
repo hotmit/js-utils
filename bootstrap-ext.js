@@ -2,11 +2,13 @@
 
 // REQ: ui-patterns.js, func.js
 
-if (typeof window.UI === 'undefined')
+if (window.UI === undefined)
 {
-    window.UI = {};
+    window.UI = {
+        Bs: {}
+    };
 }
-else if (typeof window.UI.Bs === 'undefined')
+else if (window.UI.Bs === undefined)
 {
     window.UI.Bs = {};
 }
@@ -132,10 +134,6 @@ else if (typeof window.UI.Bs === 'undefined')
                         '<div class="modal-footer">',
                         '    <button type="button" class="btn btn-default" data-dismiss="modal">{2}</button>',
                         '</div>');
-
-            if ($.type(message) !== 'string' && JSON != undefined){
-                message = JSON.stringify(message);
-            }
 
             modalBody = Str.format(modalBody,
                 title,

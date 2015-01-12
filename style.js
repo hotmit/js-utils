@@ -2,7 +2,7 @@
 
 // STANDALONE
 
-if (typeof window.Stl === 'undefined')
+if (window.Stl === undefined)
 {
     window.Stl = {};
 }

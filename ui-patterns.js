@@ -1,13 +1,14 @@
 /*global jQuery, Str, Bs, Fn */
 
-// REQ: str-standalone.js, bootstrap-ext.js, func.js, Json2.js
+// REQ: str-standalone.js, bootstrap-ext.js, func.js
 
-if (typeof window.UI === 'undefined')
+if (window.UI === undefined)
 {
-    window.UI = {};
+    window.UI = {
+        Patterns: {}
+    };
 }
-
-if (typeof window.UI.Patterns === 'undefined')
+else if (window.UI.Patterns === undefined)
 {
     window.UI.Patterns = {};
 }
@@ -43,6 +44,20 @@ if (typeof window.UI.Patterns === 'undefined')
 
         targetSelector = targetSelector || formSelector;
 
+        function autoFocus() {
+            var reqInput = $frm.find('requiredField input[type="text"], requiredField input[type="password"], requiredField textarea'),
+                input;
+            if (reqInput.length){
+                reqInput.first().focus();
+            }
+            else {
+                input = $frm.find('input[type="text"], input[type="password"], textarea');
+                if (input.length){
+                    input.first().focus();
+                }
+            }
+        }
+
         /**
          * Parse the data from the server, if json display/redirect/refresh
          * If html replace the current form with form from server.
@@ -65,6 +80,8 @@ if (typeof window.UI.Patterns === 'undefined')
                 // reload the frm instance, it could be replaced by the ajax content
                 $frm = $($frm.selector);
                 $frm.ajaxForm(ajaxFormOpts);
+
+                autoFocus();
 
                 Fn.apply(response, this, [data]);
             }
@@ -145,13 +162,11 @@ if (typeof window.UI.Patterns === 'undefined')
         var action = jsonCommand.hasOwnProperty('action') && jsonCommand.action != undefined
             ? jsonCommand.action.toLowerCase() : '',
             method = jsonCommand.method || 'modal',
-            defaultBlockUiOptions, blockOptions,
-            data = jsonCommand.data || {};
+            defaultBlockUiOptions, blockOptions;
 
         function executeDisplayActions(jsonCommand) {
             if (jsonCommand.refresh || Str.empty(jsonCommand.redirect)) {
                 window.location.reload(true);
-                //window.location = window.location.toString();
             }
             else if (!Str.empty(jsonCommand.redirect)) {
                 window.location = jsonCommand.redirect;
@@ -192,7 +207,6 @@ if (typeof window.UI.Patterns === 'undefined')
         }
         else if (action == 'refresh'){
             window.location.reload(true);
-            //window.location = window.location.toString();
         }
         else if (action == 'redirect' && !Str.empty(jsonCommand.url)){
             window.location = jsonCommand.url;

@@ -2,7 +2,7 @@
 
 // STANDALONE
 
-if (typeof window.Arr === 'undefined') {
+if (window.Arr === undefined) {
     window.Arr = {};
 }
 

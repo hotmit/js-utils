@@ -2,7 +2,7 @@
 
 // REQ:
 
-if (typeof window.UI === 'undefined')
+if (window.UI === undefined)
 {
     window.UI = {};
 }

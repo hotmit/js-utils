@@ -2,7 +2,7 @@
 
 // STANDALONE
 
-if (typeof window.Fn === 'undefined')
+if (window.Fn === undefined)
 {
     window.Fn = {};
 }

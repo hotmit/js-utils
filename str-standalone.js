@@ -2,11 +2,7 @@
 
 // STANDALONE
 
-if (typeof window.Dt === 'undefined')
-{
-    window.Dt = {};
-}
-if (typeof window.Str === 'undefined')
+if (window.Str === undefined)
 {
     window.Str = {};
 }
@@ -164,6 +160,15 @@ if (typeof window.Str === 'undefined')
 		return Str.contains(s, needles, caseSensitive);
 	};
 
+    /**
+     * Determine if the specified variable is a string
+     * @param o
+     * @returns {boolean}
+     */
+    Str.isString = function (o) {
+        return $.type(o) === 'string';
+    };
+
 	/**
 	 * Trims white space from the beginning and end of a string.
 	 * @param s {string}
@@ -171,6 +176,10 @@ if (typeof window.Str === 'undefined')
 	 * @return {string}
 	 */
 	Str.trim = function(s, c) {
+        if (!Str.isString(s)){
+            return s;
+        }
+
 		if (c == undefined || c == ' '){
 			if (String.prototype.trim){
 				return String.prototype.trim.call(s);

@@ -2,7 +2,7 @@
 
 // REQ: str-standalone.js
 
-if (typeof window.Str === 'undefined')
+if (window.Str === undefined)
 {
     window.Str = {};
 }

@@ -52,7 +52,7 @@
 	t	5:34pm			g:ia  (Dup, Non Standard)
 */
 
-if (typeof window.Dt === 'undefined')
+if (window.Dt === undefined)
 {
     window.Dt = {};
 }

@@ -2,7 +2,7 @@
 
 // STANDALONE
 
-if (typeof window.Tmr === 'undefined')
+if (window.Tmr === undefined)
 {
     window.Tmr = {};
 }

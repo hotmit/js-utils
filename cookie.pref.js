@@ -2,7 +2,7 @@
 
 // REQ: arr.js, cookie.pref.js
 
-if (typeof window.Pref === 'undefined')
+if (window.Pref === undefined)
 {
     window.Pref = {};
 }
