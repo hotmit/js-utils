@@ -1,4 +1,4 @@
-/*global jQuery, Str, Bs, Fn */
+/*global jQuery, Str, Bs, Fn, BootstrapDialog */
 
 // REQ: str-standalone.js, bootstrap-ext.js, func.js
 
@@ -162,7 +162,7 @@ else if (window.UI.Patterns === undefined)
         var action = jsonCommand.hasOwnProperty('action') && jsonCommand.action != undefined
             ? jsonCommand.action.toLowerCase() : '',
             method = jsonCommand.method || 'modal',
-            defaultBlockUiOptions, blockOptions;
+            defaultBlockUiOptions, blockOptions, dialogOpt;
 
         function executeDisplayActions(jsonCommand) {
             if (jsonCommand.refresh || Str.empty(jsonCommand.redirect)) {
@@ -181,6 +181,7 @@ else if (window.UI.Patterns === undefined)
             }
             else if (method == 'block-ui')
             {
+                // region [ block-ui display ]
                 defaultBlockUiOptions = {
                     message: jsonCommand.message || null,
                     overlayCSS: UI.darkOverlayCSS,
@@ -200,6 +201,26 @@ else if (window.UI.Patterns === undefined)
                         executeDisplayActions(jsonCommand);
                     }, blockOptions.delay);
                 }
+                // endregion
+            }
+            else if (method == 'bs-dialog')
+            {
+                dialogOpt = {
+                    title: jsonCommand.data.title || Str.gettext('Message'),
+                    message: jsonCommand.message,
+                    buttons: [{
+                        label: Str.gettext('Close'),
+                        action: function (dialog) {
+                            dialog.close();
+                        }
+                    }],
+                    onhidden: function(){
+                        executeDisplayActions(jsonCommand);
+                    }
+                };
+
+                dialogOpt = $.extend({}, dialogOpt, jsonCommand.data);
+                BootstrapDialog.show(dialogOpt);
             }
             else {
                 alert(jsonCommand.message);
