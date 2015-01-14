@@ -44,19 +44,57 @@ else if (window.UI.Patterns === undefined)
 
         targetSelector = targetSelector || formSelector;
 
+        // region [ autoFocus ]
+        /**
+         * Select the first required textbox/input
+         */
         function autoFocus() {
-            var reqInput = $frm.find('requiredField input[type="text"], requiredField input[type="password"], requiredField textarea'),
+            var reqInput = $frm.find('.has-error').find('[type="text"], [type="password"], [type="email"], textarea'),
                 input;
             if (reqInput.length){
-                reqInput.first().focus().select();
+                reqInput.first().focus().caretToEnd();
             }
             else {
                 input = $frm.find('input[type="text"], input[type="password"], textarea');
                 if (input.length){
-                    input.first().focus().select();
+                    input.first().focus().caretToEnd();
                 }
             }
         }
+        // endregion
+
+        // region [ setupFormSubmit ]
+        /**
+         * Setup ajaxForm and record which button was press to submit
+         */
+        function setupFormSubmit()
+        {
+            function removeTempHiddenFields()
+            {
+                // remove the hidden value just encase they press the submit button
+                // and the validation failed, after that they press another button
+                // without this there will be two value for button press.
+                setTimeout(function(){
+                    $frm.find('input[type="hidden"][name="submit-via"]').remove();
+                }, 2000);
+            }
+
+            $frm.ajaxForm(ajaxFormOpts);
+            $frm.find('.ajax-reset').click(function(){
+                $frm.attr('novalidate', 'novalidate');
+                $frm.append(Str.format('<input type="hidden" name="submit-via" value="{0}" />', this.name || this.value));
+                if (!$(this).is(':submit')){
+                    $frm.submit();
+                }
+                removeTempHiddenFields();
+            });
+            $frm.find('[type="submit"]').not('.ajax-reset').click(function(){
+                $frm.append(Str.format('<input type="hidden" name="submit-via" value="{0}" />',
+                    this.name || this.value));
+                removeTempHiddenFields();
+            });
+        }
+        // endregion
 
         /**
          * Parse the data from the server, if json display/redirect/refresh
@@ -80,10 +118,9 @@ else if (window.UI.Patterns === undefined)
 
                 // reload the frm instance, it could be replaced by the ajax content
                 $frm = $($frm.selector);
-                $frm.ajaxForm(ajaxFormOpts);
+                setupFormSubmit();
 
                 autoFocus();
-
                 Fn.apply(response, this, [data]);
             }
             else {
@@ -112,9 +149,10 @@ else if (window.UI.Patterns === undefined)
             }
         });
 
-        $frm.ajaxForm(ajaxFormOpts);
+        setupFormSubmit();
     }; // End submitForm
 
+    // region [ parseAjaxCommand ]
     /**
      * Parse the ajaxCommand, if message is present display the message.
      * status:  success|info|warning|danger
@@ -125,7 +163,8 @@ else if (window.UI.Patterns === undefined)
      * @param ajaxCommand {{status, action, value}}
      * @param blockTarget {selector=} - the block target for "block-ui" command
      */
-    Patterns.parseAjaxCommand = function(ajaxCommand, blockTarget){
+    Patterns.parseAjaxCommand = function(ajaxCommand, blockTarget)
+    {
         if ($.type(ajaxCommand) === 'string'){
             ajaxCommand = Str.parseJson(ajaxCommand, false);
             if (ajaxCommand === false || ajaxCommand.type !== 'ajax-command'){
@@ -216,6 +255,7 @@ else if (window.UI.Patterns === undefined)
 
         return ajaxCommand;
     };
+// endregion
 
     // $, Patterns,             UI,         Str,        Bs,         Fn
 }(jQuery, window.UI.Patterns, window.UI, window.Str, window.UI.Bs, window.Fn));

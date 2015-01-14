@@ -5,8 +5,10 @@ output: D:\Clients\Infitrak\portal-source\infitrak_portal\global_static\global\j
 
 // included but it is not use inside the library
 ext/js-base64/base64.min.js
-jq-ext/jquery-cookie/src/jquery.cookie.js
 ext/json-js/json2.js
+jq-ext/jquery-cookie/src/jquery.cookie.js
+jq-ext/jquery-caret/jquery.caret.js
+
 
 
 arr.js
