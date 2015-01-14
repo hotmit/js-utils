@@ -120,7 +120,7 @@ else if (window.UI.Bs === undefined)
      * @param title {string}
      * @param message {string}
      * @param closed {function=}
-     * @param options {object} - supported options: .fade:bool, .size:string[''|lg|sm], .destroyOnClose:bool(default true)
+     * @param options {object=} - supported options: .fade:bool, .size:string[''|lg|sm], .destroyOnClose:bool(default true)
      */
     Bs.modalMessage = function(title, message, closed, options){
         var $modal = Bs.createModalDom('modal-message-' + (new Date().getTime()), options),

@@ -9,19 +9,67 @@ if (window.Fn === undefined)
 
 (function($, Fn){
 
+    Fn.call = function(func, thisArg, argArray){
+        var args = [].slice.call(arguments).splice(2);
+        return Fn.apply(func, thisArg, args);
+    };
+
     /**
      * Similar to function.apply but it checks for undefined function
      *
      * @param func {?function}
      * @param thisArg {object}
-     * @param arrArray {Array}
+     * @param argArray {Array}
      * @returns {*}
      */
-    Fn.apply = function (func, thisArg, arrArray){
+    Fn.apply = function (func, thisArg, argArray){
         if (func != undefined && $.type(func) === 'function'){
-            return func.apply(thisArg, arrArray);
+            return func.apply(thisArg, argArray);
         }
     };
+
+    /**
+     * Execute a function by name (supports "Obj.sub.runMe")
+     * @param funcName {string} - name of the function (supports "Obj.sub.runMe")
+     * @param context {object} - pass "window" object to gain access to global object's functions
+     * @param argArray {...object}
+     * @returns {*}
+     */
+    Fn.callByName = function(funcName, context, argArray){
+        var args = [].slice.call(arguments).splice(2),
+            namespaces = funcName.split("."),
+            func = namespaces.pop(), i;
+
+        for(i = 0; i < namespaces.length; i++) {
+            context = context[namespaces[i]];
+        }
+        return context[func].apply(context, args);
+    };
+
+    /**
+     * Execute a function by name (supports "Obj.sub.runMe")
+     *
+     * @param funcName {string} - name of the function (supports "Obj.sub.runMe")
+     * @param context {object} - pass "window" object to gain access to global object's functions
+     * @param argArray {Array} - the array of the args
+     * @returns {*}
+     */
+    Fn.applyByName = function(funcName, context, argArray){
+        var namespaces = funcName.split("."),
+            func = namespaces.pop(), i;
+        for(i = 0; i < namespaces.length; i++) {
+            context = context[namespaces[i]];
+        }
+        return context[func].apply(context, argArray);
+    };
+
+
+
+
+
+
+
+
 
     /**
      * Combine multiple functions together to run at once,
@@ -43,5 +91,7 @@ if (window.Fn === undefined)
             }
         }
     };
+
+
 
 }(jQuery, window.Fn));

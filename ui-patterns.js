@@ -20,9 +20,11 @@ else if (window.UI.Patterns === undefined)
      *      process the json
      * 3. if html is return, replace the form with the html provided
      *
+     * Requires: jQuery Form (https://github.com/malsup/form.git)
+     *
      * @param formSelector {selector} - this selector must work on the content of the ajax data as well
      * @param targetSelector {selector} - which element to extract/update when the data is returned from an ajax call.
-     * @param ajaxOptions {object=} - $.ajax(ajaxOptions). If the form has file upload $(form).ajaxForm(ajaxOptions)
+     * @param ajaxOptions {object=} - $(form).ajaxForm(ajaxOptions)
      *                                      If undefined the form target is use
      * @param response {function(data)=} - data can be json or return html.
      *
@@ -31,14 +33,12 @@ else if (window.UI.Patterns === undefined)
      */
     Patterns.submitForm = function(formSelector, targetSelector, ajaxOptions, response, blockOptions){
         var $frm = $(formSelector),
-            $targetParent = $(formSelector).parent(),
-            hasFileUpload = $frm.find("input[type='file']").length,
-            defaultAjaxOptions, ajaxOpts, ajaxFormOpts, userSuccessFunc;
+            defaultAjaxOptions, ajaxFormOpts, userSuccessFunc;
 
-        if (hasFileUpload && !$.fn.hasOwnProperty('ajaxForm')){
+        if (!$.fn.hasOwnProperty('ajaxForm')){
             Bs.modalMessage(
                 Str.gettext('UI.Patterns.submitForm Error'),
-                Str.gettext("The form contains file upload, you'll need jQuery Form (https://github.com/malsup/form.git)."));
+                Str.gettext("This function requires jQuery Form (https://github.com/malsup/form.git)."));
             return;
         }
 
@@ -48,12 +48,12 @@ else if (window.UI.Patterns === undefined)
             var reqInput = $frm.find('requiredField input[type="text"], requiredField input[type="password"], requiredField textarea'),
                 input;
             if (reqInput.length){
-                reqInput.first().focus();
+                reqInput.first().focus().select();
             }
             else {
                 input = $frm.find('input[type="text"], input[type="password"], textarea');
                 if (input.length){
-                    input.first().focus();
+                    input.first().focus().select();
                 }
             }
         }
@@ -64,7 +64,8 @@ else if (window.UI.Patterns === undefined)
          *
          * @param data
          */
-        function parseData(data) {
+        function parseData(data)
+        {
             var newAjaxContent, result = Str.parseJson(data, false),
                 $result;
 
@@ -86,109 +87,87 @@ else if (window.UI.Patterns === undefined)
                 Fn.apply(response, this, [data]);
             }
             else {
-                Patterns.parseMessage(result, targetSelector);
+                Patterns.parseAjaxCommand(result, targetSelector);
                 Fn.apply(response, this, [result]);
             }
         }
 
-        if (hasFileUpload)
-        {
-            userSuccessFunc = ajaxOptions != undefined && ajaxOptions.hasOwnProperty('success') ? ajaxOptions.success : undefined;
-            defaultAjaxOptions = {
-                dataType: 'html',
-                error: function(jqXHR, textStatus, errorThrown){
-                    UI.unblockElement(targetSelector);
-                    Bs.modalMessage(Str.gettext('$.ajaxForm() Error'), errorThrown);
-                }
-            };
+        userSuccessFunc = ajaxOptions != undefined && ajaxOptions.hasOwnProperty('success') ? ajaxOptions.success : undefined;
+        defaultAjaxOptions = {
+            dataType: 'html',
+            error: function(jqXHR, textStatus, errorThrown){
+                UI.unblockElement(targetSelector);
+                Bs.modalMessage(Str.gettext('$.ajaxForm() Error'), errorThrown);
+            }
+        };
 
-            ajaxFormOpts = $.extend({}, defaultAjaxOptions, ajaxOptions, {
-                beforeSubmit: function(){
-                    UI.blockElement(targetSelector, blockOptions);
-                },
-                success: function(data, textStatus, jqXHR){
-                    UI.unblockElement(targetSelector);
-                    parseData(data);
-                    Fn.apply(userSuccessFunc, this, arguments);
-                }
-            });
-
-            $frm.ajaxForm(ajaxFormOpts);
-        } // End hasFileUpload
-        else {
-            $targetParent.on('submit', formSelector, function(){
-                if ($.fn.validate !== undefined && $frm.hasOwnProperty('isValid'))
-                {
-                    if (!$frm.isValid()){
-                        return false;
-                    }
-                }
-
+        ajaxFormOpts = $.extend({}, defaultAjaxOptions, ajaxOptions, {
+            beforeSubmit: function(){
                 UI.blockElement(targetSelector, blockOptions);
+            },
+            success: function(data, textStatus, jqXHR){
+                UI.unblockElement(targetSelector);
+                parseData(data);
+                Fn.apply(userSuccessFunc, this, arguments);
+            }
+        });
 
-                defaultAjaxOptions = {
-                    url: this.action,
-                    method: this.method,
-                    data: $frm.serialize()
-                };
-                ajaxOpts = $.extend({}, defaultAjaxOptions, ajaxOptions);
-
-                $.ajax(ajaxOpts)
-                    .done(function (data, textStatus, jqXHR) {
-                        UI.unblockElement(targetSelector);
-                        parseData(data);
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrown) {
-                        UI.unblockElement(targetSelector);
-                        Bs.modalMessage(Str.gettext('$.ajax() Error'), errorThrown);
-                    });
-
-                return false;
-            });
-         } // End hasFileUpload else
+        $frm.ajaxForm(ajaxFormOpts);
     }; // End submitForm
 
     /**
-     * Parse the jsonCommand, if message is present display the message.
+     * Parse the ajaxCommand, if message is present display the message.
      * status:  success|info|warning|danger
      * action:  display, message, [redirect=url|refresh=true]
      *          refresh
      *          forward, url
      *
-     * @param jsonCommand {{status, action, value}}
+     * @param ajaxCommand {{status, action, value}}
      * @param blockTarget {selector=} - the block target for "block-ui" command
      */
-    Patterns.parseMessage = function(jsonCommand, blockTarget){
-        var action = jsonCommand.hasOwnProperty('action') && jsonCommand.action != undefined
-            ? jsonCommand.action.toLowerCase() : '',
-            method = jsonCommand.method || 'modal',
+    Patterns.parseAjaxCommand = function(ajaxCommand, blockTarget){
+        if ($.type(ajaxCommand) === 'string'){
+            ajaxCommand = Str.parseJson(ajaxCommand, false);
+            if (ajaxCommand === false || ajaxCommand.type !== 'ajax-command'){
+                return false;
+            }
+        }
+
+        var action = ajaxCommand.hasOwnProperty('action') && ajaxCommand.action != undefined
+            ? ajaxCommand.action.toLowerCase() : '',
+            method = ajaxCommand.method || 'bs-dialog',
             defaultBlockUiOptions, blockOptions, dialogOpt;
 
-        function executeDisplayActions(jsonCommand) {
-            if (jsonCommand.refresh || Str.empty(jsonCommand.redirect)) {
+        function executeActions()
+        {
+            if (ajaxCommand.refresh) {
                 window.location.reload(true);
             }
-            else if (!Str.empty(jsonCommand.redirect)) {
-                window.location = jsonCommand.redirect;
+            else if (!Str.empty(ajaxCommand.redirect)) {
+                window.location = ajaxCommand.redirect;
+            }
+            else if (!Str.empty(ajaxCommand.js_function)){
+                Fn.callByName(ajaxCommand.js_function, window, ajaxCommand.data, ajaxCommand);
             }
         }
 
         if (action == 'display') {
-            if (method == 'modal') {
-                Bs.modalMessage(Str.gettext('Message'), jsonCommand.message, function () {
-                    executeDisplayActions(jsonCommand);
+            if (method == 'modal')
+            {
+                Bs.modalMessage(Str.gettext('Message'), ajaxCommand.message, function () {
+                    executeActions();
                 });
             }
             else if (method == 'block-ui')
             {
                 // region [ block-ui display ]
                 defaultBlockUiOptions = {
-                    message: jsonCommand.message || null,
+                    message: ajaxCommand.message || null,
                     overlayCSS: UI.darkOverlayCSS,
                     blockTarget: blockTarget,
                     delay: 400
                 };
-                blockOptions = $.extend({}, defaultBlockUiOptions, jsonCommand.data);
+                blockOptions = $.extend({}, defaultBlockUiOptions, ajaxCommand.data);
                 if (blockOptions.blockTarget) {
                     UI.blockElement(blockOptions.blockTarget, blockOptions);
                 }
@@ -196,42 +175,46 @@ else if (window.UI.Patterns === undefined)
                     UI.blockScreen(blockOptions);
                 }
 
-                if (jsonCommand.redirect || jsonCommand.refresh){
-                    setTimeout(function(){
-                        executeDisplayActions(jsonCommand);
-                    }, blockOptions.delay);
-                }
+                setTimeout(function(){
+                    executeActions();
+
+                    if (!ajaxCommand.redirect && !ajaxCommand.refresh){
+                        if (blockOptions.blockTarget) {
+                            UI.unblockElement(blockOptions.blockTarget);
+                        }
+                        else {
+                            UI.unblockScreen();
+                        }
+                    }
+                }, blockOptions.delay);
                 // endregion
             }
             else if (method == 'bs-dialog')
             {
                 dialogOpt = {
-                    title: jsonCommand.data.title || Str.gettext('Message'),
-                    message: jsonCommand.message,
+                    title: ajaxCommand.data.title || Str.gettext('Message'),
+                    message: ajaxCommand.message,
                     buttons: [{
                         label: Str.gettext('Close'),
+                        cssClass: 'btn-primary',
                         action: function (dialog) {
                             dialog.close();
                         }
                     }],
                     onhidden: function(){
-                        executeDisplayActions(jsonCommand);
+                        executeActions();
                     }
                 };
 
-                dialogOpt = $.extend({}, dialogOpt, jsonCommand.data);
+                dialogOpt = $.extend({}, dialogOpt, ajaxCommand.data);
                 BootstrapDialog.show(dialogOpt);
             }
             else {
-                alert(jsonCommand.message);
+                alert(ajaxCommand.message);
             }
         }
-        else if (action == 'refresh'){
-            window.location.reload(true);
-        }
-        else if (action == 'redirect' && !Str.empty(jsonCommand.url)){
-            window.location = jsonCommand.url;
-        }
+
+        return ajaxCommand;
     };
 
     // $, Patterns,             UI,         Str,        Bs,         Fn
