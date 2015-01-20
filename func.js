@@ -9,6 +9,14 @@ if (window.Fn === undefined)
 
 (function($, Fn){
 
+    /**
+     * Similar to function.call but it checks for undefined function
+     *
+     * @param func {?function} - the function
+     * @param thisArg {object}
+     * @param argArray {..object} - the arguments objects
+     * @returns {*}
+     */
     Fn.call = function(func, thisArg, argArray){
         var args = [].slice.call(arguments).splice(2);
         return Fn.apply(func, thisArg, args);

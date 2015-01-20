@@ -63,6 +63,9 @@ if (window.UI === undefined)
      *                                          Options reference http://malsup.com/jquery/block/#options
      */
     UI.blockElement = function(elm, options){
+        if (elm == undefined){
+            return UI.blockScreen(options);
+        }
         options = prepBlockUIOptions(options);
         return $(elm).block(options);
     };
@@ -73,6 +76,9 @@ if (window.UI === undefined)
      * @returns {*}
      */
     UI.unblockElement = function(elm){
+        if (elm == undefined){
+            return UI.unblockScreen();
+        }
         return $(elm).unblock();
     };
 

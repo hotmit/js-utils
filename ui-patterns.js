@@ -14,6 +14,7 @@ else if (window.UI.Patterns === undefined)
 }
 
 (function($, Patterns, UI, Str, Bs, Fn){
+    // region [ submitForm ]
     /**
      * 1. submit to form.action using ajax
      * 2. if json is return {status, message, action}
@@ -151,8 +152,9 @@ else if (window.UI.Patterns === undefined)
 
         setupFormSubmit();
     }; // End submitForm
+    // endregion
 
-    // region [ parseAjaxCommand ]
+     // region [ parseAjaxCommand ]
     /**
      * Parse the ajaxCommand, if message is present display the message.
      * status:  success|info|warning|danger
@@ -204,7 +206,7 @@ else if (window.UI.Patterns === undefined)
                     message: ajaxCommand.message || null,
                     overlayCSS: UI.darkOverlayCSS,
                     blockTarget: blockTarget,
-                    delay: 400
+                    delay: 1000
                 };
                 blockOptions = $.extend({}, defaultBlockUiOptions, ajaxCommand.data);
                 if (blockOptions.blockTarget) {
@@ -254,8 +256,114 @@ else if (window.UI.Patterns === undefined)
         }
 
         return ajaxCommand;
-    };
-// endregion
+    }; // End parseAjaxCommand
+    // endregion
+
+    // region [ bsDialogAjax ]
+    /**
+     * Display the dialog and fetch the content using an ajax call.
+     *
+     * @param title {string} - dialog title
+     * @param ajaxOpts {string|object} - url or $.ajax(ajaxOpts)
+     * @param dialogOptions {object=} -  BootstrapDialog.show(dialogOptions) title, message, shown and hidden will be overridden/ignore.
+     * @param shown {function=} - function(thisArg:dialogRef, data)
+     * @param hidden {function=} - function(thisArg:dialogRef)
+     */
+    Patterns.bsDialogAjax = function(title, ajaxOpts, dialogOptions, shown, hidden){
+        if (window.BootstrapDialog == undefined){
+            alert('This function required Bootstrap Dialog plugin (https://github.com/nakupanda/bootstrap3-dialog).');
+            return;
+        }
+
+        var $modalDialog, defaultOptions, options;
+
+        defaultOptions = {
+            title: title,
+            message: Str.gettext('Loading, please wait ... '),
+            onshown: function(dialogRef){
+                var uiBlockTmr;
+                $modalDialog = dialogRef.getModalDialog();
+
+                uiBlockTmr = setTimeout(function(){
+                    UI.blockElement($modalDialog);
+                }, 300);
+
+                function unblockWaitingScreen() {
+                    clearTimeout(uiBlockTmr);
+                    UI.unblockElement($modalDialog);
+                }
+
+                $.ajax(ajaxOpts)
+                    .done(function(data, textStatus, jqXHR){
+                        var result = Str.parseJson(data, false);
+                        // html returned from ajax call
+                        if (result === false) {
+                            $modalDialog.find('.modal-body').empty().append(data);
+
+                            Fn.apply(shown, dialogRef, [data]);
+                            unblockWaitingScreen();
+                        }
+                        else {
+                            unblockWaitingScreen();
+                            dialogRef.close();
+                            UI.Patterns.parseAjaxCommand(result);
+                        }
+                    }).fail(function(jqXHR, textStatus, errorThrown){
+                        unblockWaitingScreen();
+                        $modalDialog.find('.modal-body').empty().append(
+                            Str.format('<span class="error"><strong>{0}</strong>: {1}</span>', Str.gettext('Error'), Str.gettext(errorThrown))
+                        );
+                    });
+            },
+            onhidden: function(dialogRef){
+                Fn.apply(hidden, dialogRef);
+            }
+        };
+
+        options = $.extend({}, dialogOptions, defaultOptions);
+
+        BootstrapDialog.show(options);
+    }; // End bsDialogAjax
+    // endregion
+
+    // region [ submitAjaxCommand ]
+    /**
+     * Submit a ajax command
+     *
+     * @param ajaxOpts {string|object} - url or $.ajax(ajaxOpts)
+     * @param blockTarget {?jQuery|HTMLElement|id=} - use BlockUI to block the target
+     *                                                  while waiting for the ajax response.
+     */
+    Patterns.submitAjaxCommand = function(ajaxOpts, blockTarget){
+        var uiBlockTmr = setTimeout(function(){
+            UI.blockElement(blockTarget);
+        }, 300);
+
+        function unblockWaitingScreen() {
+            clearTimeout(uiBlockTmr);
+            UI.unblockElement(blockTarget);
+        }
+
+        $.ajax(ajaxOpts)
+            .done(function(data, textStatus, jqXHR){
+                var ajaxCommand = Str.parseJson(data, false);
+                if (ajaxCommand != false) {
+                    unblockWaitingScreen();
+                    UI.Patterns.parseAjaxCommand(ajaxCommand);
+                }
+                else {
+                    unblockWaitingScreen();
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown){
+                unblockWaitingScreen();
+
+                BootstrapDialog.show({
+                    title: Str.gettext('Error'),
+                    message: Str.gettext(errorThrown)
+                });
+            });
+    } ;
+    // endregion
 
     // $, Patterns,             UI,         Str,        Bs,         Fn
 }(jQuery, window.UI.Patterns, window.UI, window.Str, window.UI.Bs, window.Fn));
