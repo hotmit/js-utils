@@ -15,6 +15,7 @@ arr.js
 bootstrap-ext.js
 date.js
 func.js
+slct.js
 str-standalone.js
 str-ext.js
 type.js
