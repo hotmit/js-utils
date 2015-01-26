@@ -1,4 +1,4 @@
-/*global jQuery, Str, Arr, Fn, Ui */
+/*global jQuery, Str, Arr, Fn, Ui, gettext */
 
 // REQ: ui-patterns.js, func.js
 
@@ -96,9 +96,9 @@ else if (window.UI.Bs === undefined)
                         '</div>');
 
                     errorMsg = Str.format(errorMsg,
-                        Str.gettext('Error'),
-                        Str.gettext(errorThrown),
-                        Str.gettext('Close')
+                        gettext('Error'),
+                        gettext(errorThrown),
+                        gettext('Close')
                     );
 
                     $modal.find('.modal-content').html(errorMsg);
@@ -138,7 +138,7 @@ else if (window.UI.Bs === undefined)
             modalBody = Str.format(modalBody,
                 title,
                 message,
-                Str.gettext('Close')
+                gettext('Close')
             );
 
             $modal.find('.modal-content').html(modalBody);

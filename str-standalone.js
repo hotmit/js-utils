@@ -2,6 +2,16 @@
 
 // STANDALONE
 
+// gettext place holder
+if (window.gettext === undefined){
+    window.gettext = function(s){
+        if (s == undefined){
+            return '';
+        }
+        return s;
+    };
+}
+
 if (window.Str === undefined)
 {
     window.Str = {};
@@ -383,18 +393,6 @@ if (window.Str === undefined)
 	};
 
 	/**
-	 * Django gettext function place holder. If use gettext if exist else return as is.
-	 * @param s {string}
-	 * @returns {string}
-	 */
-	Str.gettext = function(s){
-		if (window.gettext){
-			return window.gettext(s);
-		}
-		return s;
-	};
-
-	/**
 	 * Try to parse the json, if valid return the object else return defaultValue
 	 *
 	 * @param s {string} - json string
@@ -414,5 +412,14 @@ if (window.Str === undefined)
 			return defaultValue;
 		}
 	};
+
+    /**
+     * Escape the attribute, make sure it doesn't break the attribute select or to be use a an attribute.
+     * @param s {string} - the string
+     */
+    Str.escapeAttribute = function (s){
+        return s.replace(/"/g, '\\"');
+    };
+
 
 }(jQuery, window.Str));

@@ -14,7 +14,7 @@ if (window.Fn === undefined)
      *
      * @param func {?function} - the function
      * @param thisArg {object}
-     * @param argArray {..object} - the arguments objects
+     * @param argArray {..object=} - the arguments objects
      * @returns {*}
      */
     Fn.call = function(func, thisArg, argArray){
@@ -27,7 +27,7 @@ if (window.Fn === undefined)
      *
      * @param func {?function}
      * @param thisArg {object}
-     * @param argArray {Array}
+     * @param argArray {Array=}
      * @returns {*}
      */
     Fn.apply = function (func, thisArg, argArray){
@@ -40,7 +40,7 @@ if (window.Fn === undefined)
      * Execute a function by name (supports "Obj.sub.runMe")
      * @param funcName {string} - name of the function (supports "Obj.sub.runMe")
      * @param context {object} - pass "window" object to gain access to global object's functions
-     * @param argArray {...object}
+     * @param argArray {...object=}
      * @returns {*}
      */
     Fn.callByName = function(funcName, context, argArray){
@@ -59,7 +59,7 @@ if (window.Fn === undefined)
      *
      * @param funcName {string} - name of the function (supports "Obj.sub.runMe")
      * @param context {object} - pass "window" object to gain access to global object's functions
-     * @param argArray {Array} - the array of the args
+     * @param argArray {Array=} - the array of the args
      * @returns {*}
      */
     Fn.applyByName = function(funcName, context, argArray){
@@ -84,7 +84,7 @@ if (window.Fn === undefined)
      * all functions must have the same parameters.
      *
      * @param thisArg {object}
-     * @param arrArray {Array} - pass the arguments of the previous function
+     * @param arrArray {Array=} - pass the arguments of the previous function
      * @param args {Array<function>}
      */
     Fn.chain = function(thisArg, arrArray, args){

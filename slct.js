@@ -25,25 +25,64 @@ if (window.Slct === undefined) {
         return result;
     };
 
+    // region [ _createOptions ]
     /**
-     * Add options to select element.
-     *
-     * @param selectElement {id|HTMLElement|jQuery} - the select element
-     * @param options {Array} - [ { value: "value", name: "display text", selected: "optional bool" }, ...}
+     * Convert json into jQuery options.
+     * @param options
+     * @returns {jQuery}
+     * @private
      */
-    Slct.addOptions = function(selectElement, options){
-        var $se = $(selectElement);
+    function _createOptions(options){
+        var $options = $('<select multiple="multiple"></select>');
 
         $.each(options, function(index, opt){
-            var $newOpt = $('<option></option>')
+            var $optGroup, $newOpt;
+            if (opt.hasOwnProperty('optGroup')){
+                $optGroup = $('<optgroup></optgroup>')
+                    .attr('label', opt.label);
+
+                if (opt.id != undefined){
+                    $optGroup.attr('id', opt.id);
+                }
+
+                if (opt.options != undefined && opt.options.length){
+                    $optGroup.append(_createOptions(opt.options));
+                }
+
+                $options.append($optGroup);
+                return;
+            }
+
+            $newOpt = $('<option></option>')
                     .attr('value', opt.value)
                     .text(opt.name);
+
+            if (opt.id != undefined){
+                $newOpt.attr('id', opt.id);
+            }
+
             if (opt.selected === true){
                 $newOpt.attr('selected', 'selected');
             }
 
-            $se.append($newOpt);
+            $options.append($newOpt);
         });
+
+        return $options.children();
+    }
+    // endregion
+
+    /**
+     * Add options to select element.
+     *
+     * @param selectElement {id|HTMLElement|jQuery} - the select element
+     * @param options {Array} - [ { value: "value", name: "display text", selected: "optional bool" }, ...,
+     *                            { optGroup: true, label: "optGroup label", id: "optional id", options: []}}
+     */
+    Slct.addOptions = function(selectElement, options){
+        var $selectElement = $(selectElement),
+            $options = _createOptions(options);
+        $selectElement.append($options);
     };
 
     /**

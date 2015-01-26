@@ -1,6 +1,6 @@
-/*global jQuery, Str, Bs, Fn, BootstrapDialog */
+/*global jQuery, Str, Bs, Fn, BootstrapDialog, gettext, Slct, Arr */
 
-// REQ: str-standalone.js, bootstrap-ext.js, func.js
+// REQ: str-standalone.js, bootstrap-ext.js, func.js, slct.js, arr.js
 
 if (window.UI === undefined)
 {
@@ -38,8 +38,8 @@ else if (window.UI.Patterns === undefined)
 
         if (!$.fn.hasOwnProperty('ajaxForm')){
             Bs.modalMessage(
-                Str.gettext('UI.Patterns.submitForm Error'),
-                Str.gettext("This function requires jQuery Form (https://github.com/malsup/form.git)."));
+                gettext('UI.Patterns.submitForm Error'),
+                gettext("This function requires jQuery Form (https://github.com/malsup/form.git)."));
             return;
         }
 
@@ -135,7 +135,7 @@ else if (window.UI.Patterns === undefined)
             dataType: 'html',
             error: function(jqXHR, textStatus, errorThrown){
                 UI.unblockElement(targetSelector);
-                Bs.modalMessage(Str.gettext('$.ajaxForm() Error'), errorThrown);
+                Bs.modalMessage(gettext('$.ajaxForm() Error'), errorThrown);
             }
         };
 
@@ -154,7 +154,7 @@ else if (window.UI.Patterns === undefined)
     }; // End submitForm
     // endregion
 
-     // region [ parseAjaxCommand ]
+    // region [ parseAjaxCommand ]
     /**
      * Parse the ajaxCommand, if message is present display the message.
      * status:  success|info|warning|danger
@@ -195,7 +195,7 @@ else if (window.UI.Patterns === undefined)
         if (action == 'display') {
             if (method == 'modal')
             {
-                Bs.modalMessage(Str.gettext('Message'), ajaxCommand.message, function () {
+                Bs.modalMessage(gettext('Message'), ajaxCommand.message, function () {
                     executeActions();
                 });
             }
@@ -233,10 +233,10 @@ else if (window.UI.Patterns === undefined)
             else if (method == 'bs-dialog')
             {
                 dialogOpt = {
-                    title: ajaxCommand.data.title || Str.gettext('Message'),
+                    title: ajaxCommand.data.title || gettext('Message'),
                     message: ajaxCommand.message,
                     buttons: [{
-                        label: Str.gettext('Close'),
+                        label: gettext('Close'),
                         cssClass: 'btn-primary',
                         action: function (dialog) {
                             dialog.close();
@@ -279,7 +279,7 @@ else if (window.UI.Patterns === undefined)
 
         defaultOptions = {
             title: title,
-            message: Str.gettext('Loading, please wait ... '),
+            message: gettext('Loading, please wait ... '),
             onshown: function(dialogRef){
                 var uiBlockTmr;
                 $modalDialog = dialogRef.getModalDialog();
@@ -310,8 +310,9 @@ else if (window.UI.Patterns === undefined)
                         }
                     }).fail(function(jqXHR, textStatus, errorThrown){
                         unblockWaitingScreen();
+                        errorThrown = gettext(errorThrown) || gettext('Error occurred while retrieving the form.');
                         $modalDialog.find('.modal-body').empty().append(
-                            Str.format('<span class="error"><strong>{0}</strong>: {1}</span>', Str.gettext('Error'), Str.gettext(errorThrown))
+                            Str.format('<span class="error">{0}</span>', errorThrown)
                         );
                     });
             },
@@ -358,11 +359,83 @@ else if (window.UI.Patterns === undefined)
                 unblockWaitingScreen();
 
                 BootstrapDialog.show({
-                    title: Str.gettext('Error'),
-                    message: Str.gettext(errorThrown)
+                    title: gettext('Error'),
+                    message: gettext(errorThrown)
                 });
             });
     } ;
+    // endregion
+
+    // region [ selectAjaxFilter ]
+    /**
+     *
+     * @param srcSelect
+     * @param targetSelect
+     * @param ajaxOpts {string|object} - url or $.ajax(ajaxOpts),
+     *                                      the data will be overridden with the selected items.
+     *                                      data: { selected: [] }
+     * @param noCache {bool} - do not cache the result
+     */
+    Patterns.selectAjaxFilter = function(srcSelect, targetSelect, ajaxOpts, noCache){
+        var $srcSelect = $(srcSelect),
+            $targetSelect = $(targetSelect),
+            cache = {};
+
+        ajaxOpts = $.type(ajaxOpts) === 'string' ? {url: ajaxOpts} : ajaxOpts;
+
+        $srcSelect.on('change', function(){
+            var selectedValues = Slct.getSelectedValues($srcSelect),
+                errorMessage = gettext('Error occurred while receiving data from the server.'),
+                opt = {
+                    data: {
+                        src_name: $srcSelect.attr('name'),
+                        selected: selectedValues,
+                        target_name: $targetSelect.attr('name')
+                    }
+                },
+                token = $.cookie('csrftoken'),
+                cacheKey = Arr.implode(selectedValues, '|');
+
+            opt = $.extend({}, ajaxOpts, opt);
+            if (token != undefined && opt.data.csrfmiddlewaretoken == undefined){
+                opt.data.csrfmiddlewaretoken = token;
+            }
+
+            function loadOptions(options) {
+                $targetSelect.empty();
+                Slct.addOptions($targetSelect, options);
+            }
+
+
+            if (!noCache && cache.hasOwnProperty(cacheKey))
+            {
+                loadOptions(cache[cacheKey]);
+                return;
+            }
+
+            $.ajax(opt)
+                .done(function(data, textStatus, jqXHR){
+                    var options = Str.parseJson(data, false);
+                    if (options !== false){
+                        cache[cacheKey] = options;
+                        loadOptions(options);
+                    }
+                    else {
+                        BootstrapDialog.alert(errorMessage);
+                    }
+
+                }).fail(function(jqXHR, textStatus, errorThrown){
+                    BootstrapDialog.show({
+                        title: errorThrown,
+                        message: errorMessage
+                    });
+                });
+        });
+
+        if ($srcSelect.val()){
+            $srcSelect.change();
+        }
+    };
     // endregion
 
     // $, Patterns,             UI,         Str,        Bs,         Fn
