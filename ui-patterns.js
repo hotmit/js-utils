@@ -277,7 +277,7 @@ else if (window.UI.Patterns === undefined)
                 uiBlockTmr = UI.delayBlock(300, $modalDialog);
 
                 function unblockWaitingScreen() {
-                    UI.delayUnblock($modalDialog, uiBlockTmr);
+                    UI.delayUnblock(uiBlockTmr, $modalDialog);
                 }
 
                 $.ajax(ajaxOpts)
@@ -327,7 +327,7 @@ else if (window.UI.Patterns === undefined)
         var uiBlockTmr = UI.delayBlock(300, blockTarget);
 
         function unblockWaitingScreen() {
-            UI.delayBlock(uiBlockTmr, blockTarget);
+            UI.delayUnblock(uiBlockTmr, blockTarget);
         }
 
         $.ajax(ajaxOpts)
