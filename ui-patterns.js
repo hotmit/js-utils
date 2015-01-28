@@ -135,7 +135,15 @@ else if (window.UI.Patterns === undefined)
             dataType: 'html',
             error: function(jqXHR, textStatus, errorThrown){
                 UI.unblockElement(targetSelector);
-                Bs.modalMessage(gettext('$.ajaxForm() Error'), errorThrown);
+                if (window.BootstrapDialog == undefined) {
+                    Bs.modalMessage(gettext('$.ajaxForm() Error'), errorThrown);
+                }
+                else {
+                    BootstrapDialog.show({
+                        title: gettext('$.ajaxForm() Error'),
+                        message: errorThrown || gettext('Error occurred while retreiving the form.')
+                    });
+                }
             }
         };
 
@@ -367,6 +375,8 @@ else if (window.UI.Patterns === undefined)
     // endregion
 
     // region [ selectAjaxFilter ]
+    var cache_selectAjaxFilter = {};
+
     /**
      *
      * @param srcSelect
@@ -374,12 +384,13 @@ else if (window.UI.Patterns === undefined)
      * @param ajaxOpts {string|object} - url or $.ajax(ajaxOpts),
      *                                      the data will be overridden with the selected items.
      *                                      data: { selected: [] }
+     * @param targetUpdated {function} - function(thisArg:targetElement, $targetElement)
+ *                                          called after the target select box is updated.
      * @param noCache {bool} - do not cache the result
      */
-    Patterns.selectAjaxFilter = function(srcSelect, targetSelect, ajaxOpts, noCache){
+    Patterns.selectAjaxFilter = function(srcSelect, targetSelect, ajaxOpts, targetUpdated, noCache){
         var $srcSelect = $(srcSelect),
-            $targetSelect = $(targetSelect),
-            cache = {};
+            $targetSelect = $(targetSelect);
 
         ajaxOpts = $.type(ajaxOpts) === 'string' ? {url: ajaxOpts} : ajaxOpts;
 
@@ -394,7 +405,7 @@ else if (window.UI.Patterns === undefined)
                     }
                 },
                 token = $.cookie('csrftoken'),
-                cacheKey = Arr.implode(selectedValues, '|');
+                cacheKey = $srcSelect.attr('name') + '_' + Arr.implode(selectedValues, '|');
 
             opt = $.extend({}, ajaxOpts, opt);
             if (token != undefined && opt.data.csrfmiddlewaretoken == undefined){
@@ -404,12 +415,13 @@ else if (window.UI.Patterns === undefined)
             function loadOptions(options) {
                 $targetSelect.empty();
                 Slct.addOptions($targetSelect, options);
+
+                Fn.apply(targetUpdated, $targetSelect.get(0), [$targetSelect]);
             }
 
-
-            if (!noCache && cache.hasOwnProperty(cacheKey))
+            if (!noCache && cache_selectAjaxFilter.hasOwnProperty(cacheKey))
             {
-                loadOptions(cache[cacheKey]);
+                loadOptions(cache_selectAjaxFilter[cacheKey]);
                 return;
             }
 
@@ -417,7 +429,7 @@ else if (window.UI.Patterns === undefined)
                 .done(function(data, textStatus, jqXHR){
                     var options = Str.parseJson(data, false);
                     if (options !== false){
-                        cache[cacheKey] = options;
+                        cache_selectAjaxFilter[cacheKey] = options;
                         loadOptions(options);
                     }
                     else {
@@ -432,7 +444,7 @@ else if (window.UI.Patterns === undefined)
                 });
         });
 
-        if ($srcSelect.val()){
+        if (!Slct.getSelectedValues($targetSelect).length){
             $srcSelect.change();
         }
     };
