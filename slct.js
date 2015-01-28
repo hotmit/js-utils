@@ -11,7 +11,7 @@ if (window.Slct === undefined) {
     /**
      * Get the selected value of a select element.
      *
-     * @param selectElement {id|HTMLElement|jQuery} - the select element
+     * @param selectElement {id|HTMLElement|jQuery} - the select box element
      * @returns {Array} - return [] if no selected options is found.
      */
     Slct.getSelectedValues = function(selectElement){
@@ -75,7 +75,7 @@ if (window.Slct === undefined) {
     /**
      * Add options to select element.
      *
-     * @param selectElement {id|HTMLElement|jQuery} - the select element
+     * @param selectElement {id|HTMLElement|jQuery} - the select box element
      * @param options {Array} - [ { value: "value", name: "display text", selected: "optional bool" }, ...,
      *                            { optGroup: true, label: "optGroup label", id: "optional id", options: []}}
      */
@@ -88,7 +88,7 @@ if (window.Slct === undefined) {
     /**
      * Remove the option based on its value.
      *
-     * @param selectElement {id|HTMLElement|jQuery} - the select element
+     * @param selectElement {id|HTMLElement|jQuery} - the select box element
      * @param value {object} - the value of the option you want to remove.
      */
     Slct.removeByValue = function(selectElement, value){
@@ -98,7 +98,7 @@ if (window.Slct === undefined) {
     /**
      * Remove option based on the display text.
      *
-     * @param selectElement {id|HTMLElement|jQuery} - the select element
+     * @param selectElement {id|HTMLElement|jQuery} - the select box element
      * @param text {string} - the text of the option you want to remove.
      */
     Slct.removeByText = function(selectElement, text){
@@ -108,6 +108,16 @@ if (window.Slct === undefined) {
                 $option.remove();
             }
         });
+    };
+
+    /**
+     * Check to see if the select box has any options.
+     *
+     * @param selectElement {id|HTMLElement|jQuery} - the select box element
+     * @returns {boolean}
+     */
+    Slct.isEmpty = function(selectElement){
+        return !$(selectElement).find('option').length;
     };
 
 }(jQuery, window.Slct));
