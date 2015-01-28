@@ -27,11 +27,17 @@ if (window.Fn === undefined)
      *
      * @param func {?function}
      * @param thisArg {object}
-     * @param argArray {Array=}
+     * @param argArray {?object|Array=}
      * @returns {*}
      */
     Fn.apply = function (func, thisArg, argArray){
         if (func != undefined && $.type(func) === 'function'){
+            if (argArray == undefined){
+                argArray = [];
+            }
+            else if ($.type(argArray) != 'array'){
+                argArray = [argArray];
+            }
             return func.apply(thisArg, argArray);
         }
     };

@@ -2,18 +2,18 @@
 
 // STANDALONE
 
-if (window.Tp === undefined)
+if (window.Typ === undefined)
 {
-    window.Tp = {};
+    window.Typ = {};
 }
 
-(function($, Tp){
+(function($, Typ){
     /**
      * Is jQuery object
      * @param o
      * @returns {boolean}
      */
-	Tp.isJquery = function(o){
+	Typ.isJquery = function(o){
 		return o instanceof jQuery;
 	};
 
@@ -22,7 +22,7 @@ if (window.Tp === undefined)
      * @param o
      * @returns {boolean}
      */
-	Tp.isObj = function(o){
+	Typ.isObj = function(o){
 		return $.type(o) === 'object';
 	};
 
@@ -31,7 +31,7 @@ if (window.Tp === undefined)
      * @param o
      * @returns {boolean}
      */
-	Tp.isStr = function(o){
+	Typ.isStr = function(o){
 		return $.type(o) === 'string';
 	};
 
@@ -40,7 +40,7 @@ if (window.Tp === undefined)
      * @param o
      * @returns {boolean}
      */
-	Tp.isFunc = function(o){
+	Typ.isFunc = function(o){
 		return $.type(o) === 'function';
 	};
 
@@ -49,7 +49,7 @@ if (window.Tp === undefined)
      * @param o
      * @returns {boolean}
      */
-	Tp.isRegex = function(o){
+	Typ.isRegex = function(o){
 		return $.type(o) === 'regexp';
 	};
 
@@ -58,7 +58,7 @@ if (window.Tp === undefined)
      * @param o
      * @returns {boolean}
      */
-	Tp.isNumber = function(o){
+	Typ.isNumber = function(o){
 		return $.type(o) === 'number';
 	};
 
@@ -67,8 +67,8 @@ if (window.Tp === undefined)
      * @param o
      * @returns {boolean}
      */
-	Tp.isInt = function(o){
-		return Tp.isNumber(o) && o%1 === 0;
+	Typ.isInt = function(o){
+		return Typ.isNumber(o) && o%1 === 0;
 	};
 
     /**
@@ -76,8 +76,8 @@ if (window.Tp === undefined)
      * @param o
      * @returns {boolean}
      */
-	Tp.isFloat = function(o){
-		return Tp.isNumber(o) && !Tp.isInt(o);
+	Typ.isFloat = function(o){
+		return Typ.isNumber(o) && !Typ.isInt(o);
 	};
 
     /**
@@ -85,7 +85,7 @@ if (window.Tp === undefined)
      * @param o
      * @returns {boolean}
      */
-	Tp.isDate = function(o){
+	Typ.isDate = function(o){
 		return $.type(o) === 'date';
 	};
 
@@ -94,7 +94,7 @@ if (window.Tp === undefined)
      * @param o
      * @returns {boolean}
      */
-	Tp.isBool = function(o){
+	Typ.isBool = function(o){
 		return $.type(o) === 'boolean';
 	};
 
@@ -103,7 +103,7 @@ if (window.Tp === undefined)
      * @param o
      * @returns {boolean}
      */
-	Tp.isArray = function(o){
+	Typ.isArray = function(o){
 		return $.type(o) == 'array';
 	};
 
@@ -112,7 +112,7 @@ if (window.Tp === undefined)
      * @param o
      * @returns {boolean}
      */
-    Tp.isNode = function(o){
+    Typ.isNode = function(o){
         return typeof Node === "object" ? o instanceof Node :
             o && typeof o === "object" && typeof o.nodeType === "number" && typeof o.nodeName === "string";
     };
@@ -122,9 +122,19 @@ if (window.Tp === undefined)
      * @param o
      * @returns {boolean}
      */
-    Tp.isElement = function(o){
+    Typ.isElement = function(o){
         return typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
             o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string";
     };
+
+    /**
+     * Check see if the object is the ajax command object.
+     *
+     * @param o
+     * @returns {boolean}
+     */
+    Typ.isAjaxCommand = function(o){
+        return !!(o != undefined && !Typ.isString(o) && o.isAjaxCommand);
+    };
 	
-}(jQuery, window.Tp));
+}(jQuery, window.Typ));

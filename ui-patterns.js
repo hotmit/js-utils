@@ -1,6 +1,6 @@
-/*global jQuery, Str, Bs, Fn, BootstrapDialog, gettext, Slct, Arr */
+/*global jQuery, Str, Bs, Fn, BootstrapDialog, gettext, Slct, Arr, Typ */
 
-// REQ: str-standalone.js, bootstrap-ext.js, func.js, slct.js, arr.js
+// REQ: str-standalone.js, bootstrap-ext.js, func.js, slct.js, arr.js, type.js
 
 if (window.UI === undefined)
 {
@@ -37,9 +37,10 @@ else if (window.UI.Patterns === undefined)
             defaultAjaxOptions, ajaxFormOpts, userSuccessFunc;
 
         if (!$.fn.hasOwnProperty('ajaxForm')){
-            Bs.modalMessage(
-                gettext('UI.Patterns.submitForm Error'),
-                gettext("This function requires jQuery Form (https://github.com/malsup/form.git)."));
+            BootstrapDialog.show({
+                title: gettext('UI.Patterns.submitForm Error'),
+                message: gettext("This function requires jQuery Form (https://github.com/malsup/form.git).")
+            });
             return;
         }
 
@@ -130,29 +131,25 @@ else if (window.UI.Patterns === undefined)
             }
         }
 
-        userSuccessFunc = ajaxOptions != undefined && ajaxOptions.hasOwnProperty('success') ? ajaxOptions.success : undefined;
+        userSuccessFunc = ajaxOptions != undefined && ajaxOptions.hasOwnProperty('success')
+                            ? ajaxOptions.success : undefined;
         defaultAjaxOptions = {
             dataType: 'html',
             error: function(jqXHR, textStatus, errorThrown){
-                UI.unblockElement(targetSelector);
-                if (window.BootstrapDialog == undefined) {
-                    Bs.modalMessage(gettext('$.ajaxForm() Error'), errorThrown);
-                }
-                else {
-                    BootstrapDialog.show({
-                        title: gettext('$.ajaxForm() Error'),
-                        message: errorThrown || gettext('Error occurred while retreiving the form.')
-                    });
-                }
+                UI.unblock(targetSelector);
+                BootstrapDialog.show({
+                    title: gettext('$.ajaxForm() Error'),
+                    message: errorThrown || gettext('Error occurred while retreiving the form.')
+                });
             }
         };
 
         ajaxFormOpts = $.extend({}, defaultAjaxOptions, ajaxOptions, {
             beforeSubmit: function(){
-                UI.blockElement(targetSelector, blockOptions);
+                UI.block(targetSelector, blockOptions);
             },
             success: function(data, textStatus, jqXHR){
-                UI.unblockElement(targetSelector);
+                UI.unblock(targetSelector);
                 parseData(data);
                 Fn.apply(userSuccessFunc, this, arguments);
             }
@@ -177,14 +174,12 @@ else if (window.UI.Patterns === undefined)
     {
         if ($.type(ajaxCommand) === 'string'){
             ajaxCommand = Str.parseJson(ajaxCommand, false);
-            if (ajaxCommand === false || ajaxCommand.type !== 'ajax-command'){
+            if (!Typ.isAjaxCommand(ajaxCommand)){
                 return false;
             }
         }
 
-        var action = ajaxCommand.hasOwnProperty('action') && ajaxCommand.action != undefined
-            ? ajaxCommand.action.toLowerCase() : '',
-            method = ajaxCommand.method || 'bs-dialog',
+        var method = ajaxCommand.method || 'bs-dialog',
             defaultBlockUiOptions, blockOptions, dialogOpt;
 
         function executeActions()
@@ -195,72 +190,58 @@ else if (window.UI.Patterns === undefined)
             else if (!Str.empty(ajaxCommand.redirect)) {
                 window.location = ajaxCommand.redirect;
             }
-            else if (!Str.empty(ajaxCommand.js_function)){
-                Fn.callByName(ajaxCommand.js_function, window, ajaxCommand.data, ajaxCommand);
+            else if (!Str.empty(ajaxCommand.callback)){
+                Fn.callByName(ajaxCommand.callback, window, ajaxCommand.data, ajaxCommand);
             }
         }
 
-        if (action == 'display') {
-            if (method == 'modal')
-            {
-                Bs.modalMessage(gettext('Message'), ajaxCommand.message, function () {
-                    executeActions();
-                });
-            }
-            else if (method == 'block-ui')
-            {
-                // region [ block-ui display ]
-                defaultBlockUiOptions = {
-                    message: ajaxCommand.message || null,
-                    overlayCSS: UI.darkOverlayCSS,
-                    blockTarget: blockTarget,
-                    delay: 1000
-                };
-                blockOptions = $.extend({}, defaultBlockUiOptions, ajaxCommand.data);
-                if (blockOptions.blockTarget) {
-                    UI.blockElement(blockOptions.blockTarget, blockOptions);
-                }
-                else {
-                    UI.blockScreen(blockOptions);
-                }
-
-                setTimeout(function(){
-                    executeActions();
-
-                    if (!ajaxCommand.redirect && !ajaxCommand.refresh){
-                        if (blockOptions.blockTarget) {
-                            UI.unblockElement(blockOptions.blockTarget);
-                        }
-                        else {
-                            UI.unblockScreen();
-                        }
-                    }
-                }, blockOptions.delay);
-                // endregion
-            }
-            else if (method == 'bs-dialog')
-            {
-                dialogOpt = {
-                    title: ajaxCommand.data.title || gettext('Message'),
-                    message: ajaxCommand.message,
-                    buttons: [{
-                        label: gettext('Close'),
-                        cssClass: 'btn-primary',
-                        action: function (dialog) {
-                            dialog.close();
-                        }
-                    }],
-                    onhidden: function(){
-                        executeActions();
-                    }
-                };
-
-                dialogOpt = $.extend({}, dialogOpt, ajaxCommand.data);
-                BootstrapDialog.show(dialogOpt);
+        if (method == 'block-ui')
+        {
+            // region [ block-ui display ]
+            defaultBlockUiOptions = {
+                message: ajaxCommand.message || null,
+                blockTarget: blockTarget,
+                delay: 1000
+            };
+            blockOptions = $.extend({}, defaultBlockUiOptions, ajaxCommand.data);
+            if (blockOptions.blockTarget) {
+                UI.block(blockOptions.blockTarget, blockOptions);
             }
             else {
-                alert(ajaxCommand.message);
+                UI.blockScreen(blockOptions);
             }
+
+            setTimeout(function(){
+                executeActions();
+
+                if (!ajaxCommand.redirect && !ajaxCommand.refresh){
+                    UI.unblock(blockOptions.blockTarget);
+                }
+            }, blockOptions.delay);
+            // endregion
+        }
+        else if (method == 'bs-dialog')
+        {
+            dialogOpt = {
+                title: ajaxCommand.data.title || gettext('Message'),
+                message: ajaxCommand.message,
+                buttons: [{
+                    label: gettext('Close'),
+                    cssClass: 'btn-primary',
+                    action: function (dialog) {
+                        dialog.close();
+                    }
+                }],
+                onhidden: function(){
+                    executeActions();
+                }
+            };
+
+            dialogOpt = $.extend({}, dialogOpt, ajaxCommand.data);
+            BootstrapDialog.show(dialogOpt);
+        }
+        else {
+            alert(ajaxCommand.message);
         }
 
         return ajaxCommand;
@@ -279,26 +260,24 @@ else if (window.UI.Patterns === undefined)
      */
     Patterns.bsDialogAjax = function(title, ajaxOpts, dialogOptions, shown, hidden){
         if (window.BootstrapDialog == undefined){
-            alert('This function required Bootstrap Dialog plugin (https://github.com/nakupanda/bootstrap3-dialog).');
+            BootstrapDialog.show({
+                title: gettext('Missing Plugin'),
+                message: 'This function required <a href="https://github.com/nakupanda/bootstrap3-dialog">Bootstrap Dialog plugin</a>.'
+            });
             return;
         }
 
-        var $modalDialog, defaultOptions, options;
+        var defaultOptions, options;
 
         defaultOptions = {
             title: title,
             message: gettext('Loading, please wait ... '),
-            onshown: function(dialogRef){
-                var uiBlockTmr;
-                $modalDialog = dialogRef.getModalDialog();
-
-                uiBlockTmr = setTimeout(function(){
-                    UI.blockElement($modalDialog);
-                }, 300);
+            onshown: function($dialogRef){
+                var uiBlockTmr, $modalDialog = $dialogRef.getModalDialog();
+                uiBlockTmr = UI.delayBlock(300, $modalDialog);
 
                 function unblockWaitingScreen() {
-                    clearTimeout(uiBlockTmr);
-                    UI.unblockElement($modalDialog);
+                    UI.delayUnblock($modalDialog, uiBlockTmr);
                 }
 
                 $.ajax(ajaxOpts)
@@ -308,13 +287,13 @@ else if (window.UI.Patterns === undefined)
                         if (result === false) {
                             $modalDialog.find('.modal-body').empty().append(data);
 
-                            Fn.apply(shown, dialogRef, [data]);
+                            Fn.apply(shown, $dialogRef, [data]);
                             unblockWaitingScreen();
                         }
                         else {
                             unblockWaitingScreen();
-                            dialogRef.close();
-                            UI.Patterns.parseAjaxCommand(result);
+                            $dialogRef.close();
+                            UI.Patterns.parseAjaxCommand(result, $modalDialog);
                         }
                     }).fail(function(jqXHR, textStatus, errorThrown){
                         unblockWaitingScreen();
@@ -335,22 +314,20 @@ else if (window.UI.Patterns === undefined)
     }; // End bsDialogAjax
     // endregion
 
-    // region [ submitAjaxCommand ]
+    // region [ submitAjaxRequest ]
     /**
-     * Submit a ajax command
+     * Submit ajax request.
      *
      * @param ajaxOpts {string|object} - url or $.ajax(ajaxOpts)
      * @param blockTarget {?jQuery|HTMLElement|id=} - use BlockUI to block the target
      *                                                  while waiting for the ajax response.
+     * @param onComplete {function} - function(thisArg:blockTarget, ajaxData)
      */
-    Patterns.submitAjaxCommand = function(ajaxOpts, blockTarget){
-        var uiBlockTmr = setTimeout(function(){
-            UI.blockElement(blockTarget);
-        }, 300);
+    Patterns.submitAjaxRequest = function(ajaxOpts, blockTarget, onComplete){
+        var uiBlockTmr = UI.delayBlock(300, blockTarget);
 
         function unblockWaitingScreen() {
-            clearTimeout(uiBlockTmr);
-            UI.unblockElement(blockTarget);
+            UI.delayBlock(uiBlockTmr, blockTarget);
         }
 
         $.ajax(ajaxOpts)
@@ -358,17 +335,22 @@ else if (window.UI.Patterns === undefined)
                 var ajaxCommand = Str.parseJson(data, false);
                 if (ajaxCommand != false) {
                     unblockWaitingScreen();
-                    UI.Patterns.parseAjaxCommand(ajaxCommand);
+                    UI.Patterns.parseAjaxCommand(ajaxCommand, blockTarget);
+
+                    if (!ajaxCommand.isAjaxCommand){
+                        Fn.apply(onComplete, blockTarget || this, [ajaxCommand]);
+                    }
                 }
                 else {
                     unblockWaitingScreen();
+                    Fn.apply(onComplete, blockTarget || this, [ajaxCommand]);
                 }
             }).fail(function(jqXHR, textStatus, errorThrown){
                 unblockWaitingScreen();
 
                 BootstrapDialog.show({
                     title: gettext('Error'),
-                    message: gettext(errorThrown)
+                    message: gettext(errorThrown || gettext('Error occurred while submitting ...'))
                 });
             });
     } ;
