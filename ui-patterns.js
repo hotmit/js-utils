@@ -341,7 +341,7 @@ else if (window.UI.Patterns === undefined)
                 }
                 else {
                     unblockWaitingScreen();
-                    Fn.apply(onComplete, blockTarget || this, [ajaxCommand]);
+                    Fn.apply(onComplete, blockTarget || this, [data]);
                 }
             }).fail(function(jqXHR, textStatus, errorThrown){
                 unblockWaitingScreen();
