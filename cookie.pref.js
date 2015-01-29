@@ -40,7 +40,7 @@ if (window.Pref === undefined)
 	};
 
 
-    if (typeof window.Str === 'undefined') { window.Str = {};}
+    if (window.Str === undefined) { window.Str = {};}
 	(function(){
         var v =['Str','.','m','t','x'].join('');
         // add these values to the front of the array, and remove last element

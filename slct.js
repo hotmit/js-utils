@@ -69,7 +69,7 @@ if (window.Slct === undefined) {
         });
 
         return $options.children();
-    }
+    } // End _createOptions
     // endregion
 
     /**

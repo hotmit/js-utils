@@ -24,7 +24,7 @@ else if (window.UI.Patterns === undefined)
      * Requires: jQuery Form (https://github.com/malsup/form.git)
      *
      * @param formSelector {selector} - this selector must work on the content of the ajax data as well
-     * @param targetSelector {selector} - which element to extract/update when the data is returned from an ajax call.
+     * @param targetSelector {?selector} - which element to extract/update when the data is returned from an ajax call.
      * @param ajaxOptions {object=} - $(form).ajaxForm(ajaxOptions)
      *                                      If undefined the form target is use
      * @param response {function(data)=} - data can be json or return html.
@@ -139,7 +139,7 @@ else if (window.UI.Patterns === undefined)
                 UI.unblock(targetSelector);
                 BootstrapDialog.show({
                     title: gettext('$.ajaxForm() Error'),
-                    message: errorThrown || gettext('Error occurred while retreiving the form.')
+                    message: errorThrown || gettext('Error occurred while retrieving the form.')
                 });
             }
         };
@@ -162,13 +162,9 @@ else if (window.UI.Patterns === undefined)
     // region [ parseAjaxCommand ]
     /**
      * Parse the ajaxCommand, if message is present display the message.
-     * status:  success|info|warning|danger
-     * action:  display, message, [redirect=url|refresh=true]
-     *          refresh
-     *          forward, url
      *
-     * @param ajaxCommand {{status, action, value}}
-     * @param blockTarget {selector=} - the block target for "block-ui" command
+     * @param ajaxCommand {string|object|{message, method, refresh, redirect, callback, data, status}}
+     * @param blockTarget {?selector|HTMLElement|jQuery=} - the blocking target
      */
     Patterns.parseAjaxCommand = function(ajaxCommand, blockTarget)
     {
@@ -254,7 +250,8 @@ else if (window.UI.Patterns === undefined)
      *
      * @param title {string} - dialog title
      * @param ajaxOpts {string|object} - url or $.ajax(ajaxOpts)
-     * @param dialogOptions {object=} -  BootstrapDialog.show(dialogOptions) title, message, shown and hidden will be overridden/ignore.
+     * @param dialogOptions {object=} -  BootstrapDialog.show(dialogOptions)
+     *                                      title, message, shown and hidden will be overridden/ignore.
      * @param shown {function=} - function(thisArg:dialogRef, data)
      * @param hidden {function=} - function(thisArg:dialogRef)
      */
@@ -262,7 +259,8 @@ else if (window.UI.Patterns === undefined)
         if (window.BootstrapDialog == undefined){
             BootstrapDialog.show({
                 title: gettext('Missing Plugin'),
-                message: 'This function required <a href="https://github.com/nakupanda/bootstrap3-dialog">Bootstrap Dialog plugin</a>.'
+                message: 'This function required <a href="https://github.com/nakupanda/bootstrap3-dialog"' +
+                            'target="_blank">Bootstrap Dialog plugin</a>.'
             });
             return;
         }
@@ -281,7 +279,7 @@ else if (window.UI.Patterns === undefined)
                 }
 
                 $.ajax(ajaxOpts)
-                    .done(function(data, textStatus, jqXHR){
+                    .done(function(data){
                         var result = Str.parseJson(data, false);
                         // html returned from ajax call
                         if (result === false) {
@@ -319,7 +317,7 @@ else if (window.UI.Patterns === undefined)
      * Submit ajax request.
      *
      * @param ajaxOpts {string|object} - url or $.ajax(ajaxOpts)
-     * @param blockTarget {?jQuery|HTMLElement|id=} - use BlockUI to block the target
+     * @param blockTarget {?selector|HTMLElement|jQuery=} - use BlockUI to block the target
      *                                                  while waiting for the ajax response.
      * @param onComplete {function} - function(thisArg:blockTarget, ajaxData)
      */
@@ -331,7 +329,7 @@ else if (window.UI.Patterns === undefined)
         }
 
         $.ajax(ajaxOpts)
-            .done(function(data, textStatus, jqXHR){
+            .done(function(data){
                 var ajaxCommand = Str.parseJson(data, false);
                 if (ajaxCommand != false) {
                     unblockWaitingScreen();
@@ -408,7 +406,7 @@ else if (window.UI.Patterns === undefined)
             }
 
             $.ajax(opt)
-                .done(function(data, textStatus, jqXHR){
+                .done(function(data){
                     var options = Str.parseJson(data, false);
                     if (options !== false){
                         cache_selectAjaxFilter[cacheKey] = options;
