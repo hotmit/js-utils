@@ -170,13 +170,18 @@ else if (window.UI.Patterns === undefined)
     {
         if ($.type(ajaxCommand) === 'string'){
             ajaxCommand = Str.parseJson(ajaxCommand, false);
-            if (!Typ.isAjaxCommand(ajaxCommand)){
-                return false;
-            }
+        }
+
+        if (!Typ.isAjaxCommand(ajaxCommand)){
+            return false;
         }
 
         var method = ajaxCommand.method || 'bs-dialog',
             defaultBlockUiOptions, blockOptions, dialogOpt;
+
+        if (!ajaxCommand.data){
+            ajaxCommand.data = {};
+        }
 
         function executeActions()
         {
