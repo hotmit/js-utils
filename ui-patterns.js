@@ -177,11 +177,8 @@ else if (window.UI.Patterns === undefined)
         }
 
         var method = ajaxCommand.method || 'bs-dialog',
-            defaultBlockUiOptions, blockOptions, dialogOpt;
-
-        if (!ajaxCommand.data){
-            ajaxCommand.data = {};
-        }
+            defaultBlockUiOptions, blockOptions, dialogOpt,
+            noRedirectOrRefresh = !ajaxCommand.redirect && !ajaxCommand.refresh;
 
         function executeActions()
         {
@@ -202,20 +199,16 @@ else if (window.UI.Patterns === undefined)
             defaultBlockUiOptions = {
                 message: ajaxCommand.message || null,
                 blockTarget: blockTarget,
-                delay: 1000
+                delay: noRedirectOrRefresh ? 2000 : 300
             };
+
             blockOptions = $.extend({}, defaultBlockUiOptions, ajaxCommand.data);
-            if (blockOptions.blockTarget) {
-                UI.block(blockOptions.blockTarget, blockOptions);
-            }
-            else {
-                UI.blockScreen(blockOptions);
-            }
+            UI.block(blockOptions.blockTarget, blockOptions);
 
             setTimeout(function(){
                 executeActions();
 
-                if (!ajaxCommand.redirect && !ajaxCommand.refresh){
+                if (noRedirectOrRefresh){
                     UI.unblock(blockOptions.blockTarget);
                 }
             }, blockOptions.delay);
@@ -227,7 +220,7 @@ else if (window.UI.Patterns === undefined)
                 title: ajaxCommand.data.title || gettext('Message'),
                 message: ajaxCommand.message,
                 buttons: [{
-                    label: gettext('Close'),
+                    label: gettext('OK'),
                     cssClass: 'btn-primary',
                     action: function (dialog) {
                         dialog.close();
