@@ -31,27 +31,28 @@ else if (window.UI.Bs === undefined)
             }
         }
 
-        new BootstrapDialog({
-                title: gettext('Confirmation'),
-                message: message,
-                buttons: [{
-                        label: gettext('(N) No'),
-                        hotkey: 78, //N
-                        action: function(dialog) {
-                            invokeButtonClicked(dialog, false);
-                        }
-                    }, {
-                        label: gettext('(Y) Yes'),
-                        hotkey: 89, //Y
-                        cssClass: 'btn-primary',
-                        action: function(dialog) {
-                            invokeButtonClicked(dialog, true);
-                        }
-                    }],
-                onhide: function(dialog){
-                    invokeButtonClicked(dialog, false);
-                }
-            }).open();
+        BootstrapDialog.show({
+            title: gettext('Confirmation'),
+            message: message,
+            animate: false,
+            buttons: [{
+                    label: gettext('(N) No'),
+                    hotkey: 78, //N
+                    action: function(dialog) {
+                        invokeButtonClicked(dialog, false);
+                    }
+                }, {
+                    label: gettext('(Y) Yes'),
+                    hotkey: 89, //Y
+                    cssClass: 'btn-primary',
+                    action: function(dialog) {
+                        invokeButtonClicked(dialog, true);
+                    }
+                }],
+            onhide: function(dialog){
+                invokeButtonClicked(dialog, false);
+            }
+        });
     };
 
 }(jQuery, window.UI.Bs));

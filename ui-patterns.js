@@ -39,7 +39,8 @@ else if (window.UI.Patterns === undefined)
         if (!$.fn.hasOwnProperty('ajaxForm')){
             BootstrapDialog.show({
                 title: gettext('UI.Patterns.submitForm Error'),
-                message: gettext("This function requires jQuery Form (https://github.com/malsup/form.git).")
+                message: gettext("This function requires jQuery Form (https://github.com/malsup/form.git)."),
+                animate: false
             });
             return;
         }
@@ -139,7 +140,8 @@ else if (window.UI.Patterns === undefined)
                 UI.unblock(targetSelector);
                 BootstrapDialog.show({
                     title: gettext('$.ajaxForm() Error'),
-                    message: errorThrown || gettext('Error occurred while retrieving the form.')
+                    message: errorThrown || gettext('Error occurred while retrieving the form.'),
+                    animate: false
                 });
             }
         };
@@ -177,7 +179,7 @@ else if (window.UI.Patterns === undefined)
         }
 
         var method = ajaxCommand.method || 'bs-dialog',
-            defaultBlockUiOptions, blockOptions, dialogOpt,
+            defaultBlockUiOptions, blockOptions, defaultDialogOpts,
             noRedirectOrRefresh = !ajaxCommand.redirect && !ajaxCommand.refresh;
 
         function executeActions()
@@ -216,9 +218,10 @@ else if (window.UI.Patterns === undefined)
         }
         else if (method == 'bs-dialog')
         {
-            dialogOpt = {
+            defaultDialogOpts = {
                 title: ajaxCommand.data.title || gettext('Message'),
                 message: ajaxCommand.message,
+                animate: false,     // disable transition
                 buttons: [{
                     label: gettext('OK'),
                     cssClass: 'btn-primary',
@@ -231,8 +234,8 @@ else if (window.UI.Patterns === undefined)
                 }
             };
 
-            dialogOpt = $.extend({}, dialogOpt, ajaxCommand.data);
-            BootstrapDialog.show(dialogOpt);
+            defaultDialogOpts = $.extend({}, defaultDialogOpts, ajaxCommand.data);
+            BootstrapDialog.show(defaultDialogOpts);
         }
         else {
             alert(ajaxCommand.message);
@@ -257,6 +260,7 @@ else if (window.UI.Patterns === undefined)
         if (window.BootstrapDialog == undefined){
             BootstrapDialog.show({
                 title: gettext('Missing Plugin'),
+                animate: false,
                 message: 'This function required <a href="https://github.com/nakupanda/bootstrap3-dialog"' +
                             'target="_blank">Bootstrap Dialog plugin</a>.'
             });
@@ -268,6 +272,7 @@ else if (window.UI.Patterns === undefined)
         defaultOptions = {
             title: title,
             message: gettext('Loading, please wait ... '),
+            animate: false,     // disable transition
             onshown: function($dialogRef){
                 var uiBlockTmr, $modalDialog = $dialogRef.getModalDialog();
                 uiBlockTmr = UI.delayBlock(300, $modalDialog);
@@ -346,6 +351,7 @@ else if (window.UI.Patterns === undefined)
 
                 BootstrapDialog.show({
                     title: gettext('Error'),
+                    animate: false,
                     message: gettext(errorThrown || gettext('Error occurred while submitting ...'))
                 });
             });
@@ -417,6 +423,7 @@ else if (window.UI.Patterns === undefined)
                 }).fail(function(jqXHR, textStatus, errorThrown){
                     BootstrapDialog.show({
                         title: errorThrown,
+                        animate: false,
                         message: errorMessage
                     });
                 });
