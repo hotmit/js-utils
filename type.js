@@ -134,7 +134,9 @@ if (window.Typ === undefined)
      * @returns {boolean}
      */
     Typ.isAjaxCommand = function(o){
-        return !!(o != undefined && !Typ.isStr(o) && o.isAjaxCommand && o.data != undefined);
+        return !!(o != undefined && o != false && !Typ.isStr(o)
+                    && o.isAjaxCommand && o.options != undefined
+                    && o.displayMethod != undefined && o.command != undefined);
     };
 	
 }(jQuery, window.Typ));

@@ -31,7 +31,7 @@ if (window.UI === undefined)
 
         defaultOpts = {
             message: null,
-            overlayCSS: UI.darkOverlayCSS
+            overlayCSS: UI.lightOverlayCSS
         };
 
         options = $.extend({}, defaultOpts, options);

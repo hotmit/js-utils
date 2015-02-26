@@ -44,12 +44,17 @@ if (window.Fn === undefined)
 
     /**
      * Execute a function by name (supports "Obj.sub.runMe")
-     * @param funcName {string} - name of the function (supports "Obj.sub.runMe")
-     * @param context {object} - pass "window" object to gain access to global object's functions
+     * @param funcName {?string} - name of the function (supports "Obj.sub.runMe")
+     * @param context {?object} - pass "window" object to gain access to global object's functions
      * @param argArray {...object=}
      * @returns {*}
      */
     Fn.callByName = function(funcName, context, argArray){
+        if (funcName == undefined || !funcName){
+            return;
+        }
+
+        context = context || window;
         var args = [].slice.call(arguments).splice(2),
             namespaces = funcName.split("."),
             func = namespaces.pop(), i;
@@ -63,12 +68,17 @@ if (window.Fn === undefined)
     /**
      * Execute a function by name (supports "Obj.sub.runMe")
      *
-     * @param funcName {string} - name of the function (supports "Obj.sub.runMe")
-     * @param context {object} - pass "window" object to gain access to global object's functions
+     * @param funcName {?string} - name of the function (supports "Obj.sub.runMe")
+     * @param context {?object} - pass "window" object to gain access to global object's functions
      * @param argArray {Array=} - the array of the args
      * @returns {*}
      */
     Fn.applyByName = function(funcName, context, argArray){
+        if (funcName == undefined || !funcName){
+            return;
+        }
+
+        context = context || window;
         var namespaces = funcName.split("."),
             func = namespaces.pop(), i;
         for(i = 0; i < namespaces.length; i++) {

@@ -14,27 +14,36 @@ else if (window.UI.Patterns === undefined)
 }
 
 (function($, Patterns, UI, Str, Bs, Fn){
+
     // region [ submitForm ]
+
     /**
      * 1. submit to form.action using ajax
-     * 2. if json is return {status, message, action}
-     *      process the json
+     * 2. if json is return {ajaxCommand}
+     *      a. process the json
+     *      b. if bsDialog is specified, close it
      * 3. if html is return, replace the form with the html provided
      *
      * Requires: jQuery Form (https://github.com/malsup/form.git)
+     *  Support file upload through the use of https://github.com/malsup/form.git
      *
      * @param formSelector {selector} - this selector must work on the content of the ajax data as well
      * @param targetSelector {?selector} - which element to extract/update when the data is returned from an ajax call.
-     * @param ajaxOptions {object=} - $(form).ajaxForm(ajaxOptions)
+     * @param ajaxOptions {?object=} - $(form).ajaxForm(ajaxOptions)
      *                                      If undefined the form target is use
-     * @param response {function(data)=} - data can be json or return html.
-     *
-     * Support file upload through the use of https://github.com/malsup/form.git
-     * @param blockOptions {object} - blockUI options
+     * @param response {?function(data)=} - data can be json or return html.
+     *                              the dialog once a command is received.
+     * @param parentDialog {?jQuery=} - the instance of bs dialog. This function will close
+     *                                  the dialog once a command is received.
+     * @param blockOptions {?object=} - blockUI options
+     * @param context {?object=} - the object contains the functions specified by preParse and postParse.
+     *                              If not specified the window object is used.
      */
-    Patterns.submitForm = function(formSelector, targetSelector, ajaxOptions, response, blockOptions){
+    Patterns.submitForm = function(formSelector, targetSelector, ajaxOptions,
+                                    response, parentDialog, blockOptions, context){
         var $frm = $(formSelector),
-            defaultAjaxOptions, ajaxFormOpts, userSuccessFunc;
+            defaultAjaxOptions, ajaxFormOpts,
+            userBeforeSubmit, userSuccessFunc;
 
         if (!$.fn.hasOwnProperty('ajaxForm')){
             BootstrapDialog.show({
@@ -112,8 +121,8 @@ else if (window.UI.Patterns === undefined)
 
             // false ie html not a json
             if (result === false) {
-                // $('<div id="outter"><span>Hello</span></div>').find('#outter > *')   // this will return nothing
-                // $('<div><div id="outter"><span>Hello</span></div></div>').find('#outter > *')   // this will return div#outtter children
+                // find only search for descendant, if the element we are looking for
+                // is in the first element it would not work.
                 $result = $('<div></div>').append(data);
 
                 newAjaxContent = $result.find(targetSelector);
@@ -127,11 +136,17 @@ else if (window.UI.Patterns === undefined)
                 Fn.apply(response, this, [data]);
             }
             else {
-                Patterns.parseAjaxCommand(result, targetSelector);
+                Patterns.parseAjaxCommand(result, targetSelector, context);
                 Fn.apply(response, this, [result]);
+
+                if (parentDialog){
+                    parentDialog.close();
+                }
             }
         }
 
+        userBeforeSubmit = ajaxOptions != undefined && ajaxOptions.hasOwnProperty('beforeSubmit')
+                            ? ajaxOptions.beforeSubmit : undefined;
         userSuccessFunc = ajaxOptions != undefined && ajaxOptions.hasOwnProperty('success')
                             ? ajaxOptions.success : undefined;
         defaultAjaxOptions = {
@@ -148,6 +163,7 @@ else if (window.UI.Patterns === undefined)
 
         ajaxFormOpts = $.extend({}, defaultAjaxOptions, ajaxOptions, {
             beforeSubmit: function(){
+                Fn.apply(userBeforeSubmit, this, arguments);
                 UI.block(targetSelector, blockOptions);
             },
             success: function(data, textStatus, jqXHR){
@@ -165,10 +181,12 @@ else if (window.UI.Patterns === undefined)
     /**
      * Parse the ajaxCommand, if message is present display the message.
      *
-     * @param ajaxCommand {string|object|{message, method, refresh, redirect, callback, data, status}}
-     * @param blockTarget {?selector|HTMLElement|jQuery=} - the blocking target
+     * @param ajaxCommand {string|object|{message, method, command, preParse, postParse, options, status}}
+     * @param blockTarget {?selector|HTMLElement|jQuery=} - the blocking target for block-ui.
+     * @param context {!object=} - the object contains the functions specified by preParse and postParse.
+     *                              If not specified the window object is used.
      */
-    Patterns.parseAjaxCommand = function(ajaxCommand, blockTarget)
+    Patterns.parseAjaxCommand = function(ajaxCommand, blockTarget, context)
     {
         if ($.type(ajaxCommand) === 'string'){
             ajaxCommand = Str.parseJson(ajaxCommand, false);
@@ -178,50 +196,135 @@ else if (window.UI.Patterns === undefined)
             return false;
         }
 
-        var method = ajaxCommand.method || 'bs-dialog',
-            defaultBlockUiOptions, blockOptions, defaultDialogOpts,
-            noRedirectOrRefresh = !ajaxCommand.redirect && !ajaxCommand.refresh;
-
-        function executeActions()
-        {
-            if (ajaxCommand.refresh) {
-                window.location.reload(true);
-            }
-            else if (!Str.empty(ajaxCommand.redirect)) {
-                window.location = ajaxCommand.redirect;
-            }
-            else if (!Str.empty(ajaxCommand.callback)){
-                Fn.callByName(ajaxCommand.callback, window, ajaxCommand.data, ajaxCommand);
+        if (ajaxCommand.command == 'ajax-refresh'){
+            ajaxCommand.command = 'ajax-get';
+            ajaxCommand.options.remoteUrl = '';
+            if (ajaxCommand.options.commonTarget){
+                ajaxCommand.options.localTarget = ajaxCommand.options.commonTarget;
+                ajaxCommand.options.remoteTarget = ajaxCommand.options.commonTarget;
+                delete ajaxCommand.options.commonTarget;
             }
         }
 
-        if (method == 'block-ui')
+        var defaultBlockUiOptions, blockOptions, defaultBsDialogOpts,
+            displayMethod = ajaxCommand.displayMethod, command = ajaxCommand.command,
+            options = ajaxCommand.options, hasSyncAction, canDisplayAsyncTask = false;
+
+        hasSyncAction = $.inArray(ajaxCommand.command, ['refresh', 'redirect']) != -1;
+
+        if (Fn.callByName(ajaxCommand.preParse, context, options, ajaxCommand) === false)
+        {
+            Fn.callByName(ajaxCommand.postParse, context, options, ajaxCommand);
+            return;
+        }
+
+        function executeSyncActions()
+        {
+            // display the loading screen
+            if (command == 'ajax-get' || command == 'ajax-post'){
+                UI.block(options.localTarget);
+
+                setTimeout(function(){
+                    canDisplayAsyncTask = true;
+                }, 500);
+            }
+
+            if (command == 'refresh') {
+                window.location.reload(true);
+            }
+            else if (command == 'redirect') {
+                window.location = ajaxCommand.redirectUrl;
+            }
+            else if (!Str.empty(ajaxCommand.postParse)){
+                Fn.callByName(ajaxCommand.postParse, context, options, ajaxCommand);
+            }
+        }
+
+        function executeAsyncActions() {
+            var asyncTaskTimer, ajaxOptions;
+
+            function displayAsyncTask(content, isError) {
+                return setInterval(function() {
+                    if (canDisplayAsyncTask) {
+                        clearInterval(asyncTaskTimer);
+                        UI.unblock(options.localTarget);
+
+                        var $localTarget = $(options.localTarget);
+                        if (isError) {
+                            $localTarget.empty()
+                                .append(content);
+                        }
+                        else {
+                            //$localTarget.fadeOut('fast', function(){
+                            //    $localTarget.replaceWith(content).fadeIn('slow');
+                            //});
+                            $localTarget.replaceWith(content);
+                        }
+                    }
+                }, 100);
+            }
+
+            if (command == 'ajax-get' || command == 'ajax-post') {
+                ajaxOptions = {
+                    url: options.remoteUrl || '',
+                    method: command == 'ajax-post' ? 'POST' : 'GET',
+                    data: options.data || ''
+                };
+
+                $.ajax(ajaxOptions)
+                    .done(function(data){
+                        var $result = $('<div></div>').append(data),
+                            newAjaxContent = data;
+                        if (!Str.empty(options.remoteTarget)){
+                            newAjaxContent = $result.find(options.remoteTarget);
+                        }
+                        asyncTaskTimer = displayAsyncTask(newAjaxContent, false);
+                    }).fail(function(jqXHR, textStatus, errorThrown){
+                        var errorMsg = gettext(errorThrown);
+                        if (errorMsg){
+                            errorMsg = Str.format('Error: {0}', errorMsg);
+                        }
+                        else {
+                            errorMsg = gettext('Errors occurred while retrieving data from the server ...');
+                        }
+                        asyncTaskTimer = displayAsyncTask(errorMsg, true);
+                    });
+            }
+        }
+
+        if (displayMethod == 'block-ui')
         {
             // region [ block-ui display ]
             defaultBlockUiOptions = {
                 message: ajaxCommand.message || null,
                 blockTarget: blockTarget,
-                delay: noRedirectOrRefresh ? 2000 : 300
+                // if redirect then the block will stays for good, so no need to long delay
+                // delay cuz in case of fast server, at least this warranty 300ms visibility
+                delay: hasSyncAction ? 300 : 2000
             };
 
-            blockOptions = $.extend({}, defaultBlockUiOptions, ajaxCommand.data);
+            blockOptions = $.extend({}, defaultBlockUiOptions, options);
             UI.block(blockOptions.blockTarget, blockOptions);
 
-            setTimeout(function(){
-                executeActions();
+            executeAsyncActions();
 
-                if (noRedirectOrRefresh){
+            setTimeout(function () {
+                executeSyncActions();
+
+                if (!hasSyncAction) {
+                    // if redirect or refresh the block stay on indefinitely
                     UI.unblock(blockOptions.blockTarget);
                 }
             }, blockOptions.delay);
             // endregion
         }
-        else if (method == 'bs-dialog')
+        else if (displayMethod == 'bs-dialog')
         {
-            defaultDialogOpts = {
-                title: ajaxCommand.data.title || gettext('Message'),
+            defaultBsDialogOpts = {
+                title: options.title || gettext('Message'),
                 message: ajaxCommand.message,
                 animate: false,     // disable transition
+                type: ajaxCommand.status == 'error' ? 'type-danger' : 'type-primary',
                 buttons: [{
                     label: gettext('OK'),
                     cssClass: 'btn-primary',
@@ -230,15 +333,22 @@ else if (window.UI.Patterns === undefined)
                     }
                 }],
                 onhidden: function(){
-                    executeActions();
+                    executeSyncActions();
                 }
             };
 
-            defaultDialogOpts = $.extend({}, defaultDialogOpts, ajaxCommand.data);
-            BootstrapDialog.show(defaultDialogOpts);
+            executeAsyncActions();
+            defaultBsDialogOpts = $.extend({}, defaultBsDialogOpts, options);
+            BootstrapDialog.show(defaultBsDialogOpts);
+        }
+        else if (displayMethod == 'alert'){
+            executeAsyncActions();
+            alert(ajaxCommand.message);
+            executeSyncActions();
         }
         else {
-            alert(ajaxCommand.message);
+            executeAsyncActions();
+            executeSyncActions();
         }
 
         return ajaxCommand;
@@ -255,8 +365,10 @@ else if (window.UI.Patterns === undefined)
      *                                      title, message, shown and hidden will be overridden/ignore.
      * @param shown {function=} - function(thisArg:dialogRef, data)
      * @param hidden {function=} - function(thisArg:dialogRef)
+     * @param context {object=} - the object contains the functions specified by preParse and postParse.
+     *                              If not specified the window object is used.
      */
-    Patterns.bsDialogAjax = function(title, ajaxOpts, dialogOptions, shown, hidden){
+    Patterns.bsDialogAjax = function(title, ajaxOpts, dialogOptions, shown, hidden, context){
         if (window.BootstrapDialog == undefined){
             BootstrapDialog.show({
                 title: gettext('Missing Plugin'),
@@ -294,7 +406,7 @@ else if (window.UI.Patterns === undefined)
                         else {
                             unblockWaitingScreen();
                             $dialogRef.close();
-                            UI.Patterns.parseAjaxCommand(result, $modalDialog);
+                            UI.Patterns.parseAjaxCommand(result, $modalDialog, context);
                         }
                     }).fail(function(jqXHR, textStatus, errorThrown){
                         unblockWaitingScreen();
@@ -311,7 +423,7 @@ else if (window.UI.Patterns === undefined)
 
         options = $.extend({}, dialogOptions, defaultOptions);
 
-        BootstrapDialog.show(options);
+        return BootstrapDialog.show(options);
     }; // End bsDialogAjax
     // endregion
 
@@ -322,9 +434,11 @@ else if (window.UI.Patterns === undefined)
      * @param ajaxOpts {string|object} - url or $.ajax(ajaxOpts)
      * @param blockTarget {?selector|HTMLElement|jQuery=} - use BlockUI to block the target
      *                                                  while waiting for the ajax response.
-     * @param onComplete {function} - function(thisArg:blockTarget, ajaxData)
+     * @param onComplete {?function=} - function(thisArg:blockTarget, ajaxData)
+     * @param context {?object=} - the object contains the functions specified by preParse and postParse.
+     *                              If not specified the window object is used.
      */
-    Patterns.submitAjaxRequest = function(ajaxOpts, blockTarget, onComplete){
+    Patterns.submitAjaxRequest = function(ajaxOpts, blockTarget, onComplete, context){
         var uiBlockTmr = UI.delayBlock(300, blockTarget);
 
         function unblockWaitingScreen() {
@@ -336,7 +450,7 @@ else if (window.UI.Patterns === undefined)
                 var ajaxCommand = Str.parseJson(data, false);
                 if (ajaxCommand != false) {
                     unblockWaitingScreen();
-                    UI.Patterns.parseAjaxCommand(ajaxCommand, blockTarget);
+                    UI.Patterns.parseAjaxCommand(ajaxCommand, blockTarget, context);
 
                     if (!ajaxCommand.isAjaxCommand){
                         Fn.apply(onComplete, blockTarget || this, [ajaxCommand]);
@@ -352,7 +466,7 @@ else if (window.UI.Patterns === undefined)
                 BootstrapDialog.show({
                     title: gettext('Error'),
                     animate: false,
-                    message: gettext(errorThrown || gettext('Error occurred while submitting ...'))
+                    message: gettext(errorThrown) || gettext('Error occurred while submitting ...')
                 });
             });
     } ;
