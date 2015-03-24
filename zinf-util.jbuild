@@ -1,4 +1,4 @@
-output: D:\Clients\Infitrak\portal-source\infitrak_portal\global_static\global\js\util.js
+output: D:\Clients\Infitrak\portal-source\infitrak_portal\global_static\global\js\util.min.js
 
 // jQuery must be before ALL
 

@@ -36,7 +36,7 @@ else if (window.UI.Patterns === undefined)
      * @param parentDialog {?jQuery=} - the instance of bs dialog. This function will close
      *                                  the dialog once a command is received.
      * @param blockOptions {?object=} - blockUI options
-     * @param context {?object=} - the object contains the functions specified by preParse and postParse.
+     * @param context {?object=} - the object contains the functions specified by onPreParse and onPostParse.
      *                              If not specified the window object is used.
      */
     Patterns.submitForm = function(formSelector, targetSelector, ajaxOptions,
@@ -92,6 +92,7 @@ else if (window.UI.Patterns === undefined)
             }
 
             $frm.ajaxForm(ajaxFormOpts);
+
             $frm.find('.ajax-reset').click(function(){
                 $frm.attr('novalidate', 'novalidate');
                 $frm.append(Str.format('<input type="hidden" name="submit-via" value="{0}" />', this.name || this.value));
@@ -100,6 +101,7 @@ else if (window.UI.Patterns === undefined)
                 }
                 removeTempHiddenFields();
             });
+
             $frm.find('[type="submit"]').not('.ajax-reset').click(function(){
                 $frm.append(Str.format('<input type="hidden" name="submit-via" value="{0}" />',
                     this.name || this.value));
@@ -181,9 +183,9 @@ else if (window.UI.Patterns === undefined)
     /**
      * Parse the ajaxCommand, if message is present display the message.
      *
-     * @param ajaxCommand {string|object|{message, method, command, preParse, postParse, options, status}}
+     * @param ajaxCommand {string|object|{message, method, command, onPreParse, onPostParse, options, status}}
      * @param blockTarget {?selector|HTMLElement|jQuery=} - the blocking target for block-ui.
-     * @param context {!object=} - the object contains the functions specified by preParse and postParse.
+     * @param context {!object=} - the object contains the functions specified by onPreParse and onPostParse.
      *                              If not specified the window object is used.
      */
     Patterns.parseAjaxCommand = function(ajaxCommand, blockTarget, context)
@@ -212,9 +214,9 @@ else if (window.UI.Patterns === undefined)
 
         hasSyncAction = $.inArray(ajaxCommand.command, ['refresh', 'redirect']) != -1;
 
-        if (Fn.callByName(ajaxCommand.preParse, context, options, ajaxCommand) === false)
+        if (Fn.callByName(ajaxCommand.onPreParse, context, options, ajaxCommand) === false)
         {
-            Fn.callByName(ajaxCommand.postParse, context, options, ajaxCommand);
+            Fn.callByName(ajaxCommand.onPostParse, context, options, ajaxCommand);
             return;
         }
 
@@ -235,8 +237,14 @@ else if (window.UI.Patterns === undefined)
             else if (command == 'redirect') {
                 window.location = ajaxCommand.redirectUrl;
             }
-            else if (!Str.empty(ajaxCommand.postParse)){
-                Fn.callByName(ajaxCommand.postParse, context, options, ajaxCommand);
+            else if (command == 'replace-html'){
+                $(ajaxCommand.options.localTarget).replaceWith(ajaxCommand.options.htmlContent);
+            }
+            else if (command == 'append-html'){
+                $(ajaxCommand.options.localTarget).append(ajaxCommand.options.htmlContent);
+            }
+            else if (!Str.empty(ajaxCommand.onPostParse)){
+                Fn.callByName(ajaxCommand.onPostParse, context, options, ajaxCommand);
             }
         }
 
@@ -365,7 +373,7 @@ else if (window.UI.Patterns === undefined)
      *                                      title, message, shown and hidden will be overridden/ignore.
      * @param shown {function=} - function(thisArg:dialogRef, data)
      * @param hidden {function=} - function(thisArg:dialogRef)
-     * @param context {object=} - the object contains the functions specified by preParse and postParse.
+     * @param context {object=} - the object contains the functions specified by onPreParse and onPostParse.
      *                              If not specified the window object is used.
      */
     Patterns.bsDialogAjax = function(title, ajaxOpts, dialogOptions, shown, hidden, context){
@@ -435,7 +443,7 @@ else if (window.UI.Patterns === undefined)
      * @param blockTarget {?selector|HTMLElement|jQuery=} - use BlockUI to block the target
      *                                                  while waiting for the ajax response.
      * @param onComplete {?function=} - function(thisArg:blockTarget, ajaxData)
-     * @param context {?object=} - the object contains the functions specified by preParse and postParse.
+     * @param context {?object=} - the object contains the functions specified by onPreParse and onPostParse.
      *                              If not specified the window object is used.
      */
     Patterns.submitAjaxRequest = function(ajaxOpts, blockTarget, onComplete, context){
