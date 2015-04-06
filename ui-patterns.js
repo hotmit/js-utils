@@ -15,6 +15,29 @@ else if (window.UI.Patterns === undefined)
 
 (function($, Patterns, UI, Str, Bs, Fn){
 
+    // region [ formAutoFocus ]
+    /**
+     * Auto focus the first textbox with error, if no error select the first textbox available
+     *
+     * @param rootElement {!selector|jQuery|HTMLElement|id}: the form or any of the form parent
+     */
+    Patterns.formAutoFocus = function(rootElement) {
+        var $rootElement = $(rootElement),
+            reqInput = $rootElement.find('.has-error')
+                .find('[type="text"], [type="password"], [type="email"], textarea'), input;
+
+        if (reqInput.length){
+            reqInput.first().focus().caretToEnd();
+        }
+        else {
+            input = $rootElement.find('input[type="text"], input[type="password"], textarea');
+            if (input.length){
+                input.first().focus().caretToEnd();
+            }
+        }
+    };
+    // endregion
+
     // region [ submitForm ]
 
     /**
@@ -55,25 +78,6 @@ else if (window.UI.Patterns === undefined)
         }
 
         targetSelector = targetSelector || formSelector;
-
-        // region [ autoFocus ]
-        /**
-         * Select the first required textbox/input
-         */
-        function autoFocus() {
-            var reqInput = $frm.find('.has-error').find('[type="text"], [type="password"], [type="email"], textarea'),
-                input;
-            if (reqInput.length){
-                reqInput.first().focus().caretToEnd();
-            }
-            else {
-                input = $frm.find('input[type="text"], input[type="password"], textarea');
-                if (input.length){
-                    input.first().focus().caretToEnd();
-                }
-            }
-        }
-        // endregion
 
         // region [ setupFormSubmit ]
         /**
@@ -134,7 +138,7 @@ else if (window.UI.Patterns === undefined)
                 $frm = $($frm.selector);
                 setupFormSubmit();
 
-                autoFocus();
+                Patterns.formAutoFocus($frm);
                 Fn.apply(response, this, [data]);
             }
             else {
@@ -408,6 +412,7 @@ else if (window.UI.Patterns === undefined)
                         if (result === false) {
                             $modalDialog.find('.modal-body').empty().append(data);
 
+                            Patterns.formAutoFocus($modalDialog);
                             Fn.apply(shown, $dialogRef, [data]);
                             unblockWaitingScreen();
                         }
