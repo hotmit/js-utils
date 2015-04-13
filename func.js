@@ -59,10 +59,16 @@ if (window.Fn === undefined)
             namespaces = funcName.split("."),
             func = namespaces.pop(), i;
 
-        for(i = 0; i < namespaces.length; i++) {
+        for(i = 0; i < namespaces.length; i++){
             context = context[namespaces[i]];
+            if (context == undefined){
+                return;
+            }
         }
-        return context[func].apply(context, args);
+
+        if (context[func] && $.isFunction(context[func])) {
+            return context[func].apply(context, args);
+        }
     };
 
     /**
@@ -83,8 +89,14 @@ if (window.Fn === undefined)
             func = namespaces.pop(), i;
         for(i = 0; i < namespaces.length; i++) {
             context = context[namespaces[i]];
+            if (context == undefined){
+                return;
+            }
         }
-        return context[func].apply(context, argArray);
+
+        if (context[func] && $.isFunction(context[func])) {
+            return context[func].apply(context, argArray);
+        }
     };
 
 
