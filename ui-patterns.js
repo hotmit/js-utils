@@ -183,6 +183,40 @@ else if (window.UI.Patterns === undefined)
     }; // End submitForm
     // endregion
 
+    // region [ ajaxRefresh ]
+    /**
+     * Refresh a section of the page.
+     *
+     * @param localTarget {!selector} - the section to refresh
+     * @param remoteTarget {?selector=} - if not set use localTarget
+     * @param blockTarget {?selector=}
+     * @param onSuccess {?function=}
+     */
+    Patterns.ajaxRefresh = function(localTarget, remoteTarget, blockTarget, onSuccess){
+        if (remoteTarget == undefined){
+            remoteTarget = localTarget;
+        }
+
+        var ajaxCommand = {
+                isAjaxCommand: true,
+                message: '',
+                displayMethod: '',
+                command: 'ajax-refresh',
+                status: '',
+                options: {
+                    localTarget: localTarget,
+                    remoteTarget: remoteTarget
+                },
+                onPostParse: 'onSuccess'
+            },
+            context = {
+                onSuccess: onSuccess
+            };
+
+        Patterns.parseAjaxCommand(ajaxCommand, blockTarget, context);
+    };
+    // endregion
+
     // region [ parseAjaxCommand ]
     /**
      * Parse the ajaxCommand, if message is present display the message.
