@@ -409,6 +409,7 @@ else if (window.UI.Patterns === undefined)
      * @param ajaxOpts {string|object} - url or $.ajax(ajaxOpts)
      * @param dialogOptions {object=} -  BootstrapDialog.show(dialogOptions)
      *                                      title, message, shown and hidden will be overridden/ignore.
+     *                                      http://nakupanda.github.io/bootstrap3-dialog/#available-options
      * @param shown {function=} - function(thisArg:dialogRef, data)
      * @param hidden {function=} - function(thisArg:dialogRef)
      * @param context {object=} - the object contains the functions specified by onPreParse and onPostParse.
