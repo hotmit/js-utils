@@ -420,7 +420,7 @@ else if (window.UI.Patterns === undefined)
             BootstrapDialog.show({
                 title: gettext('Missing Plugin'),
                 animate: false,
-                message: 'This function required <a href="https://github.com/nakupanda/bootstrap3-dialog"' +
+                message: 'This function is required <a href="https://github.com/nakupanda/bootstrap3-dialog"' +
                             'target="_blank">Bootstrap Dialog plugin</a>.'
             });
             return;
@@ -554,7 +554,7 @@ else if (window.UI.Patterns === undefined)
                 cacheKey = $srcSelect.attr('name') + '_' + Arr.implode(selectedValues, '|');
 
             opt = $.extend({}, ajaxOpts, opt);
-            if (token != undefined && opt.data.csrfmiddlewaretoken == undefined){
+            if (token != undefined && opt.data.csrfmiddlewaretoken == undefined && token != undefined){
                 opt.data.csrfmiddlewaretoken = token;
             }
 
