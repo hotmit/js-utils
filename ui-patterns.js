@@ -524,6 +524,8 @@ else if (window.UI.Patterns === undefined)
     var cache_selectAjaxFilter = {};
 
     /**
+     * Populate target select box based on the value of the src selected values.
+     * Server can return json [{value:,  name:}, ] or html contains the select box with same id or name.
      *
      * @param srcSelect
      * @param targetSelect
@@ -546,12 +548,13 @@ else if (window.UI.Patterns === undefined)
                 opt = {
                     data: {
                         src_name: $srcSelect.attr('name'),
-                        selected: selectedValues,
                         target_name: $targetSelect.attr('name')
                     }
                 },
                 token = $.cookie('csrftoken'),
                 cacheKey = $srcSelect.attr('name') + '_' + Arr.implode(selectedValues, '|');
+
+            opt.data[$srcSelect.attr('name')] = selectedValues;
 
             opt = $.extend({}, ajaxOpts, opt);
             if (token != undefined && opt.data.csrfmiddlewaretoken == undefined && token != undefined){
@@ -559,8 +562,14 @@ else if (window.UI.Patterns === undefined)
             }
 
             function loadOptions(options) {
-                $targetSelect.empty();
-                Slct.addOptions($targetSelect, options);
+                if (Typ.isJquery(options)){
+                    $targetSelect.empty().append(options);
+                }
+                else
+                {
+                    $targetSelect.empty();
+                    Slct.addOptions($targetSelect, options);
+                }
 
                 Fn.apply(targetUpdated, $targetSelect.get(0), [$targetSelect]);
             }
@@ -573,15 +582,33 @@ else if (window.UI.Patterns === undefined)
 
             $.ajax(opt)
                 .done(function(data){
-                    var options = Str.parseJson(data, false);
+                    var options = Str.parseJson(data, false), targetId, targetName, selector, $options, $data;
                     if (options !== false){
                         cache_selectAjaxFilter[cacheKey] = options;
                         loadOptions(options);
                     }
                     else {
-                        BootstrapDialog.alert(errorMessage);
-                    }
+                        $data = $(data);
+                        targetId = $targetSelect.attr('id');
+                        if (targetId){
+                            selector = 'select#' + targetId;
+                            $options = $data.find(selector);
+                        }
 
+                        targetName = $targetSelect.attr('name');
+                        if (targetName && !$options.length){
+                            selector = 'select[name="' + targetName + '"]';
+                            $options = $data.find(selector);
+                        }
+
+                        if ($options.length){
+                            cache_selectAjaxFilter[cacheKey] = $options.children();
+                            loadOptions($options.children());
+                        }
+                        else {
+                            BootstrapDialog.alert(errorMessage);
+                        }
+                    }
                 }).fail(function(jqXHR, textStatus, errorThrown){
                     BootstrapDialog.show({
                         title: errorThrown,
