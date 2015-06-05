@@ -551,8 +551,14 @@ else if (window.UI.Patterns === undefined)
                         target_name: $targetSelect.attr('name')
                     }
                 },
-                token = $.cookie('csrftoken'),
+                token = $.cookie('csrftoken'), cacheKey;
+
+            if (Typ.isArray(selectedValues)){
                 cacheKey = $srcSelect.attr('name') + '_' + Arr.implode(selectedValues, '|');
+            }
+            else {
+                cacheKey = $srcSelect.attr('name') + '_' + selectedValues;
+            }
 
             opt.data[$srcSelect.attr('name')] = selectedValues;
 

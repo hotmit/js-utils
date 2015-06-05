@@ -12,17 +12,24 @@ if (window.Slct === undefined) {
      * Get the selected value of a select element.
      *
      * @param selectElement {id|HTMLElement|jQuery} - the select box element
-     * @returns {Array} - return [] if no selected options is found.
+     * @returns {Array|object} - return array if multiple=multiple, else return the single value of the selected option.
      */
     Slct.getSelectedValues = function(selectElement){
-        var $selected = $(selectElement).find('option:selected'),
-            result = [];
+        var $selectBox = $(selectElement), $selected = $selectBox.find('option:selected'),
+            result = [], $firstOpt;
 
-        $selected.each(function(index, element){
-           result.push(element.value);
-        });
+        if ($selectBox.is('[multiple]')){
+            $selected.each(function(index, element){
+               result.push(element.value);
+            });
+            return result;
+        }
 
-        return result;
+        $firstOpt = $selected.first();
+        if ($firstOpt.length){
+            return $firstOpt.val();
+        }
+        return null;
     };
 
     // region [ _createOptions ]
