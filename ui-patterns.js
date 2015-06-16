@@ -538,9 +538,6 @@ else if (window.UI.Patterns === undefined)
      * @param container {selector} - on() container, if not specified document.body is used.
      */
     Patterns.selectAjaxFilter = function(srcSelect, targetSelect, ajaxOpts, targetUpdated, noCache, container){
-        var $srcSelect = $(srcSelect),
-            $targetSelect = $(targetSelect);
-
         ajaxOpts = $.type(ajaxOpts) === 'string' ? {url: ajaxOpts} : ajaxOpts;
 
         if(!container){
@@ -548,7 +545,9 @@ else if (window.UI.Patterns === undefined)
         }
 
         $(container).on('change', srcSelect, function(){
-            var selectedValues = Slct.getSelectedValues($srcSelect),
+            var $srcSelect = $(srcSelect),
+                $targetSelect = $(targetSelect),
+                selectedValues = Slct.getSelectedValues($srcSelect),
                 errorMessage = gettext('Error occurred while retrieving data from the server.'),
                 opt = {
                     data: {
@@ -629,8 +628,8 @@ else if (window.UI.Patterns === undefined)
                 });
         });
 
-        if (!Slct.getSelectedValues($targetSelect)){
-            $srcSelect.change();
+        if (!Slct.getSelectedValues($(targetSelect))){
+            $(srcSelect).change();
         }
     };
     // endregion
