@@ -527,24 +527,29 @@ else if (window.UI.Patterns === undefined)
      * Populate target select box based on the value of the src selected values.
      * Server can return json [{value:,  name:}, ] or html contains the select box with same id or name.
      *
-     * @param srcSelect
-     * @param targetSelect
+     * @param srcSelect {selector}
+     * @param targetSelect {selector}
      * @param ajaxOpts {string|object} - url or $.ajax(ajaxOpts),
      *                                      the data will be overridden with the selected items.
      *                                      data: { selected: [] }
      * @param targetUpdated {function} - function(thisArg:targetElement, $targetElement)
- *                                          called after the target select box is updated.
+     *                                          called after the target select box is updated.
      * @param noCache {bool} - do not cache the result
+     * @param container {selector} - on() container, if not specified document.body is used.
      */
-    Patterns.selectAjaxFilter = function(srcSelect, targetSelect, ajaxOpts, targetUpdated, noCache){
+    Patterns.selectAjaxFilter = function(srcSelect, targetSelect, ajaxOpts, targetUpdated, noCache, container){
         var $srcSelect = $(srcSelect),
             $targetSelect = $(targetSelect);
 
         ajaxOpts = $.type(ajaxOpts) === 'string' ? {url: ajaxOpts} : ajaxOpts;
 
-        $srcSelect.on('change', function(){
+        if(!container){
+            container = 'body';
+        }
+
+        $(container).on('change', srcSelect, function(){
             var selectedValues = Slct.getSelectedValues($srcSelect),
-                errorMessage = gettext('Error occurred while receiving data from the server.'),
+                errorMessage = gettext('Error occurred while retrieving data from the server.'),
                 opt = {
                     data: {
                         src_name: $srcSelect.attr('name'),
@@ -624,7 +629,7 @@ else if (window.UI.Patterns === undefined)
                 });
         });
 
-        if (!Slct.getSelectedValues($targetSelect).length){
+        if (!Slct.getSelectedValues($targetSelect)){
             $srcSelect.change();
         }
     };
