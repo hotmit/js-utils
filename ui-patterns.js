@@ -544,9 +544,11 @@ else if (window.UI.Patterns === undefined)
             container = 'body';
         }
 
-        $(container).on('change', srcSelect, function(){
-            var $srcSelect = $(srcSelect),
-                $targetSelect = $(targetSelect),
+        var $container = $(container);
+
+        $container.on('change', srcSelect, function(){
+            var $srcSelect = $container.find(srcSelect),
+                $targetSelect = $container.find(targetSelect),
                 selectedValues = Slct.getSelectedValues($srcSelect),
                 errorMessage = gettext('Error occurred while retrieving data from the server.'),
                 opt = {
