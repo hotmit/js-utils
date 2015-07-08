@@ -123,7 +123,7 @@ else if (window.UI.Patterns === undefined)
         function parseData(data)
         {
             var newAjaxContent, result = Str.parseJson(data, false),
-                $result;
+                $result, $localTarget = $(targetSelector), $fileInput;
 
             // false ie html not a json
             if (result === false) {
@@ -132,7 +132,20 @@ else if (window.UI.Patterns === undefined)
                 $result = $('<div></div>').append(data);
 
                 newAjaxContent = $result.find(targetSelector);
-                $(targetSelector).replaceWith(newAjaxContent);
+                $fileInput = $localTarget.find('input[type="file"]').detach();
+                $localTarget.replaceWith(newAjaxContent);
+
+                if ($fileInput.length){
+                    // restore file upload if there is an error in the form
+                    $localTarget = $($localTarget.selector);
+                    Arr.eachJq($fileInput, function($fileFieldWithAttachment){
+                        if ($fileFieldWithAttachment.val()) {
+                            var fieldName = $fileFieldWithAttachment.attr('name'),
+                                $newFileField = $localTarget.find('input[type="file"][name="' + fieldName + '"]');
+                            $newFileField.replaceWith($fileFieldWithAttachment);
+                        }
+                    });
+                }
 
                 // reload the frm instance, it could be replaced by the ajax content
                 $frm = $($frm.selector);
