@@ -46,6 +46,10 @@ if (window.UI === undefined)
      *                                          Options reference http://malsup.com/jquery/block/#options
      */
     UI.block = function(elm, options){
+        if (elm == null){
+            return;
+        }
+
         options = prepBlockUIOptions(options);
         if (elm == undefined){
             return $.blockUI(options);
@@ -61,6 +65,10 @@ if (window.UI === undefined)
      * @returns {*}
      */
     UI.unblock = function(elm){
+        if (elm == null){
+            return;
+        }
+
         if (elm == undefined){
             return $.unblockUI();
         }
@@ -79,6 +87,10 @@ if (window.UI === undefined)
      * @returns {number}
      */
     UI.delayBlock = function(delay, elm, options){
+        if (elm == null){
+            return;
+        }
+
         return setTimeout(function(){
                     UI.block(elm, options);
                 }, delay);
@@ -92,6 +104,10 @@ if (window.UI === undefined)
      *                                              or pass null or undefined to clear the entire screen
      */
     UI.delayUnblock = function(timer, elm) {
+        if (elm == null){
+            return;
+        }
+
         clearTimeout(timer);
         UI.unblock(elm);
     };

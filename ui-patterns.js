@@ -206,9 +206,8 @@ else if (window.UI.Patterns === undefined)
      * @param onSuccess {?function=}
      */
     Patterns.ajaxRefresh = function(localTarget, remoteTarget, blockTarget, onSuccess){
-        if (remoteTarget == undefined){
-            remoteTarget = localTarget;
-        }
+        remoteTarget = remoteTarget || localTarget;
+        blockTarget = blockTarget === undefined ? localTarget : blockTarget;
 
         var ajaxCommand = {
                 isAjaxCommand: true,
@@ -230,6 +229,61 @@ else if (window.UI.Patterns === undefined)
     };
     // endregion
 
+    // region [ Ajax Get & Post ]
+    function remoteFetch(command, url, data, localTarget, remoteTarget, blockTarget, onSuccess){
+        remoteTarget = remoteTarget || localTarget;
+        blockTarget = blockTarget === undefined ? localTarget : blockTarget;
+
+        var ajaxCommand = {
+                isAjaxCommand: true,
+                message: '',
+                displayMethod: '',
+                command: command,
+                status: '',
+                options: {
+                    remoteUrl: url,
+                    data: data,
+                    localTarget: localTarget,
+                    remoteTarget: remoteTarget
+                },
+                onPostParse: 'onSuccess'
+            },
+            context = {
+                onSuccess: onSuccess
+            };
+
+        Patterns.parseAjaxCommand(ajaxCommand, blockTarget, context);
+    }
+
+    /**
+     * Ajax html replacement using content from another page.
+     *
+     * @param url {!url}
+     * @param data {?object}
+     * @param localTarget {!selector}
+     * @param remoteTarget {?selector}
+     * @param blockTarget {?selector}
+     * @param onSuccess {?function}
+     */
+    Patterns.ajaxGet = function(url, data, localTarget, remoteTarget, blockTarget, onSuccess){
+        remoteFetch('ajax-get', url, data, localTarget, remoteTarget, blockTarget, onSuccess);
+    };
+
+    /**
+     * Ajax html replacement using content from another page.
+     *
+     * @param url {!url}
+     * @param data {?object}
+     * @param localTarget {!selector}
+     * @param remoteTarget {?selector}
+     * @param blockTarget {?selector}
+     * @param onSuccess {?function}
+     */
+    Patterns.ajaxPost = function(url, data, localTarget, remoteTarget, blockTarget, onSuccess){
+        remoteFetch('ajax-post', url, data, localTarget, remoteTarget, blockTarget, onSuccess);
+    };
+    // endregion
+
     // region [ parseAjaxCommand ]
     /**
      * Parse the ajaxCommand, if message is present display the message.
@@ -241,6 +295,7 @@ else if (window.UI.Patterns === undefined)
      */
     Patterns.parseAjaxCommand = function(ajaxCommand, blockTarget, context)
     {
+
         if ($.type(ajaxCommand) === 'string'){
             ajaxCommand = Str.parseJson(ajaxCommand, false);
         }
@@ -265,6 +320,8 @@ else if (window.UI.Patterns === undefined)
 
         hasSyncAction = $.inArray(ajaxCommand.command, ['refresh', 'redirect']) != -1;
 
+        blockTarget = blockTarget === undefined ? options.localTarget : blockTarget;
+
         if (Fn.callByName(ajaxCommand.onPreParse, context, options, ajaxCommand) === false)
         {
             Fn.callByName(ajaxCommand.onPostParse, context, options, ajaxCommand);
@@ -275,7 +332,7 @@ else if (window.UI.Patterns === undefined)
         {
             // display the loading screen
             if (command == 'ajax-get' || command == 'ajax-post'){
-                UI.block(options.localTarget);
+                UI.block(blockTarget);
 
                 setTimeout(function(){
                     canDisplayAsyncTask = true;
