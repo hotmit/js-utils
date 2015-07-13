@@ -203,7 +203,7 @@ else if (window.UI.Patterns === undefined)
      * @param localTarget {!selector} - the section to refresh
      * @param remoteTarget {?selector=} - if not set use localTarget
      * @param blockTarget {?selector=}
-     * @param onSuccess {?function=}
+     * @param onSuccess {?function=} - function(thisArg: context, ajaxCommand, ajaxData)
      */
     Patterns.ajaxRefresh = function(localTarget, remoteTarget, blockTarget, onSuccess){
         remoteTarget = remoteTarget || localTarget;
@@ -230,7 +230,7 @@ else if (window.UI.Patterns === undefined)
     // endregion
 
     // region [ Ajax Get & Post ]
-    function remoteFetch(command, url, data, localTarget, remoteTarget, blockTarget, onSuccess){
+    function remoteFetch(command, url, data, localTarget, remoteTarget, blockTarget, onAjaxSuccess){
         remoteTarget = remoteTarget || localTarget;
         blockTarget = blockTarget === undefined ? localTarget : blockTarget;
 
@@ -246,10 +246,10 @@ else if (window.UI.Patterns === undefined)
                     localTarget: localTarget,
                     remoteTarget: remoteTarget
                 },
-                onPostParse: 'onSuccess'
+                onAjaxSuccess: 'onAjaxSuccess'
             },
             context = {
-                onSuccess: onSuccess
+                onAjaxSuccess: onAjaxSuccess
             };
 
         Patterns.parseAjaxCommand(ajaxCommand, blockTarget, context);
@@ -263,10 +263,10 @@ else if (window.UI.Patterns === undefined)
      * @param localTarget {!selector}
      * @param remoteTarget {?selector}
      * @param blockTarget {?selector}
-     * @param onSuccess {?function}
+     * @param onAjaxSuccess {?function=} - function(thisArg: context, ajaxCommand, ajaxData)
      */
-    Patterns.ajaxGet = function(url, data, localTarget, remoteTarget, blockTarget, onSuccess){
-        remoteFetch('ajax-get', url, data, localTarget, remoteTarget, blockTarget, onSuccess);
+    Patterns.ajaxGet = function(url, data, localTarget, remoteTarget, blockTarget, onAjaxSuccess){
+        remoteFetch('ajax-get', url, data, localTarget, remoteTarget, blockTarget, onAjaxSuccess);
     };
 
     /**
@@ -277,10 +277,10 @@ else if (window.UI.Patterns === undefined)
      * @param localTarget {!selector}
      * @param remoteTarget {?selector}
      * @param blockTarget {?selector}
-     * @param onSuccess {?function}
+     * @param onAjaxSuccess {?function=} - function(thisArg: context, ajaxCommand, ajaxData)
      */
-    Patterns.ajaxPost = function(url, data, localTarget, remoteTarget, blockTarget, onSuccess){
-        remoteFetch('ajax-post', url, data, localTarget, remoteTarget, blockTarget, onSuccess);
+    Patterns.ajaxPost = function(url, data, localTarget, remoteTarget, blockTarget, onAjaxSuccess){
+        remoteFetch('ajax-post', url, data, localTarget, remoteTarget, blockTarget, onAjaxSuccess);
     };
     // endregion
 
@@ -288,7 +288,7 @@ else if (window.UI.Patterns === undefined)
     /**
      * Parse the ajaxCommand, if message is present display the message.
      *
-     * @param ajaxCommand {string|object|{message, method, command, onPreParse, onPostParse, options, status}}
+     * @param ajaxCommand {string|object|{message, method, command, onPreParse, onPostParse, onAjaxSuccess, options, status}}
      * @param blockTarget {?selector|HTMLElement|jQuery=} - the blocking target for block-ui.
      * @param context {!object=} - the object contains the functions specified by onPreParse and onPostParse.
      *                              If not specified the window object is used.
@@ -363,18 +363,25 @@ else if (window.UI.Patterns === undefined)
                 return setInterval(function() {
                     if (canDisplayAsyncTask) {
                         clearInterval(asyncTaskTimer);
-                        UI.unblock(options.localTarget);
+                        UI.unblock(blockTarget);
 
-                        var $localTarget = $(options.localTarget);
+                        var $result = $('<div></div>').append(content),
+                            $localTarget;
+                        if (!Str.empty(options.remoteTarget)){
+                            $result = $result.find(options.remoteTarget);
+                        }
+
+                        $localTarget = $(options.localTarget);
                         if (isError) {
                             $localTarget.empty()
                                 .append(content);
                         }
                         else {
-                            //$localTarget.fadeOut('fast', function(){
-                            //    $localTarget.replaceWith(content).fadeIn('slow');
-                            //});
-                            $localTarget.replaceWith(content);
+                            $localTarget.replaceWith($result);
+
+                            if (!Str.empty(ajaxCommand.onAjaxSuccess)){
+                                Fn.callByName(ajaxCommand.onAjaxSuccess, context, ajaxCommand, content);
+                            }
                         }
                     }
                 }, 100);
@@ -389,12 +396,7 @@ else if (window.UI.Patterns === undefined)
 
                 $.ajax(ajaxOptions)
                     .done(function(data){
-                        var $result = $('<div></div>').append(data),
-                            newAjaxContent = data;
-                        if (!Str.empty(options.remoteTarget)){
-                            newAjaxContent = $result.find(options.remoteTarget);
-                        }
-                        asyncTaskTimer = displayAsyncTask(newAjaxContent, false);
+                        asyncTaskTimer = displayAsyncTask(data, false);
                     }).fail(function(jqXHR, textStatus, errorThrown){
                         var errorMsg = gettext(errorThrown);
                         if (errorMsg){
