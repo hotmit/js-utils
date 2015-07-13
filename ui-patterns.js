@@ -203,7 +203,7 @@ else if (window.UI.Patterns === undefined)
      * @param localTarget {!selector} - the section to refresh
      * @param remoteTarget {?selector=} - if not set use localTarget
      * @param blockTarget {?selector=}
-     * @param onSuccess {?function=} - function(thisArg: context, ajaxCommand, ajaxData)
+     * @param onSuccess {?function=} - function(thisArg: context, ajaxContent, ajaxCommand)
      */
     Patterns.ajaxRefresh = function(localTarget, remoteTarget, blockTarget, onSuccess){
         remoteTarget = remoteTarget || localTarget;
@@ -263,7 +263,7 @@ else if (window.UI.Patterns === undefined)
      * @param localTarget {!selector}
      * @param remoteTarget {?selector}
      * @param blockTarget {?selector}
-     * @param onAjaxSuccess {?function=} - function(thisArg: context, ajaxCommand, ajaxData)
+     * @param onAjaxSuccess {?function=} - function(thisArg: context, ajaxContent, ajaxCommand)
      */
     Patterns.ajaxGet = function(url, data, localTarget, remoteTarget, blockTarget, onAjaxSuccess){
         remoteFetch('ajax-get', url, data, localTarget, remoteTarget, blockTarget, onAjaxSuccess);
@@ -277,7 +277,7 @@ else if (window.UI.Patterns === undefined)
      * @param localTarget {!selector}
      * @param remoteTarget {?selector}
      * @param blockTarget {?selector}
-     * @param onAjaxSuccess {?function=} - function(thisArg: context, ajaxCommand, ajaxData)
+     * @param onAjaxSuccess {?function=} - function(thisArg: context, ajaxContent, ajaxCommand)
      */
     Patterns.ajaxPost = function(url, data, localTarget, remoteTarget, blockTarget, onAjaxSuccess){
         remoteFetch('ajax-post', url, data, localTarget, remoteTarget, blockTarget, onAjaxSuccess);
@@ -380,7 +380,7 @@ else if (window.UI.Patterns === undefined)
                             $localTarget.replaceWith($result);
 
                             if (!Str.empty(ajaxCommand.onAjaxSuccess)){
-                                Fn.callByName(ajaxCommand.onAjaxSuccess, context, ajaxCommand, content);
+                                Fn.callByName(ajaxCommand.onAjaxSuccess, context, content, ajaxCommand);
                             }
                         }
                     }
