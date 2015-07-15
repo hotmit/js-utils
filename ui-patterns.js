@@ -54,16 +54,17 @@ else if (window.UI.Patterns === undefined)
      * @param targetSelector {?selector} - which element to extract/update when the data is returned from an ajax call.
      * @param ajaxOptions {?object=} - $(form).ajaxForm(ajaxOptions)
      *                                      If undefined the form target is use
-     * @param response {?function(data)=} - data can be json or return html.
-     *                              the dialog once a command is received.
+     * @param response {?function(data)=} - This get called when ajax has returned, the data can be json or html content.
      * @param parentDialog {?jQuery=} - the instance of bs dialog. This function will close
      *                                  the dialog once a command is received.
      * @param blockOptions {?object=} - blockUI options
      * @param context {?object=} - the object contains the functions specified by onPreParse and onPostParse.
      *                              If not specified the window object is used.
+     * @param localTarget {?selector} - if specify it will replace the specify target with the return html. if not then
+     *                                      replace the form as usual.
      */
     Patterns.submitForm = function(formSelector, targetSelector, ajaxOptions,
-                                    response, parentDialog, blockOptions, context){
+                                    response, parentDialog, blockOptions, context, localTarget){
         var $frm = $(formSelector),
             defaultAjaxOptions, ajaxFormOpts,
             userBeforeSubmit, userSuccessFunc;
@@ -132,6 +133,11 @@ else if (window.UI.Patterns === undefined)
                 $result = $('<div></div>').append(data);
 
                 newAjaxContent = $result.find(targetSelector);
+
+                if (localTarget != undefined){
+                    $localTarget = $(localTarget);
+                }
+
                 $fileInput = $localTarget.find('input[type="file"]').detach();
                 $localTarget.replaceWith(newAjaxContent);
 
