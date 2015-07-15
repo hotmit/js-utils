@@ -203,9 +203,9 @@ else if (window.UI.Patterns === undefined)
      * @param localTarget {!selector} - the section to refresh
      * @param remoteTarget {?selector=} - if not set use localTarget
      * @param blockTarget {?selector=}
-     * @param onSuccess {?function=} - function(thisArg: context, ajaxContent, ajaxCommand)
+     * @param onAjaxSuccess {?function=} - function(thisArg: context, ajaxContent, ajaxCommand)
      */
-    Patterns.ajaxRefresh = function(localTarget, remoteTarget, blockTarget, onSuccess){
+    Patterns.ajaxRefresh = function(localTarget, remoteTarget, blockTarget, onAjaxSuccess){
         remoteTarget = remoteTarget || localTarget;
         blockTarget = blockTarget === undefined ? localTarget : blockTarget;
 
@@ -219,10 +219,10 @@ else if (window.UI.Patterns === undefined)
                     localTarget: localTarget,
                     remoteTarget: remoteTarget
                 },
-                onPostParse: 'onSuccess'
+                onPostParse: 'onAjaxSuccess'
             },
             context = {
-                onSuccess: onSuccess
+                onSuccess: onAjaxSuccess
             };
 
         Patterns.parseAjaxCommand(ajaxCommand, blockTarget, context);
@@ -330,6 +330,11 @@ else if (window.UI.Patterns === undefined)
 
         function executeSyncActions()
         {
+            var htmlContent = ajaxCommand.options.htmlContent;
+            if (htmlContent && ajaxCommand.options.contentSelector) {
+                htmlContent = $('<div></div>').append(htmlContent).find(ajaxCommand.options.contentSelector);
+            }
+
             // display the loading screen
             if (command == 'ajax-get' || command == 'ajax-post'){
                 UI.block(blockTarget);
@@ -346,10 +351,10 @@ else if (window.UI.Patterns === undefined)
                 window.location = ajaxCommand.redirectUrl;
             }
             else if (command == 'replace-html'){
-                $(ajaxCommand.options.localTarget).replaceWith(ajaxCommand.options.htmlContent);
+                $(ajaxCommand.options.localTarget).replaceWith(htmlContent);
             }
             else if (command == 'append-html'){
-                $(ajaxCommand.options.localTarget).append(ajaxCommand.options.htmlContent);
+                $(ajaxCommand.options.localTarget).append(htmlContent);
             }
             else if (!Str.empty(ajaxCommand.onPostParse)){
                 Fn.callByName(ajaxCommand.onPostParse, context, options, ajaxCommand);
