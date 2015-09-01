@@ -13,3 +13,6 @@
 [submodule "jq-ext/jquery-caret"]
 	path = jq-ext/jquery-caret
 	url = https://github.com/DrPheltRight/jquery-caret.git
+[submodule "jq-ext/blockui"]
+	path = jq-ext/blockui
+	url = https://github.com/malsup/blockui.git

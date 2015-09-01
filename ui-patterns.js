@@ -225,10 +225,10 @@ else if (window.UI.Patterns === undefined)
                     localTarget: localTarget,
                     remoteTarget: remoteTarget
                 },
-                onPostParse: 'onAjaxSuccess'
+                onAjaxSuccess: 'onAjaxSuccess'
             },
             context = {
-                onSuccess: onAjaxSuccess
+                onAjaxSuccess: onAjaxSuccess
             };
 
         Patterns.parseAjaxCommand(ajaxCommand, blockTarget, context);
