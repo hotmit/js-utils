@@ -92,14 +92,62 @@ if (window.Slct === undefined) {
         $selectElement.append($options);
     };
 
+    function _getOption(selectElement, input, byValue, caseSensitive){
+        var result = false;
+        $(selectElement).find('option').each(function(i, option){
+            var $option = $(option);
+            if (byValue){
+                if (Str.equals($option.val(),  input, caseSensitive)){
+                    result = $option;
+                    return false;
+                }
+            }
+            else {  // By Text
+                if (Str.equals($option.text(),  input, caseSensitive)){
+                    result = $option;
+                    return false;
+                }
+            }
+        });
+        return result;
+    }
+
+    /**
+     * Get the option by the option value.
+     *
+     * @param selectElement {id|HTMLElement|jQuery} - the select box element
+     * @param value
+     * @param caseSensitive
+     * @returns {*}
+     */
+    Slct.getOptionByValue = function(selectElement, value, caseSensitive){
+        return _getOption(selectElement, value, true, caseSensitive);
+    };
+
+    /**
+     * Get the option by the option display text.
+     *
+     * @param selectElement {id|HTMLElement|jQuery} - the select box element
+     * @param text
+     * @param caseSensitive
+     * @returns {*}
+     */
+    Slct.getOptionByText = function(selectElement, text, caseSensitive){
+        return _getOption(selectElement, text, false, caseSensitive);
+    };
+
     /**
      * Remove the option based on its value.
      *
      * @param selectElement {id|HTMLElement|jQuery} - the select box element
      * @param value {object} - the value of the option you want to remove.
+     * @param caseSensitive - case sensitive comparison.
      */
-    Slct.removeByValue = function(selectElement, value){
-        $(selectElement).find(Str.format('option[value="{0}"]', value)).remove();
+    Slct.removeByValue = function(selectElement, value, caseSensitive){
+        var $option = Slct.getOptionByValue(selectElement, value, caseSensitive);
+        if ($option){
+            $option.remove();
+        }
     };
 
     /**
@@ -107,14 +155,65 @@ if (window.Slct === undefined) {
      *
      * @param selectElement {id|HTMLElement|jQuery} - the select box element
      * @param text {string} - the text of the option you want to remove.
+     * @param caseSensitive - case sensitive comparison.
      */
-    Slct.removeByText = function(selectElement, text){
-        $(selectElement).find('option').each(function(i, option){
-            var $option = $(option);
-            if ($option.text() == text){
-                $option.remove();
-            }
-        });
+    Slct.removeByText = function(selectElement, text, caseSensitive){
+        var $option = Slct.getOptionByText(selectElement, text, caseSensitive);
+        if ($option){
+            $option.remove();
+        }
+    };
+
+    /**
+     * Set option as selected based on its value.
+     *
+     * @param selectElement {id|HTMLElement|jQuery} - the select box element
+     * @param value
+     * @param caseSensitive
+     * @returns {boolean}
+     */
+    Slct.selectByValue = function(selectElement, value, caseSensitive){
+        var $option = Slct.getOptionByValue(selectElement, value, caseSensitive);
+        if ($option){
+            $option.prop('selected', true);
+            return true;
+        }
+        return false;
+    };
+
+    /**
+     * Set option as selected based on its display text.
+     *
+     * @param selectElement {id|HTMLElement|jQuery} - the select box element
+     * @param text
+     * @param caseSensitive
+     * @returns {boolean}
+     */
+    Slct.selectByText = function(selectElement, text, caseSensitive){
+        var $option = Slct.getOptionByText(selectElement, text, caseSensitive);
+        if ($option){
+            $option.prop('selected', true);
+            return true;
+        }
+        return false;
+    };
+
+    /**
+     * Select all options.
+     *
+     * @param selectElement
+     */
+    Slct.selectAll = function(selectElement){
+        $(selectElement).find('option').prop('selected', true);
+    };
+
+    /**
+     * Clear all selection.
+     *
+     * @param selectElement
+     */
+    Slct.selectNone = function(selectElement){
+        $(selectElement).find('option').prop('selected', false);
     };
 
     /**

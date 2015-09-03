@@ -10,8 +10,8 @@ jq-ext/jquery-cookie/src/jquery.cookie.js
 ext/json-js/json2.js
 jq-ext/blockui/jquery.blockUI.js
 
-date.js
 str-standalone.js
+date.js
 str-ext.js
 ui.js
 ui-patterns.js
