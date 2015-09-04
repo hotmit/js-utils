@@ -122,14 +122,14 @@
          *  eg. [1,2,3,4,5] trunk size 2 => [[1,2], [3,4], [5]]
          *
          * @param arr {!Array}
-         * @param trunkSize {number}
+         * @param chunkSize {number}
          * @returns {Array<Array>}
          */
-        Arr.trunk = function(arr, trunkSize){
-            var result = [], trunk;
+        Arr.chop = function(arr, chunkSize){
+            var result = [], chunk;
             while(arr.length){
-                trunk = arr.splice(0, trunkSize);
-                result.push(trunk);
+                chunk = arr.splice(0, chunkSize);
+                result.push(chunk);
             }
             return result;
         };
