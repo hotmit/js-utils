@@ -452,7 +452,24 @@
                 return s.split('').reverse().join('');
             }
             return s;
-        }
+        };
+
+        /**
+         * Split the string into multiple smaller chunks.
+         *
+         * @param s
+         * @param chunkSize
+         * @returns {Array}
+         */
+        Str.chop = function(s, chunkSize){
+            var result = [], chunk;
+            while(s.length){
+                chunk = s.substr(0, chunkSize);
+                s = s.substr(chunkSize);
+                result.push(chunk);
+            }
+            return result;
+        };
 
     }(global.Str));
 
