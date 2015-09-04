@@ -440,6 +440,20 @@
         Str.escapeAttribute = function (s){
             return s.replace(/"/g, '\\"');
         };
+
+        /**
+         * Reverse the string.
+         *
+         * @param s
+         * @returns {*}
+         */
+        Str.reverse = function(s){
+            if (s){
+                return s.split('').reverse().join('');
+            }
+            return s;
+        }
+
     }(global.Str));
 
 }(typeof window !== 'undefined' ? window : this, jQuery));
