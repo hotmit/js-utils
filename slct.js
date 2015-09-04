@@ -10,7 +10,7 @@
         global.Slct = {};
     }
 
-    (function(Slct){
+    (function(Slct, Str){
         /**
          * Get the selected value of a select element.
          *
@@ -239,6 +239,6 @@
             return !$(selectElement).find('option').length;
         };
 
-    }(global.Slct));
+    }(global.Slct, global.Str));
 
 }(typeof window !== 'undefined' ? window : this, jQuery));
