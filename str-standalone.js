@@ -2,424 +2,448 @@
 
 // STANDALONE
 
-// gettext place holder
-if (window.gettext === undefined){
-    window.gettext = function(s){
-        if (s == undefined){
-            return '';
-        }
-        return s;
-    };
-}
+(function (global, $) {
+    "use strict";
 
-if (window.Str === undefined)
-{
-    window.Str = {};
-}
-
-(function($, Str){
-
-	/**
-	 * Check for undefined, null, zero length, blanks or s is false.
-	 * @param s {string|object} - string, array or object to test.
-	 * @returns {boolean}
-	 * Unit Test: http://jsfiddle.net/wao20/TGP3N/
-	 */
-	Str.empty = function(s) {
-		// s == undefined	 <= double equals is deliberate, check for null and undefined
-		return !!(s == undefined
-			|| s.length === 0
-			|| Str.trim(s).length === 0
-			|| !s);
-
-	};
-
-	/**
-	 * Compare two strings
-	 * @param s1 {?string}
-	 * @param s2 {?string}
-	 * @param caseSensitive {boolean=}
-	 * @returns {boolean}
-	 */	
-	Str.equals = function(s1, s2, caseSensitive)
-	{
-		if (s1 == undefined || s2 == undefined)
-		{
-			return false;
-		}
-		
-		if (caseSensitive)
-		{
-			return s1 == s2;
-		}
-		return s1.toLowerCase() == s2.toLowerCase();
-	};
-	
-	/**
-	 * empty(), '0', '0.0', 'false' => false. Otherwise return !!s.
-	 * 
-	 * @param s {?string}
-	 * @returns {boolean}
-	 */	
-	Str.boolVal = function(s) {
-		if (Str.empty(s)){
-			return false;
-		}
-		s = Str.trim(s).toLowerCase();
-		if (s == '0' || s == '0.0' || s == 'false'){
-			return false;
-		}
-		return !!s;
-	};
-
-	/**
-	 * Escape the string to be use as a literal in regex expression.
-	 * @param s {string}
-	 * @returns {string}
-	 */
-	Str.regexEscape = function(s){
-		if (Str.empty(s)){
-			return '';
-		}
-		return s.replace(/([.?*+\^$\[\]\\(){}|\-])/g, "\\$1");
-	};
-
-	/**
-	 * Tests whether the beginning of a string matches pattern.
-	 * @param s {string}
-	 * @param pattern {string} - to find
-	 * @param caseSensitive {boolean=}
-	 * @return {boolean}
-	 */
-	Str.startsWith = function(s, pattern, caseSensitive) {
-		if (caseSensitive){
-			return s.indexOf(pattern) === 0;
-		}
-		return s.toLowerCase().indexOf(pattern.toLowerCase()) === 0;
-	};
-
-	/**
-	 * Test if string ends with specified pattern
-	 * @param s {string}
-	 * @param pattern {string}
-	 * @param caseSensitive {boolean=} 
-	 * @returns {boolean}
-	 */
-	Str.endsWith = function(s, pattern, caseSensitive) {
-		var d = s.length - pattern.length;	
-		if (caseSensitive){
-			return d >= 0 && s.lastIndexOf(pattern) === d;
-		}
-		return d >= 0 && s.toLowerCase().lastIndexOf(pattern.toLowerCase()) === d;
-	};
-
-	/**
-	 * Check if the string contains a substring.
-	 * @param s {string}
-	 * @param needle {string}
-	 * @param caseSensitive {boolean=} 
-	 * @return {boolean}
-	 */
-	Str.contains = function(s, needle, caseSensitive) {
-		if (Str.empty(s) || Str.empty(needle)){
-			return false;
-		}
-		if (caseSensitive){
-			return s.indexOf(needle) > -1;
-		}
-		return s.toLowerCase().indexOf(needle.toLowerCase()) > -1;
-	};
-		
-	/**
-	 * Must contains all the element in the array.
-	 * @param s {string}
-	 * @param needles {Array|string}
-	 * @param caseSensitive {boolean=} 
-	 * @return {boolean}
-	 */
-	Str.containsAll = function(s, needles, caseSensitive){
-		var i=0;
-		if ($.isArray(needles)){
-			for(i=0; i < needles.length; i++){
-				if (!Str.contains(s, needles[i], caseSensitive)){
-					return false;
-				}
-			}
-			return true;
-		}
-		return Str.contains(s, needles, caseSensitive);
-	};
-
-	/**
-	 * Must contains ANY the element in the array.
-	 * @param s {string}
-	 * @param needles {Array|string}
-	 * @param caseSensitive {boolean=} 
-	 * @return {boolean}
-	 */
-	Str.containsAny = function(s, needles, caseSensitive) {
-		var i;
-		if ($.isArray(needles)){
-			for(i=0; i < needles.length; i++){
-				if (Str.contains(s, needles[i], caseSensitive)){
-					return true;
-				}
-			}
-			return false;
-		}
-		return Str.contains(s, needles, caseSensitive);
-	};
-
-    /**
-     * Determine if the specified variable is a string
-     * @param o
-     * @returns {boolean}
-     */
-    Str.isString = function (o) {
-        return $.type(o) === 'string';
-    };
-
-	/**
-	 * Trims white space from the beginning and end of a string.
-	 * @param s {string}
-	 * @param c {string=}
-	 * @return {string}
-	 */
-	Str.trim = function(s, c) {
-        if (!Str.isString(s)){
+    // gettext place holder
+    if (global.gettext === undefined){
+        global.gettext = function(s){
+            if (s == undefined){
+                return '';
+            }
             return s;
-        }
+        };
+    }
 
-		if (c == undefined || c == ' '){
-			if (String.prototype.trim){
-				return String.prototype.trim.call(s);
-			}
-			return s.replace(/^\s+/, '').replace(/\s+$/, '');
-		}	
-		return Str.trimStart(Str.trimEnd(s, c), c);
-	};
-		
-	/**
-	 * Remove chars/Str from the start of the string
-	 * @param s
-	 * @param c {string|Array=} - supports Str.trimEnd(s, ['0x0', '0', 'x']);
-	 */
-	Str.trimStart = function(s, c){
-		if (c == undefined){
-			return s.replace(/^\s+/, '');
-		}		
-		throw {name : "NotImplementedError", message : "too lazy to implement"}; 	
-	};
-		
-	/**
-	 * Remove chars/Str(s) from the end of the string
-	 * @param s {string}
-	 * @param c {string|Array=} - supports Str.trimEnd(s, ['0x0', '0', 'x']);
-	 */
-	Str.trimEnd = function(s, c){
-		if (c == undefined){
-			return s.replace(/\s+$/, '');
-		}	
-		throw {name : "NotImplementedError", message : "too lazy to implement"}; 	
-	};
+    if (global.Str === undefined)
+    {
+        global.Str = {};
+    }
 
-	/**
-	 * Extended substring, support negative index (ordinal js substring(startIndex, endIndex))
-	 * @param s {string}
-	 * @param index {number} - if negative take string from the right similar to php substr()
-	 * @param len {number=} - number of char to take starting from the index to the right (even when index is negative)
-	 * @return {string}
-	 */	
-	Str.subString = function(s, index, len){
-		if (s == undefined){
-			return '';
-		}
-		
-		len = len || 0;
-		
-		if (Math.abs(index) > s.length)
-		{
-			return s;
-		}
-		
-		// regular substring
-		if (index > -1){
-			if (len > 0 && (index + len) < s.length){
-				return s.substring(index, index+len);
-			}
-			return s.substring(index);
-		}
-		
-		// Negative index, take string from the right
-		// Index is negative	=> subString ('hello', -3)	=> 'llo'
-		var start = s.length + index;
-		if (len > 0 && (start + len) < s.length){
-			return s.substring(start, start+len);
-		}
-		return s.substring(start);
-	};
+    (function(Str){
+        /**
+         * Check for undefined, null, zero length, blanks or s is false.
+         * @param s {string|object} - string, array or object to test.
+         * @returns {boolean}
+         * Unit Test: http://jsfiddle.net/wao20/TGP3N/
+         */
+        Str.empty = function(s) {
+            // s == undefined	 <= double equals is deliberate, check for null and undefined
+            return !!(s == undefined
+                || s.length === 0
+                || Str.trim(s).length === 0
+                || !s);
 
-	/**
-	 * Count number of occurrences of an substring.
-	 * @param s {string} - the big string
-	 * @param sub {string} - the little string you want to find.
-	 * @param caseSensitive {boolean=} 
-	 * @returns {number}
-	 */
-	Str.subCount = function(s, sub, caseSensitive){
-		sub = Str.regexEscape(sub);
-		
-		if (caseSensitive){
-			return s.split(sub).length - 1;
-		}
-		return s.toLowerCase().split(sub.toLowerCase()).length - 1;
-	};
-		
-	/**
-	 * Concatenate count number of copies of s together and return result.
-	 * @param s {string}
-	 * @param count {number} - Number of times to repeat s
-	 * @return {string}
-	 */
-	Str.repeat = function(s, count) {
-		var newS = "", i;
-		for (i=0; i<count; i++) {
-			newS += s;
-		}
-		return newS;
-	};
+        };
 
-	/**
-	 * Pad left
-	 * @param s {!string}
-	 * @param padStr {!string} - the padding
-	 * @param totalLength {!number} - the final length after padding
-	 * @return {string}
-	 */	
-	Str.padLeft = function(s, padStr, totalLength){
-		return s.length >= totalLength ? s : Str.repeat(padStr, (totalLength-s.length)/padStr.length) + s;
-	};
+        /**
+         * Compare two strings
+         * @param s1 {?string}
+         * @param s2 {?string}
+         * @param caseSensitive {boolean=}
+         * @returns {boolean}
+         */
+        Str.equals = function(s1, s2, caseSensitive)
+        {
+            if (s1 == undefined || s2 == undefined)
+            {
+                return false;
+            }
 
-	/**
-	 * Pad right
-	 * @param s {string} 
-	 * @param padStr {string} - the padding
-	 * @param totalLength {number} - the final length after padding
-	 * @return {string}
-	 */	
-	Str.padRight = function(s, padStr, totalLength){
-		return s.length >= totalLength  ? s : s + Str.repeat(padStr, (totalLength-s.length)/padStr.length);
-	};
-		
-	/**
-	 * Strips any HTML tags from the specified string.
-	 * @param s {string} 
-	 * @return {string}
-	 */
-	Str.stripTags = function(s) {
-		return s.replace(/<\/?[^>]+>/gi, '');
-	};	
-		
-	/**
-	 * escapeHTML from Prototype-1.6.0.2 -- If it's good enough for Webkit and IE, it's good enough for Gecko!
-	 * Converts HTML special characters to their entity equivalents.
-	 *
-	 * @param s {string}
-	 * @return {string}
-	 */
-	Str.escapeHTML = function(s) {
-		s = s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-		return s;
-	};
-		
-	/**
-	 * unescapeHTML from Prototype-1.6.0.2 -- If it's good enough for Webkit and IE, it's good enough for Gecko!
-	 * Strips tags and converts the entity forms of special HTML characters to their normal form.
-	 *
-	 * @param s {string}
-	 * @return {string}
-	 */
-	Str.unescapeHTML = function(s) {
-		return Str.stripTags(s).replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
-	};	
-	
-	/**
-	 * Remove all Viet's accents and replace it with the latin based alphabet
-	 * @param s {string}
-	 * @return {string}
-	 */
-	Str.stripViet = function(s) {
-		/* 
-		data = data.replace(/[àáâãăạảấầẩẫậắằẳẵặ]/g, 'a');
-		data = data.replace(/[òóôõơọỏốồổỗộớờởỡợ]/g, 'o');
-		data = data.replace(/[èéêẹẻẽếềểễệ]/g, 'e');	
-		data = data.replace(/[ùúũưụủứừửữự]/g, 'u');
-		data = data.replace(/[ìíĩỉị]/g, 'i');
-		data = data.replace(/[ýỳỵỷỹ]/g, 'y');
-		data = data.replace(/[đðĐ]/g, 'd');
-		*/
+            if (caseSensitive)
+            {
+                return s1 == s2;
+            }
+            return s1.toLowerCase() == s2.toLowerCase();
+        };
 
-		if (Str.empty(s))
-		{
-			return s;
-		}
-			
-		s = s.replace(/[\u00E0\u00E1\u00E2\u00E3\u0103\u1EA1\u1EA3\u1EA5\u1EA7\u1EA9\u1EAB\u1EAD\u1EAF\u1EB1\u1EB3\u1EB5\u1EB7]/g, 'a');
-		s = s.replace(/[\u00F2\u00F3\u00F4\u00F5\u01A1\u1ECD\u1ECF\u1ED1\u1ED3\u1ED5\u1ED7\u1ED9\u1EDB\u1EDD\u1EDF\u1EE1\u1EE3]/g, 'o');
-		s = s.replace(/[\u00E8\u00E9\u00EA\u1EB9\u1EBB\u1EBD\u1EBF\u1EC1\u1EC3\u1EC5\u1EC7]/g, 'e');	
-		s = s.replace(/[\u00F9\u00FA\u0169\u01B0\u1EE5\u1EE7\u1EE9\u1EEB\u1EED\u1EEF\u1EF1]/g, 'u');
-		s = s.replace(/[\u00EC\u00ED\u0129\u1EC9\u1ECB]/g, 'i');
-		s = s.replace(/[\u00FD\u1EF3\u1EF5\u1EF7\u1EF9]/g, 'y');
-		s = s.replace(/[\u0111\u00F0\u0110]/g, 'd');
-		
-		return s;
-	};
+        /**
+         * empty(), '0', '0.0', 'false' => false. Otherwise return !!s.
+         *
+         * @param s {?string}
+         * @returns {boolean}
+         */
+        Str.boolVal = function(s) {
+            if (Str.empty(s)){
+                return false;
+            }
+            s = Str.trim(s).toLowerCase();
+            if (s == '0' || s == '0.0' || s == 'false'){
+                return false;
+            }
+            return !!s;
+        };
 
-	/**
-	 * Use this to constructs multi lines string
-	 *
-	 * eg. Str.multiLines(true,
-	 * 						'hello',
-	 * 						'world'
-	 * 						);
-	 * 					returns: "hello\nworld"
-	 *
-	 * @param glue {string} - the separator between each line (eg. '\n', ', ' or ' ')
-	 * @param args {...string} - each line
-	 */
-	Str.multiLines = function (glue, args) {
-		args = Array.prototype.splice.call(arguments, 1);
-		return args.join(glue);
-	};
+        /**
+         * Escape the string to be use as a literal in regex expression.
+         * @param s {string}
+         * @returns {string}
+         */
+        Str.regexEscape = function(s){
+            if (Str.empty(s)){
+                return '';
+            }
+            return s.replace(/([.?*+\^$\[\]\\(){}|\-])/g, "\\$1");
+        };
 
-	/**
-	 * Try to parse the json, if valid return the object else return defaultValue
-	 *
-	 * @param s {string} - json string
-	 * @param defaultValue {boolean|object=} - if not specified defaultValue=false
-	 * @returns {boolean|object}
-	 */
-	Str.parseJson = function(s, defaultValue){
-		defaultValue = defaultValue === undefined ? false : defaultValue;
-		if (Str.empty(s)){
-			return defaultValue;
-		}
+        /**
+         * Tests whether the beginning of a string matches pattern.
+         * @param s {string}
+         * @param pattern {string} - to find
+         * @param caseSensitive {boolean=}
+         * @return {boolean}
+         */
+        Str.startsWith = function(s, pattern, caseSensitive) {
+            if (caseSensitive){
+                return s.indexOf(pattern) === 0;
+            }
+            return s.toLowerCase().indexOf(pattern.toLowerCase()) === 0;
+        };
 
-		try {
-			return $.parseJSON(s);
-		}
-		catch(err){
-			return defaultValue;
-		}
-	};
+        /**
+         * Test if string ends with specified pattern
+         * @param s {string}
+         * @param pattern {string}
+         * @param caseSensitive {boolean=}
+         * @returns {boolean}
+         */
+        Str.endsWith = function(s, pattern, caseSensitive) {
+            var d = s.length - pattern.length;
+            if (caseSensitive){
+                return d >= 0 && s.lastIndexOf(pattern) === d;
+            }
+            return d >= 0 && s.toLowerCase().lastIndexOf(pattern.toLowerCase()) === d;
+        };
 
-    /**
-     * Escape the attribute, make sure it doesn't break the attribute select or to be use a an attribute.
-     * @param s {string} - the string
-     */
-    Str.escapeAttribute = function (s){
-        return s.replace(/"/g, '\\"');
-    };
+        /**
+         * Check if the string contains a substring.
+         * @param s {string}
+         * @param needle {string}
+         * @param caseSensitive {boolean=}
+         * @return {boolean}
+         */
+        Str.contains = function(s, needle, caseSensitive) {
+            if (Str.empty(s) || Str.empty(needle)){
+                return false;
+            }
+            if (caseSensitive){
+                return s.indexOf(needle) > -1;
+            }
+            return s.toLowerCase().indexOf(needle.toLowerCase()) > -1;
+        };
+
+        /**
+         * Must contains all the element in the array.
+         * @param s {string}
+         * @param needles {Array|string}
+         * @param caseSensitive {boolean=}
+         * @return {boolean}
+         */
+        Str.containsAll = function(s, needles, caseSensitive){
+            var i=0;
+            if ($.isArray(needles)){
+                for(i=0; i < needles.length; i++){
+                    if (!Str.contains(s, needles[i], caseSensitive)){
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return Str.contains(s, needles, caseSensitive);
+        };
+
+        /**
+         * Must contains ANY the element in the array.
+         * @param s {string}
+         * @param needles {Array|string}
+         * @param caseSensitive {boolean=}
+         * @return {boolean}
+         */
+        Str.containsAny = function(s, needles, caseSensitive) {
+            var i;
+            if ($.isArray(needles)){
+                for(i=0; i < needles.length; i++){
+                    if (Str.contains(s, needles[i], caseSensitive)){
+                        return true;
+                    }
+                }
+                return false;
+            }
+            return Str.contains(s, needles, caseSensitive);
+        };
+
+        /**
+         * Determine if the specified variable is a string
+         * @param o
+         * @returns {boolean}
+         */
+        Str.isString = function (o) {
+            return $.type(o) === 'string';
+        };
+
+        /**
+         * Trims white space from the beginning and end of a string.
+         * @param s {string}
+         * @param c {string=}
+         * @return {string}
+         */
+        Str.trim = function(s, c) {
+            if (!Str.isString(s)){
+                return s;
+            }
+
+            if (c == undefined || c == ' '){
+                if (String.prototype.trim){
+                    return String.prototype.trim.call(s);
+                }
+                return s.replace(/^\s+/, '').replace(/\s+$/, '');
+            }
+            return Str.trimStart(Str.trimEnd(s, c), c);
+        };
+
+        /**
+         * Remove chars/Str from the start of the string
+         * @param s
+         * @param c {string|Array=} - supports Str.trimEnd(s, ['0x0', '0', 'x']);
+         */
+        Str.trimStart = function(s, c){
+            if (c == undefined){
+                return s.replace(/^\s+/, '');
+            }
+            throw {name : "NotImplementedError", message : "too lazy to implement"};
+        };
+
+        /**
+         * Remove chars/Str(s) from the end of the string
+         * @param s {string}
+         * @param c {string|Array=} - supports Str.trimEnd(s, ['0x0', '0', 'x']);
+         */
+        Str.trimEnd = function(s, c){
+            if (c == undefined){
+                return s.replace(/\s+$/, '');
+            }
+            throw {name : "NotImplementedError", message : "too lazy to implement"};
+        };
+
+        /**
+         * Extended substring, support negative index (ordinal js substring(startIndex, endIndex))
+         * @param s {string}
+         * @param index {number} - if negative take string from the right similar to php substr()
+         * @param len {number=} - number of char to take starting from the index to the right (even when index is negative)
+         * @return {string}
+         */
+        Str.subString = function(s, index, len){
+            if (s == undefined){
+                return '';
+            }
+
+            len = len || 0;
+
+            if (Math.abs(index) > s.length)
+            {
+                return s;
+            }
+
+            // regular substring
+            if (index > -1){
+                if (len > 0 && (index + len) < s.length){
+                    return s.substring(index, index+len);
+                }
+                return s.substring(index);
+            }
+
+            // Negative index, take string from the right
+            // Index is negative	=> subString ('hello', -3)	=> 'llo'
+            var start = s.length + index;
+            if (len > 0 && (start + len) < s.length){
+                return s.substring(start, start+len);
+            }
+            return s.substring(start);
+        };
+
+        /**
+         * Count number of occurrences of an substring.
+         * @param s {string} - the big string
+         * @param sub {string} - the little string you want to find.
+         * @param caseSensitive {boolean=}
+         * @returns {number}
+         */
+        Str.subCount = function(s, sub, caseSensitive){
+            sub = Str.regexEscape(sub);
+
+            if (caseSensitive){
+                return s.split(sub).length - 1;
+            }
+            return s.toLowerCase().split(sub.toLowerCase()).length - 1;
+        };
+
+        /**
+         * Concatenate count number of copies of s together and return result.
+         * @param s {string}
+         * @param count {number} - Number of times to repeat s
+         * @return {string}
+         */
+        Str.repeat = function(s, count) {
+            var newS = "", i;
+            for (i=0; i<count; i++) {
+                newS += s;
+            }
+            return newS;
+        };
+
+        /**
+         * Pad left
+         *
+         * @param s {!string}
+         * @param padStr {!string} - the padding
+         * @param totalLength {!number} - the final length after padding
+         * @return {string}
+         */
+        Str.padLeft = function(s, padStr, totalLength){
+            return s.length >= totalLength ? s : Str.repeat(padStr, (totalLength-s.length)/padStr.length) + s;
+        };
+
+        /**
+         * Pad right
+         *
+         * @param s {string}
+         * @param padStr {string} - the padding
+         * @param totalLength {number} - the final length after padding
+         * @return {string}
+         */
+        Str.padRight = function(s, padStr, totalLength){
+            return s.length >= totalLength  ? s : s + Str.repeat(padStr, (totalLength-s.length)/padStr.length);
+        };
+
+        /**
+         * Pad string based on the boolean value.
+         *
+         * @param s {string}
+         * @param padStr {string} - the padding
+         * @param totalLength {number} - the final length after padding
+         * @param padRight {boolean} - pad right if true, pad left otherwise
+         * @return {string}
+         */
+        Str.pad = function(s, padStr, totalLength, padRight){
+            if (padRight){
+                return Str.padRight(s, padStr, totalLength);
+            }
+            return Str.padLeft(s, padStr, totalLength);
+        };
+
+        /**
+         * Strips any HTML tags from the specified string.
+         * @param s {string}
+         * @return {string}
+         */
+        Str.stripTags = function(s) {
+            return s.replace(/<\/?[^>]+>/gi, '');
+        };
+
+        /**
+         * escapeHTML from Prototype-1.6.0.2 -- If it's good enough for Webkit and IE, it's good enough for Gecko!
+         * Converts HTML special characters to their entity equivalents.
+         *
+         * @param s {string}
+         * @return {string}
+         */
+        Str.escapeHTML = function(s) {
+            s = s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+            return s;
+        };
+
+        /**
+         * unescapeHTML from Prototype-1.6.0.2 -- If it's good enough for Webkit and IE, it's good enough for Gecko!
+         * Strips tags and converts the entity forms of special HTML characters to their normal form.
+         *
+         * @param s {string}
+         * @return {string}
+         */
+        Str.unescapeHTML = function(s) {
+            return Str.stripTags(s).replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+        };
+
+        /**
+         * Remove all Viet's accents and replace it with the latin based alphabet
+         * @param s {string}
+         * @return {string}
+         */
+        Str.stripViet = function(s) {
+            /*
+            data = data.replace(/[àáâãăạảấầẩẫậắằẳẵặ]/g, 'a');
+            data = data.replace(/[òóôõơọỏốồổỗộớờởỡợ]/g, 'o');
+            data = data.replace(/[èéêẹẻẽếềểễệ]/g, 'e');
+            data = data.replace(/[ùúũưụủứừửữự]/g, 'u');
+            data = data.replace(/[ìíĩỉị]/g, 'i');
+            data = data.replace(/[ýỳỵỷỹ]/g, 'y');
+            data = data.replace(/[đðĐ]/g, 'd');
+            */
+
+            if (Str.empty(s))
+            {
+                return s;
+            }
+
+            s = s.replace(/[\u00E0\u00E1\u00E2\u00E3\u0103\u1EA1\u1EA3\u1EA5\u1EA7\u1EA9\u1EAB\u1EAD\u1EAF\u1EB1\u1EB3\u1EB5\u1EB7]/g, 'a');
+            s = s.replace(/[\u00F2\u00F3\u00F4\u00F5\u01A1\u1ECD\u1ECF\u1ED1\u1ED3\u1ED5\u1ED7\u1ED9\u1EDB\u1EDD\u1EDF\u1EE1\u1EE3]/g, 'o');
+            s = s.replace(/[\u00E8\u00E9\u00EA\u1EB9\u1EBB\u1EBD\u1EBF\u1EC1\u1EC3\u1EC5\u1EC7]/g, 'e');
+            s = s.replace(/[\u00F9\u00FA\u0169\u01B0\u1EE5\u1EE7\u1EE9\u1EEB\u1EED\u1EEF\u1EF1]/g, 'u');
+            s = s.replace(/[\u00EC\u00ED\u0129\u1EC9\u1ECB]/g, 'i');
+            s = s.replace(/[\u00FD\u1EF3\u1EF5\u1EF7\u1EF9]/g, 'y');
+            s = s.replace(/[\u0111\u00F0\u0110]/g, 'd');
+
+            return s;
+        };
+
+        /**
+         * Use this to constructs multi lines string
+         *
+         * eg. Str.multiLines(true,
+         * 						'hello',
+         * 						'world'
+         * 						);
+         * 					returns: "hello\nworld"
+         *
+         * @param glue {string} - the separator between each line (eg. '\n', ', ' or ' ')
+         * @param args {...string} - each line
+         */
+        Str.multiLines = function (glue, args) {
+            args = Array.prototype.splice.call(arguments, 1);
+            return args.join(glue);
+        };
+
+        /**
+         * Try to parse the json, if valid return the object else return defaultValue
+         *
+         * @param s {string} - json string
+         * @param defaultValue {boolean|object=} - if not specified defaultValue=false
+         * @returns {boolean|object}
+         */
+        Str.parseJson = function(s, defaultValue){
+            defaultValue = defaultValue === undefined ? false : defaultValue;
+            if (Str.empty(s)){
+                return defaultValue;
+            }
+
+            try {
+                return $.parseJSON(s);
+            }
+            catch(err){
+                return defaultValue;
+            }
+        };
+
+        /**
+         * Escape the attribute, make sure it doesn't break the attribute select or to be use a an attribute.
+         * @param s {string} - the string
+         */
+        Str.escapeAttribute = function (s){
+            return s.replace(/"/g, '\\"');
+        };
+    }(global.Str));
+
+}(typeof window !== 'undefined' ? window : this, jQuery));
 
 
-}(jQuery, window.Str));
+
+
