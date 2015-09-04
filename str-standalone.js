@@ -474,7 +474,3 @@
     }(global.Str));
 
 }(typeof window !== 'undefined' ? window : this, jQuery));
-
-
-
-

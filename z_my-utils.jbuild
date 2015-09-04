@@ -1,4 +1,5 @@
-output: z_my-utils.min.js
+output: D:\Projects\Js\hexdec-converter\js\util.js
+//output: z_my-utils.min.js
 
 // jQuery must be before ALL
 
