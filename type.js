@@ -2,141 +2,150 @@
 
 // STANDALONE
 
-if (window.Typ === undefined)
-{
-    window.Typ = {};
-}
 
-(function($, Typ){
-    /**
-     * Is jQuery object
-     * @param o
-     * @returns {boolean}
-     */
-	Typ.isJquery = function(o){
-		return o instanceof jQuery;
-	};
+(function (global, $) {
+    "use strict";
 
-    /**
-     * Is js object
-     * @param o
-     * @returns {boolean}
-     */
-	Typ.isObj = function(o){
-		return $.type(o) === 'object';
-	};
+    if (global.Typ === undefined)
+    {
+        global.Typ = {};
+    }
 
-    /**
-     * Is string
-     * @param o
-     * @returns {boolean}
-     */
-	Typ.isStr = function(o){
-		return $.type(o) === 'string';
-	};
+    (function (Typ) {
 
-    /**
-     * Is function
-     * @param o
-     * @returns {boolean}
-     */
-	Typ.isFunc = function(o){
-		return $.type(o) === 'function';
-	};
+        /**
+         * Is jQuery object
+         * @param o
+         * @returns {boolean}
+         */
+        Typ.isJquery = function(o){
+            return o instanceof jQuery;
+        };
 
-    /**
-     * Is regex
-     * @param o
-     * @returns {boolean}
-     */
-	Typ.isRegex = function(o){
-		return $.type(o) === 'regexp';
-	};
+        /**
+         * Is js object
+         * @param o
+         * @returns {boolean}
+         */
+        Typ.isObj = function(o){
+            return $.type(o) === 'object';
+        };
 
-    /**
-     * Is number
-     * @param o
-     * @returns {boolean}
-     */
-	Typ.isNumber = function(o){
-		return $.type(o) === 'number';
-	};
+        /**
+         * Is string
+         * @param o
+         * @returns {boolean}
+         */
+        Typ.isStr = function(o){
+            return $.type(o) === 'string';
+        };
 
-    /**
-     * Is integer
-     * @param o
-     * @returns {boolean}
-     */
-	Typ.isInt = function(o){
-		return Typ.isNumber(o) && o%1 === 0;
-	};
+        /**
+         * Is function
+         * @param o
+         * @returns {boolean}
+         */
+        Typ.isFunc = function(o){
+            return $.type(o) === 'function';
+        };
 
-    /**
-     * Is float
-     * @param o
-     * @returns {boolean}
-     */
-	Typ.isFloat = function(o){
-		return Typ.isNumber(o) && !Typ.isInt(o);
-	};
+        /**
+         * Is regex
+         * @param o
+         * @returns {boolean}
+         */
+        Typ.isRegex = function(o){
+            return $.type(o) === 'regexp';
+        };
 
-    /**
-     * Is date
-     * @param o
-     * @returns {boolean}
-     */
-	Typ.isDate = function(o){
-		return $.type(o) === 'date';
-	};
+        /**
+         * Is number
+         * @param o
+         * @returns {boolean}
+         */
+        Typ.isNumber = function(o){
+            return $.type(o) === 'number';
+        };
 
-    /**
-     * Is boolean
-     * @param o
-     * @returns {boolean}
-     */
-	Typ.isBool = function(o){
-		return $.type(o) === 'boolean';
-	};
+        /**
+         * Is integer
+         * @param o
+         * @returns {boolean}
+         */
+        Typ.isInt = function(o){
+            return Typ.isNumber(o) && o%1 === 0;
+        };
 
-    /**
-     * Is array
-     * @param o
-     * @returns {boolean}
-     */
-	Typ.isArray = function(o){
-		return $.type(o) == 'array';
-	};
+        /**
+         * Is float
+         * @param o
+         * @returns {boolean}
+         */
+        Typ.isFloat = function(o){
+            return Typ.isNumber(o) && !Typ.isInt(o);
+        };
 
-    /**
-     * Is node
-     * @param o
-     * @returns {boolean}
-     */
-    Typ.isNode = function(o){
-        return typeof Node === "object" ? o instanceof Node :
-            o && typeof o === "object" && typeof o.nodeType === "number" && typeof o.nodeName === "string";
-    };
+        /**
+         * Is date
+         * @param o
+         * @returns {boolean}
+         */
+        Typ.isDate = function(o){
+            return $.type(o) === 'date';
+        };
 
-    /**
-     * Is html element
-     * @param o
-     * @returns {boolean}
-     */
-    Typ.isElement = function(o){
-        return typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
-            o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string";
-    };
+        /**
+         * Is boolean
+         * @param o
+         * @returns {boolean}
+         */
+        Typ.isBool = function(o){
+            return $.type(o) === 'boolean';
+        };
 
-    /**
-     * Check see if the object is the ajax command object.
-     *
-     * @param o
-     * @returns {boolean}
-     */
-    Typ.isAjaxCommand = function(o){
-        return !!(o != undefined && o != false && !Typ.isStr(o)
-                    && o.isAjaxCommand && o.options != undefined
-                    && o.displayMethod != undefined && o.command != undefined);
-    };
-	
-}(jQuery, window.Typ));
+        /**
+         * Is array
+         * @param o
+         * @returns {boolean}
+         */
+        Typ.isArray = function(o){
+            return $.type(o) == 'array';
+        };
+
+        /**
+         * Is node
+         * @param o
+         * @returns {boolean}
+         */
+        Typ.isNode = function(o){
+            return typeof Node === "object" ? o instanceof Node :
+                o && typeof o === "object" && typeof o.nodeType === "number" && typeof o.nodeName === "string";
+        };
+
+        /**
+         * Is html element
+         * @param o
+         * @returns {boolean}
+         */
+        Typ.isElement = function(o){
+            return typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
+                o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string";
+        };
+
+        /**
+         * Check see if the object is the ajax command object.
+         *
+         * @param o
+         * @returns {boolean}
+         */
+        Typ.isAjaxCommand = function(o){
+            return !!(o != undefined && o != false && !Typ.isStr(o)
+                        && o.isAjaxCommand && o.options != undefined
+                        && o.displayMethod != undefined && o.command != undefined);
+        };
+
+    }(global.Typ));
+
+}(typeof window !== 'undefined' ? window : this, jQuery));
+
+

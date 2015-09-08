@@ -2,6 +2,7 @@
 
 // STANDALONE
 
+
 /**
 	// Source: http://www.php.net/manual/en/function.date.php
 
@@ -16,7 +17,7 @@
 			w print number 1 (for Monday) through 7 (for Sunday) (Not implemented)
 			z day of year  (Not implemented)
 			W week number in the year
-			
+
 	// Month
 	F	January through December
 	m	01 through 12
@@ -29,7 +30,7 @@
 	Y	1999 or 2003
 	y	99 or 03
 			L 1 if it is a leap year, 0 otherwise. (Not implemented)
-						
+
 	// Time
 	a	am or pm
 	A	AM or PM
@@ -52,194 +53,200 @@
 	t	5:34pm			g:ia  (Dup, Non Standard)
 */
 
-if (window.Dt === undefined)
-{
-    window.Dt = {};
-}
+(function (global, $) {
+    "use strict";
 
-(function($, Dt){
+    if (global.Dt === undefined)
+    {
+        global.Dt = {};
+    }
 
-	var _dayShort 	= ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-		_dayLong 	= ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-		_dayViet 	= ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chúa Nhật'],		
-		_monthShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-		_monthLong 	= ['January', 'February', 'March', 'April', 'May', 'June', 
-					 'July', 'August', 'September', 'October', 'November', 'December'];
-	
-	/**
-	 * Get a array of all the parts of a date. (N for viet day)
-	 *
-	 * @param d {date}- the date object.
-	 * @returns {object}
-	 */
-	Dt.getDateParts = function(d){
-		var o = {}, j = d.getDate(),
-			w = d.getDay(), GG = d.getHours(),
-			n = d.getMonth(), Y = d.getFullYear(),
-		
-			// 12 hour format
-			g = GG <= 12 ? GG : GG - 12,
-			tz = d.getTimezoneOffset() / 60,
-			tzSign = tz < 0 ? '-' : '+';
+    (function (Dt) {
 
-		g = g == 0 ? 12 : g;
-		
-		// timezone
-		tz = Math.abs(tz);
-		
-		o.d = Dt.padZero(j);
-		o.D = _dayShort[w];
-		o.j = j;
-		o.l = _dayLong[w];
-		o.N = _dayViet[w];
-		
-		o.F = _monthLong[n];
-		o.m = Dt.padZero(n+1);
-		o.M = _monthShort[n];
-		o.n = n+1;
-		o.T = 'Tháng ' + (n+1);
-		
-		o.Y = Y;
-		o.y = Y.toString().substring(2);
-		
-		o.a = GG < 12 ? 'am' : 'pm';
-		o.A = GG < 12 ? 'AM' : 'PM';
-		o.g = g;
-		o.G = GG;
-		o.h = Dt.padZero(g);
-		o.H = Dt.padZero(GG);
-		o.i = Dt.padZero(d.getMinutes());
-		o.s = Dt.padZero(d.getSeconds());
-		
-		o.O = tzSign + Dt.padZero(tz) + '00';
-		o.P = tzSign + Dt.padZero(tz) + ':00';
-		
-		o.c = o.Y+'-'+o.m+'-'+o.d+' '+o.H+':'+o.i+':'+o.s+o.P;
-		o.r = o.D+', '+o.j+' '+o.M+' '+o.Y+' '+o.H+':'+o.i+':'+o.s+' '+o.O;
-		o.q = o.Y+'-'+o.m+'-'+o.d+' '+o.H+':'+o.i+':'+o.s;
-		o.o = o.Y+'-'+o.m+'-'+o.d;
-		o.t = o.g+':'+o.i+o.a;
-		
-		return o;
-	};
-	
-	/***
-	 * Get the utc equivalent of getDateParts().
-	 *
-	 * @param d {date} - the local date time.
-	 */
-	Dt.getUtcParts = function(d){
-		var utc = Dt.toUtc(d),
-			o = Dt.getDateParts(utc);
+        var _dayShort 	= ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            _dayLong 	= ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+            _dayViet 	= ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chúa Nhật'],
+            _monthShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            _monthLong 	= ['January', 'February', 'March', 'April', 'May', 'June',
+                         'July', 'August', 'September', 'October', 'November', 'December'];
 
-		o.O = '+0000';
-		o.P = '+00:00';
-		o.c = o.c.substring(0, 19) + o.O;
-		o.r = o.r.substring(0, 26) + o.P;
-		
-		return o;
-	};
-	
-	/***
-	 * Convert to utc, but the getTimezoneOffset() is not zero, but the date and time is utc.
-	 *
-	 * @param d {date} - local date object
-	 */
-	Dt.toUtc = function(d)
-	{
-		// convert minute into ms
-		var offset = d.getTimezoneOffset() * 60000;
-		return new Date(d.getTime() + offset);
-	};
-	
-	/***
-	 * Two dates has the same year, month and day.
-	 * @param d1 {date}- date object
-	 * @param d2 {date}- date object
-	 * @returns {boolean}
-	 */
-	Dt.isSameDate = function(d1, d2)
-	{
-		return  d1.getFullYear() == d2.getFullYear()
-				&& d1.getMonth() == d2.getMonth()
-				&&  d1.getDate() == d2.getDate();
-	};
-	/***
-	 * Two dates has the same year, month and day.
-	 * @param e1 {number} - milliseconds since 1970 (unix epoch). Note php time() is in seconds not milliseconds.
-	 * @param e2 {number} - milliseconds since 1970 (unix epoch). Note php time() is in seconds notmillisecondss.
-	 * @returns {boolean}
-	 */		
-	Dt.epochSameDate = function(e1, e2){
-		var d1 = new Date(e1),
-			d2 = new Date(e2);
-		
-		return Dt.isSameDate(d1, d2);
-	};
-	
-	/**
-	 * Add a zero to the front if it is a single digit.
-	 * @param s {number|string} - the number or string.
-	 * @returns {String}
-	 */
-	Dt.padZero = function(s){
-		s = s.toString();
-		return s.length == 2 ? s : '0' + s;
-	};
-	
-	/***
-	 * Is Date data type
-	 * @param o {object} - the object to test.
-	 * @returns {boolean}
-	 */
-	Dt.isDate = function(o){
-		return Object.prototype.toString.call(o) === "[object Date]";
-	};
-	
-	/***
-	 * Test to see if the date is valid. Usually it bad date
-	 * when the string use to create the date object is bad (ie not valid date format).
-	 * Example: new Date("hello world");
-	 *
-	 * @param d {date} - the date object
-	 * @returns {boolean}
-	 */
-	Dt.isValid = function(d){
-		if (Dt.isDate(d)){
-			// d = new Date("junk") => d.getTime() return NaN 
-			return !isNaN(d.getTime());
-		}
-		return false;
-	};
-	
-	/***
-	 * Format date according to the format string.
-	 * @param d {date} - date
-	 * @param format {string} - format string, for format look up php date() (this function doesn't support all format)
-	 * MAKE SURE to double escape the backslash ie if you want to escape a letter 'h' => '\\h'
-	 * @return {string}
-	 */
-	Dt.format = function(d, format){
-		if (!Dt.isValid(d)){
-			return format;
-		}
+        /**
+         * Get a array of all the parts of a date. (N for viet day)
+         *
+         * @param d {date}- the date object.
+         * @returns {object}
+         */
+        Dt.getDateParts = function(d){
+            var o = {}, j = d.getDate(),
+                w = d.getDay(), GG = d.getHours(),
+                n = d.getMonth(), Y = d.getFullYear(),
 
-		var p = Dt.getDateParts(d),
-			result = format.replace(/(\\?)([dDjlNFmMnTYyaAgGhHisOPcrqot])/g, function (whole, slash, key){
-						// no slash
-						if (!slash){
-							return p[key];
-						}
+                // 12 hour format
+                g = GG <= 12 ? GG : GG - 12,
+                tz = d.getTimezoneOffset() / 60,
+                tzSign = tz < 0 ? '-' : '+';
 
-						// if slash exist ie this is an escaped char 
-						// return just the letter as a literal
-						return key;
-					});
-		
-		// remove any unnecessary backslashes
-		result = result.replace(/\\([a-z])/gi, '$1');
-		
-		return result;
-	};
-	
-}(jQuery, window.Dt));
+            g = g == 0 ? 12 : g;
+
+            // timezone
+            tz = Math.abs(tz);
+
+            o.d = Dt.padZero(j);
+            o.D = _dayShort[w];
+            o.j = j;
+            o.l = _dayLong[w];
+            o.N = _dayViet[w];
+
+            o.F = _monthLong[n];
+            o.m = Dt.padZero(n+1);
+            o.M = _monthShort[n];
+            o.n = n+1;
+            o.T = 'Tháng ' + (n+1);
+
+            o.Y = Y;
+            o.y = Y.toString().substring(2);
+
+            o.a = GG < 12 ? 'am' : 'pm';
+            o.A = GG < 12 ? 'AM' : 'PM';
+            o.g = g;
+            o.G = GG;
+            o.h = Dt.padZero(g);
+            o.H = Dt.padZero(GG);
+            o.i = Dt.padZero(d.getMinutes());
+            o.s = Dt.padZero(d.getSeconds());
+
+            o.O = tzSign + Dt.padZero(tz) + '00';
+            o.P = tzSign + Dt.padZero(tz) + ':00';
+
+            o.c = o.Y+'-'+o.m+'-'+o.d+' '+o.H+':'+o.i+':'+o.s+o.P;
+            o.r = o.D+', '+o.j+' '+o.M+' '+o.Y+' '+o.H+':'+o.i+':'+o.s+' '+o.O;
+            o.q = o.Y+'-'+o.m+'-'+o.d+' '+o.H+':'+o.i+':'+o.s;
+            o.o = o.Y+'-'+o.m+'-'+o.d;
+            o.t = o.g+':'+o.i+o.a;
+
+            return o;
+        };
+
+        /***
+         * Get the utc equivalent of getDateParts().
+         *
+         * @param d {date} - the local date time.
+         */
+        Dt.getUtcParts = function(d){
+            var utc = Dt.toUtc(d),
+                o = Dt.getDateParts(utc);
+
+            o.O = '+0000';
+            o.P = '+00:00';
+            o.c = o.c.substring(0, 19) + o.O;
+            o.r = o.r.substring(0, 26) + o.P;
+
+            return o;
+        };
+
+        /***
+         * Convert to utc, but the getTimezoneOffset() is not zero, but the date and time is utc.
+         *
+         * @param d {date} - local date object
+         */
+        Dt.toUtc = function(d)
+        {
+            // convert minute into ms
+            var offset = d.getTimezoneOffset() * 60000;
+            return new Date(d.getTime() + offset);
+        };
+
+        /***
+         * Two dates has the same year, month and day.
+         * @param d1 {date}- date object
+         * @param d2 {date}- date object
+         * @returns {boolean}
+         */
+        Dt.isSameDate = function(d1, d2)
+        {
+            return  d1.getFullYear() == d2.getFullYear()
+                    && d1.getMonth() == d2.getMonth()
+                    &&  d1.getDate() == d2.getDate();
+        };
+        /***
+         * Two dates has the same year, month and day.
+         * @param e1 {number} - milliseconds since 1970 (unix epoch). Note php time() is in seconds not milliseconds.
+         * @param e2 {number} - milliseconds since 1970 (unix epoch). Note php time() is in seconds notmillisecondss.
+         * @returns {boolean}
+         */
+        Dt.epochSameDate = function(e1, e2){
+            var d1 = new Date(e1),
+                d2 = new Date(e2);
+
+            return Dt.isSameDate(d1, d2);
+        };
+
+        /**
+         * Add a zero to the front if it is a single digit.
+         * @param s {number|string} - the number or string.
+         * @returns {String}
+         */
+        Dt.padZero = function(s){
+            s = s.toString();
+            return s.length == 2 ? s : '0' + s;
+        };
+
+        /***
+         * Is Date data type
+         * @param o {object} - the object to test.
+         * @returns {boolean}
+         */
+        Dt.isDate = function(o){
+            return Object.prototype.toString.call(o) === "[object Date]";
+        };
+
+        /***
+         * Test to see if the date is valid. Usually it bad date
+         * when the string use to create the date object is bad (ie not valid date format).
+         * Example: new Date("hello world");
+         *
+         * @param d {date} - the date object
+         * @returns {boolean}
+         */
+        Dt.isValid = function(d){
+            if (Dt.isDate(d)){
+                // d = new Date("junk") => d.getTime() return NaN
+                return !isNaN(d.getTime());
+            }
+            return false;
+        };
+
+        /***
+         * Format date according to the format string.
+         * @param d {date} - date
+         * @param format {string} - format string, for format look up php date() (this function doesn't support all format)
+         * MAKE SURE to double escape the backslash ie if you want to escape a letter 'h' => '\\h'
+         * @return {string}
+         */
+        Dt.format = function(d, format){
+            if (!Dt.isValid(d)){
+                return format;
+            }
+
+            var p = Dt.getDateParts(d),
+                result = format.replace(/(\\?)([dDjlNFmMnTYyaAgGhHisOPcrqot])/g, function (whole, slash, key){
+                            // no slash
+                            if (!slash){
+                                return p[key];
+                            }
+
+                            // if slash exist ie this is an escaped char
+                            // return just the letter as a literal
+                            return key;
+                        });
+
+            // remove any unnecessary backslashes
+            result = result.replace(/\\([a-z])/gi, '$1');
+
+            return result;
+        };
+
+    }(global.Dt));
+
+}(typeof window !== 'undefined' ? window : this, jQuery));
+

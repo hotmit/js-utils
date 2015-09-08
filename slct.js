@@ -6,10 +6,6 @@
 (function (global, $) {
     "use strict";
 
-    if (global.Slct === undefined) {
-        global.Slct = {};
-    }
-
     (function(Slct, Str){
         /**
          * Get the selected value of a select element.

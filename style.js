@@ -2,19 +2,20 @@
 
 // STANDALONE
 
-if (window.Stl === undefined)
-{
-    window.Stl = {};
-}
 
-(function($, Stl){
+(function (global, $) {
+	"use strict";
 
-    /**
-     * Add the style to the head (string -> css style text)
-     * @param style {String}
-     */
-	Stl.add = function(style){
-		$('<style type="text/css"> ' + style + ' </style>').appendTo('head');
-	};
+	(function (Stl) {
 
-}(jQuery, window.Stl));
+        /**
+         * Add the style to the head (string -> css style text)
+         * @param style {String}
+         */
+        Stl.add = function(style){
+            $('<style type="text/css"> ' + style + ' </style>').appendTo('head');
+        };
+
+	}(global.Stl));
+
+}(typeof window !== 'undefined' ? window : this, jQuery));

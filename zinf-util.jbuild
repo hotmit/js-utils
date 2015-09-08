@@ -9,15 +9,17 @@ ext/json-js/json2.js
 jq-ext/jquery-cookie/src/jquery.cookie.js
 jq-ext/jquery-caret/jquery.caret.js
 
+declarator.js
+
+type.js
+arr.js
+func.js
 
 
 str-standalone.js
-arr.js
 bootstrap-ext.js
 date.js
-func.js
 slct.js
 str-ext.js
-type.js
 ui.js
 ui-patterns.js

@@ -9,7 +9,7 @@ ext/json-js/json2.js
 jq-ext/jquery-cookie/src/jquery.cookie.js
 jq-ext/jquery-caret/jquery.caret.js
 
-
+declarator.js
 
 str-standalone.js
 arr.js

@@ -2,18 +2,9 @@
 
 // STANDALONE
 
+
 (function (global, $) {
     "use strict";
-
-    // gettext place holder
-    if (global.gettext === undefined){
-        global.gettext = function(s){
-            if (s == undefined){
-                return '';
-            }
-            return s;
-        };
-    }
 
     if (global.Str === undefined)
     {
