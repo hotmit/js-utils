@@ -10,7 +10,7 @@
         /**
          * Get the selected value of a select element.
          *
-         * @param selectElement {id|HTMLElement|jQuery} - the select box element
+         * @param selectElement {!selector|jQuery|HTMLElement|id|*} - the select box element
          * @returns {Array|object} - return array if multiple=multiple, else return the single value of the selected option.
          */
         Slct.getSelectedValues = function(selectElement){
@@ -81,7 +81,7 @@
         /**
          * Add options to select element.
          *
-         * @param selectElement {id|HTMLElement|jQuery} - the select box element
+         * @param selectElement {!selector|jQuery|HTMLElement|id|*} - the select box element
          * @param options {Array} - [ { value: "value", name: "display text", selected: "optional bool" }, ...,
          *                            { optGroup: true, label: "optGroup label", id: "optional id", options: []}}
          */

@@ -4,14 +4,13 @@ output: D:\Projects\Js\hexdec-converter\js\util.js
 // jQuery must be before ALL
 
 type.js
+// must go before $pref
+arr.js
 func.js
 
 // base64, json2, date, str-standalone, str-ext
 z_my-str.jbuild
 str-fuzzy.js
-
-// must go before $pref
-arr.js
 
 // timer
 tmr.js

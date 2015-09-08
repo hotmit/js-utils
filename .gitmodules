@@ -16,3 +16,9 @@
 [submodule "jq-ext/blockui"]
 	path = jq-ext/blockui
 	url = https://github.com/malsup/blockui.git
+[submodule "jq-ext/jq-form"]
+	path = jq-ext/jq-form
+	url = https://github.com/malsup/form.git
+[submodule "bs-ext/bs-dialog"]
+	path = bs-ext/bs-dialog
+	url = https://github.com/nakupanda/bootstrap3-dialog.git
