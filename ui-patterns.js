@@ -289,7 +289,7 @@
          *
          * @param ajaxCommand {string|object|{message, method, command, onPreParse, onPostParse, onAjaxSuccess, options, status}}
          * @param blockTarget {?selector|HTMLElement|jQuery=} - the blocking target for block-ui.
-         * @param context {!object=} - the object contains the functions specified by onPreParse and onPostParse.
+         * @param context {?object=} - the object contains the functions specified by onPreParse and onPostParse.
          *                              If not specified the window object is used.
          */
         Patterns.parseAjaxCommand = function(ajaxCommand, blockTarget, context)
@@ -603,8 +603,8 @@
          * Populate target select box based on the value of the src selected values.
          * Server can return json [{value:,  name:}, ] or html contains the select box with same id or name.
          *
-         * @param srcSelect {selector}
-         * @param targetSelect {selector}
+         * @param srcSelect {!selector|jQuery|HTMLElement|id=}
+         * @param targetSelect {selector|jQuery|HTMLElement|id=}
          * @param ajaxOpts {string|object} - url or $.ajax(ajaxOpts),
          *                                      the data will be overridden with the selected items.
          *                                      data: { selected: [] }
@@ -616,11 +616,7 @@
         Patterns.selectAjaxFilter = function(srcSelect, targetSelect, ajaxOpts, targetUpdated, noCache, container){
             ajaxOpts = $.type(ajaxOpts) === 'string' ? {url: ajaxOpts} : ajaxOpts;
 
-            if(!container){
-                container = 'body';
-            }
-
-            var $container = $(container);
+            var $container = $(container || 'body');
 
             $container.on('change', srcSelect, function(){
                 var $srcSelect = $container.find(srcSelect),
@@ -711,6 +707,30 @@
             }
         };  // End: selectAjaxFilter
         // endregion
+
+        /**
+         * Clear the input when the user pressed Escape.
+         *
+         * @param inputSelector {!selector} - the input selector
+         * @param container {!selector|jQuery|HTMLElement|id=} - if you want to use the live event then specify the
+         *                                                          outer container
+         */
+        Patterns.clearOnEscape = function(inputSelector, container){
+            var $container = $(container), $input = $(inputSelector);
+            function clearOnEscape(e){
+                // on escape
+                if (e.which === 27){
+                    e.target.value = '';
+                }
+            }
+
+            if (container && $container.length){
+                $container.on('keyup', inputSelector, clearOnEscape);
+            }
+            else {
+                $input.on('keyup', clearOnEscape);
+            }
+        }
 
     }(global.UI.Patterns, global.UI, global.Str, global.UI.Bs, global.Fn));
 
