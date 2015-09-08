@@ -716,11 +716,12 @@
          *                                                          outer container
          */
         Patterns.clearOnEscape = function(inputSelector, container){
-            var $container = $(container), $input = $(inputSelector);
+            var $container = $(container), $input = $(inputSelector), $target;
             function clearOnEscape(e){
                 // on escape
-                if (e.which === 27){
-                    e.target.value = '';
+                if (e.which == 27){
+                    $target = $(e.target);
+                    $target.prop('value', null).val('').change();
                 }
             }
 
