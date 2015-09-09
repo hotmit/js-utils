@@ -22,3 +22,9 @@
 [submodule "bs-ext/bs-dialog"]
 	path = bs-ext/bs-dialog
 	url = https://github.com/nakupanda/bootstrap3-dialog.git
+[submodule "bs-ext/bs-toggle"]
+	path = bs-ext/bs-toggle
+	url = https://github.com/minhur/bootstrap-toggle.git
+[submodule "bs-ext/bs-tokenfield"]
+	path = bs-ext/bs-tokenfield
+	url = https://github.com/sliptree/bootstrap-tokenfield.git

@@ -1,6 +1,6 @@
 /*global jQuery */
 
-// REQ: block-ui
+// REQ: jq, block-ui
 
 
 (function (global, $) {

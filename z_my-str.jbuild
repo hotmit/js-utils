@@ -1,19 +1,4 @@
-output: z_my-str.min.js
+Output: z_my-str.min.js
 
-// jQuery must be before ALL
 
-// included but it is not use inside the library
-ext/js-base64/base64.min.js
-jq-ext/jquery-cookie/src/jquery.cookie.js
-
-// 
-ext/json-js/json2.js
-jq-ext/blockui/jquery.blockUI.js
-
-declarator.js
-
-str-standalone.js
-date.js
-str-ext.js
-ui.js
-ui-patterns.js
+z_base.jbuild

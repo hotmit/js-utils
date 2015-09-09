@@ -1,6 +1,6 @@
 /*global jQuery, Arr, Str */
 
-// REQ: arr.js, cookie.pref.js
+// REQ: jq, arr.js, jquery.cookie.js
 
 
 (function (global, $) {

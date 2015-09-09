@@ -1,25 +1,8 @@
-output: D:\Clients\Infitrak\inf_portals\nonvalidated\source\infitrak_portal\global_static\global\js\util.min.js
-
-// jQuery must be before ALL
+Output: D:\Clients\Infitrak\inf_portals\nonvalidated\source\infitrak_portal\global_static\global\js\util.min.js
 
 
-// included but it is not use inside the library
-ext/js-base64/base64.min.js
-ext/json-js/json2.js
-jq-ext/jquery-cookie/src/jquery.cookie.js
-jq-ext/jquery-caret/jquery.caret.js
+z_base.jbuild
 
-declarator.js
-
-type.js
-arr.js
-func.js
-
-
-str-standalone.js
-bootstrap-ext.js
-date.js
-slct.js
-str-ext.js
-ui.js
-ui-patterns.js
+^jq-ext/blockui/jquery.blockUI.js
+^jq-ext/jq-form/jquery.form.js
+^str-fuzzy.js

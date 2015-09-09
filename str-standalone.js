@@ -1,6 +1,6 @@
 /*global jQuery */
 
-// STANDALONE
+// STANDALONE: jq
 
 
 (function (global, $) {
@@ -446,6 +446,28 @@
         };
 
         /**
+         * Get all the matched based on the specified group.
+         *
+         * @param s {string}
+         * @param regex {RegExp}
+         * @param index {Number} - the index of the match.
+         * @returns {Array}
+         */
+        Str.matchAll = function(s, regex, index){
+            var m, result = [];
+            index = index || 0;
+
+            if (!s){
+                return [];
+            }
+
+            while (m = regex.exec(s)){
+                result.push(m[index]);
+            }
+            return result;
+        };
+
+        /**
          * Split the string into multiple smaller chunks.
          *
          * @param s
@@ -453,13 +475,12 @@
          * @returns {Array}
          */
         Str.chop = function(s, chunkSize){
-            var result = [], chunk;
-            while(s.length){
-                chunk = s.substr(0, chunkSize);
-                s = s.substr(chunkSize);
-                result.push(chunk);
+            var regex;
+            if (!s){
+                return [];
             }
-            return result;
+            regex = new RegExp('.{1,' + chunkSize + '}', 'g');
+            return s.match(regex);
         };
 
     }(global.Str));

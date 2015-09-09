@@ -1,6 +1,6 @@
 /*global jQuery  */
 
-// STANDALONE
+// STANDALONE: jq
 
 
 (function (global, $) {

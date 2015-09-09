@@ -1,6 +1,6 @@
 /*global jQuery */
 
-// STANDALONE
+// STANDALONE: pure js
 
 
 /**

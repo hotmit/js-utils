@@ -1,6 +1,6 @@
 /*global jQuery, Str */
 
-// REQ: str-standalone.js
+// REQ: jq, str-standalone.js
 
 
 (function (global, $) {

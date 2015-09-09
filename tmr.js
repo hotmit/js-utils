@@ -1,6 +1,6 @@
 /*global jQuery, setTimeout */
 
-// STANDALONE
+// STANDALONE: pure js
 
 
 (function (global, $) {

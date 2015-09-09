@@ -1,6 +1,6 @@
 /*global jQuery, Base64, Str, Dt */
 
-// REQ: str-standalone.js, date.js
+// REQ: jq, date.js, str-standalone.js
 
 
 (function (global, $) {

@@ -1,6 +1,6 @@
 /*global jQuery, Str, Bs, Fn, BootstrapDialog, gettext, Slct, Arr, Typ */
 
-// REQ: str-standalone.js, bootstrap-ext.js, func.js, slct.js, arr.js, type.js
+// REQ: jq, jq-form, jq-dialog, bootstrap-ext, type, arr, func, str-standalone, slct
 
 
 (function (global, $) {
