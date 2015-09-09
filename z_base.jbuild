@@ -20,8 +20,8 @@ str-standalone.js					# req: jq
 
 slct.js								# req: jq, str-standalone
 str-ext.js							# req: jq, date, str-standalone
-cookie.pref.js						# req: jq, jquery.cookie.js (lib), arr.js
 str-fuzzy.js						# req: jq, cookie.pref, str-standalone
+cookie.pref.js						# req: jq, jquery.cookie.js (lib), arr.js
 
 ui.js								# req: jq, blockui, 
 ui-patterns.js						# req: jq, jq-form, jq-dialog, bootstrap-ext, arr, type, func, slct, str-standalone

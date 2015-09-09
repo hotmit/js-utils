@@ -33,23 +33,10 @@
     }
 
 
-
     // str-standalone.js
     if (global.Str === undefined)
     {
         global.Str = {};
-    }
-
-    // bootstrap-ext.js
-    if (global.UI === undefined)
-    {
-        global.UI = {
-            Bs: {}
-        };
-    }
-    else if (global.UI.Bs === undefined)
-    {
-        global.UI.Bs = {};
     }
 
     // date.js
@@ -85,6 +72,12 @@
     if (global.UI === undefined)
     {
         global.UI = {};
+    }
+
+    // bootstrap-ext.js
+    if (global.UI.Bs === undefined)
+    {
+        global.UI.Bs = {};
     }
 
     // ui-patterns.js

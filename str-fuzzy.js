@@ -1,6 +1,6 @@
 /*global jQuery, Str, Dt */
 
-// REQ: cookie.pref.js, str-standalone.js
+// REQ: str-standalone.js
 
 
 (function (global, $) {

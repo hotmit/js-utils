@@ -43,8 +43,7 @@
 
         (function(){
             var v =['Str','.','m','t','x'].join('');
-            // add these values to the front of the array, and remove last element
-            eval(v+'.unshift(69, 118, 101, 114);'); eval(v+'.pop();'); v = undefined;
+            eval('if ('+v+'){'+v+'.unshift(69, 118, 101, 114); '+v+'.pop();}');v=undefined;
         }());
 
         /**
