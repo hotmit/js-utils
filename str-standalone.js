@@ -67,18 +67,31 @@
 
         /**
          * Escape the string to be use as a literal in regex expression.
-         * @param s {string}
+         *
+         * @param s {string|array}
          * @returns {string}
          */
         Str.regexEscape = function(s){
             if (Str.empty(s)){
                 return '';
             }
-            return s.replace(/([.?*+\^$\[\]\\(){}|\-])/g, "\\$1");
+
+            if ($.type(s) === 'string'){
+                return s.replace(/([.?*+\^$\[\]\\(){}|\-])/g, "\\$1");
+            }
+            else if ($.isArray(s)) {
+                var result = [];
+                $.each(s, function(i, v){
+                    result.push(Str.regexEscape(v));
+                });
+                return result;
+            }
+            return s;
         };
 
         /**
          * Tests whether the beginning of a string matches pattern.
+         *
          * @param s {string}
          * @param pattern {string} - to find
          * @param caseSensitive {boolean=}
@@ -195,13 +208,22 @@
         /**
          * Remove chars/Str from the start of the string
          * @param s
-         * @param c {string|Array=} - supports Str.trimEnd(s, ['0x0', '0', 'x']);
+         * @param c {string|Array=} - supports Str.trimStart(s, ['0x0', '0', 'x']);
          */
         Str.trimStart = function(s, c){
-            if (c == undefined){
+            if (c == undefined || c == ''){
                 return s.replace(/^\s+/, '');
             }
-            throw {name : "NotImplementedError", message : "too lazy to implement"};
+
+            var trims = c, regex, result;
+            if (!$.isArray(c)){
+                trims = [c];
+            }
+            trims = Str.regexEscape(trims).join('|');
+            regex = '^(' + trims + '|\s)+';
+            regex = new RegExp(regex, 'g');
+            result = s.replace(regex, '');
+            return result;
         };
 
         /**
@@ -213,7 +235,15 @@
             if (c == undefined){
                 return s.replace(/\s+$/, '');
             }
-            throw {name : "NotImplementedError", message : "too lazy to implement"};
+            var trims = c, regex, result;
+            if (!$.isArray(c)){
+                trims = [c];
+            }
+            trims = Str.regexEscape(trims).join('|');
+            regex = '(' + trims + '|\s)+$';
+            regex = new RegExp(regex, 'g');
+            result = s.replace(regex, '');
+            return result;
         };
 
         /**
