@@ -247,13 +247,14 @@
         };
 
         /**
-         * Extended substring, support negative index (ordinal js substring(startIndex, endIndex))
+         * Extended substring, support negative index (ordinal js substr(startIndex, endIndex))
+         *
          * @param s {string}
          * @param index {number} - if negative take string from the right similar to php substr()
          * @param len {number=} - number of char to take starting from the index to the right (even when index is negative)
          * @return {string}
          */
-        Str.subString = function(s, index, len){
+        Str.subStr = function(s, index, len){
             if (s == undefined){
                 return '';
             }
@@ -274,7 +275,7 @@
             }
 
             // Negative index, take string from the right
-            // Index is negative	=> subString ('hello', -3)	=> 'llo'
+            // Index is negative	=> subStr ('hello', -3)	=> 'llo'
             var start = s.length + index;
             if (len > 0 && (start + len) < s.length){
                 return s.substring(start, start+len);

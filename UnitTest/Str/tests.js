@@ -1,36 +1,36 @@
 /*global Str, test, equal, ok */
 
-test('Str.subString', function (){
+test('Str.subStr', function (){
 	var txt = "héllố wờrld";
 
-	equal(Str.subString(null), '', 'Null string, return ""');
-	equal(Str.subString(undefined), '', 'Undefied string, return ""');
+	equal(Str.subStr(null), '', 'Null string, return ""');
+	equal(Str.subStr(undefined), '', 'Undefied string, return ""');
 	
-	equal(Str.subString(txt), txt, 'No index, no len, return original');
+	equal(Str.subStr(txt), txt, 'No index, no len, return original');
 	
-	equal(Str.subString(txt, null), txt, 'null index, return original');
-	equal(Str.subString(txt, undefined), txt, 'undefined index, return original');
+	equal(Str.subStr(txt, null), txt, 'null index, return original');
+	equal(Str.subStr(txt, undefined), txt, 'undefined index, return original');
 	
-	equal(Str.subString(txt, 3, null), txt.substring(3), 'null len, return sub(index)');
-	equal(Str.subString(txt, 3, undefined), txt.substring(3), 'undefined len, return sub(index)');
+	equal(Str.subStr(txt, 3, null), txt.substring(3), 'null len, return sub(index)');
+	equal(Str.subStr(txt, 3, undefined), txt.substring(3), 'undefined len, return sub(index)');
 	
-	equal(Str.subString(txt, 30, null), txt, 'index exceeded input length, return original');
-	equal(Str.subString(txt, 3, 3000), txt.substring(3), 'len exceeded input length, return sub(index)');
-	equal(Str.subString(txt, 3000, 3000), txt, 'index and len exceeded input length, return original');
+	equal(Str.subStr(txt, 30, null), txt, 'index exceeded input length, return original');
+	equal(Str.subStr(txt, 3, 3000), txt.substring(3), 'len exceeded input length, return sub(index)');
+	equal(Str.subStr(txt, 3000, 3000), txt, 'index and len exceeded input length, return original');
 	
-	equal(Str.subString(txt, 1), txt.substring(1), 'no len');
-	equal(Str.subString(txt, 1, 3), txt.substring(1, 4), 'index & len');
+	equal(Str.subStr(txt, 1), txt.substring(1), 'no len');
+	equal(Str.subStr(txt, 1, 3), txt.substring(1, 4), 'index & len');
 	
-	equal(Str.subString(txt, 11, 3), txt.substring(11), 'good index, but len exceeded the string length');
+	equal(Str.subStr(txt, 11, 3), txt.substring(11), 'good index, but len exceeded the string length');
 	
-	equal(Str.subString(txt, -5), txt.substring(txt.length - 5), 'neg index "' + txt.substring(txt.length - 5) + '"');
-	equal(Str.subString(txt, -5, 2), txt.substring(txt.length - 5, txt.length - 5 + 2), 'neg index with len "' + txt.substring(txt.length - 5, txt.length - 5 + 2) + '"');
+	equal(Str.subStr(txt, -5), txt.substring(txt.length - 5), 'neg index "' + txt.substring(txt.length - 5) + '"');
+	equal(Str.subStr(txt, -5, 2), txt.substring(txt.length - 5, txt.length - 5 + 2), 'neg index with len "' + txt.substring(txt.length - 5, txt.length - 5 + 2) + '"');
 	
-	equal(Str.subString(txt, -5, 300), txt.substring(txt.length - 5), 'neg index with out of bound len "' + txt.substring(txt.length - 5) + '"');
+	equal(Str.subStr(txt, -5, 300), txt.substring(txt.length - 5), 'neg index with out of bound len "' + txt.substring(txt.length - 5) + '"');
 
-	equal(Str.subString(txt, -5, -300), txt.substring(txt.length - 5), 'neg index with out of bound -len "' + txt.substring(txt.length - 5) + '"');
+	equal(Str.subStr(txt, -5, -300), txt.substring(txt.length - 5), 'neg index with out of bound -len "' + txt.substring(txt.length - 5) + '"');
 	
-	equal(Str.subString(txt, -300, 2), txt, 'neg index out of bound, with proper len');
+	equal(Str.subStr(txt, -300, 2), txt, 'neg index out of bound, with proper len');
 });
 
 
