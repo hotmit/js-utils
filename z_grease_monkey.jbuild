@@ -3,6 +3,4 @@ Output: gm-utils.min.js
 
 z_base.jbuild
 
-^jq-ext/blockui/jquery.blockUI.js
-^jq-ext/jq-form/jquery.form.js
 ^str-fuzzy.js
