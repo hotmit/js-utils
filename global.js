@@ -1,9 +1,11 @@
-/*global jQuery */
+/*global */
 
-// STANDALONE
+// STANDALONE: pure js
 
-(function (global, $) {
+(function (global) {
     "use strict";
+
+    var __JU, i, j, gVar, parts, curPart, curObj;
 
     // gettext place holder
     if (global.gettext === undefined){
@@ -15,164 +17,67 @@
         };
     }
 
-    var JU;
+    function _removeFromVersionQueue (versionString){
+        var index = global.JU._versionQueue.indexOf(versionString)
+        if (index > -1){
+            global.JU._versionQueue.splice(index, 1);
+        }
+    }
 
-    global.JU = JU = {
-        '_globalVars': ['Typ', 'Arr', 'Fn', 'Str', 'Dt', 'Slct', 'Pref', 'Stl', 'UI', 'UI.Bs', 'UI.Patterns',
-            '', '', '', '', '', '', '', '', '', ''],
-
-        // This value must be string comparable, ie leave the padded zeros alone :)
-        version: 'v1.00.0',
-        type: 'JsUtils'
-    };
-
-    // Initialize Super Global Variable (Contains the repo of all JU versions)
-    global._JU = global._JU || {
+    // Initialize Super Global Variable (Contains the repo of all __JU versions)
+    global.JU = global.JU || {
         '_repo': [],
         '_versionQueue': [],
+        '_autoPublish': false,
 
         /**
-         * Check if the object is an Array type
+         * Take the functions from __JU and put it in the global variables scope.
          *
-         * @param obj {object}
-         * @returns {boolean}
+         * @param versionString {string} - the version number you want to activate
+         * @param target {object} - where you want the lib functions to reside (commonly you want the window object to be the target)
+         * @return {bool}
          */
-        isArray: function(obj){
-            return Object.prototype.toString.call(obj) === '[object Array]';
-        },
-
-        /**
-         * Test for positive number (ie number >= 0)
-         * @param num
-         * @returns {boolean}
-         */
-        isPositiveNumber: function(num){
-            if (typeof num == 'number' || typeof num == 'string'){
-                var number = Number(num);
-                return isNaN(number) ? false : number >= 0;
-            }
-            return false;
-        },
-
-        /**
-         * Retrieve the value from the object using the attribute (dot notation is supported)
-         *
-         * @param obj {object} - any object
-         * @param attr {string} - the attribute to retrieve (eg. contact.addresses.0.city)
-         * @param defaultValue {object} - return this value on error or attribute not found.
-         * @returns {*}
-         */
-        getAttr: function(obj, attr, defaultValue){
-            var attrParts, i, newObj, curAttr;
-
-            if (obj && attr != undefined && attr.length > 0){
-                if (attr.indexOf('.') == -1){
-                    if (obj.hasOwnProperty(attr)){
-                        return obj[attr];
-                    }
-                    return defaultValue;
-                }
-                else {
-                    attrParts = attr.split('.');
-                    newObj = obj;
-                    for (i=0; i<attrParts.length; i++)
-                    {
-                        curAttr = attrParts[i];
-
-                        if (newObj.hasOwnProperty(curAttr)){
-                            newObj = newObj[curAttr];
-
-                            if (i == attrParts.length - 1){
-                                return newObj;
-                            }
-                        }
-                        else {
-                            return defaultValue;
-                        }
-                    }
-                }
-            }
-            return defaultValue;
-        },
-
-        /**
-         * Assign value to an attribute of the specified object.
-         *
-         * @param obj {object} - any object
-         * @param attr {string} - the attribute to retrieve (eg. contact.addresses.0.city)
-         * @param value {object} - the value to assign
-         * @param skipIfExist {bool} - if true, don't override existing value.
-         * @return {bool} - true if value has been assigned
-         */
-        setAttr: function(obj, attr, value, skipIfExist){
-            var attrParts, i, newObj, arrIndex, curAttr;
-
-            if (obj && attr != undefined && attr.length > 0){
-                if (attr.indexOf('.') == -1){
-                    if (!skipIfExist || !obj.hasOwnProperty(attr)){
-                        if (global._JU.isArray(obj))
-                        {
-                            if (global._JU.isPositiveNumber(attr)){
-                                arrIndex = Number(attr);
-                                if (arrIndex >= obj.length && arrIndex > 0)
-                                {
-                                    for(i=obj.length; i<arrIndex; i++){
-                                        obj.push(null);
-                                    }
-                                    obj.push(value);
-                                    return true;
-                                }
-                                obj.splice(arrIndex, 1, value);
-                                return true;
-                            }
-                        }
-                        else {
-                            obj[attr] = value;
-                            return true;
-                        }
-                    }
-                }
-                else {
-                    attrParts = attr.split('.');
-                    newObj = obj;
-                    for (i=0; i<attrParts.length; i++)
-                    {
-                        curAttr = attrParts[i];
-                        if (i < attrParts.length - 1){
-                            global._JU.setAttr(newObj, curAttr, {}, true);
-                        }
-                        else {
-                            return global._JU.setAttr(newObj, curAttr, value, skipIfExist);
-                        }
-                        newObj =  global._JU.getAttr(newObj, curAttr);
-                    }
-                }
-            }
-            return false;
-        },
-
-        /**
-         * Take the functions from JU and put it in the global variables scope.
-         *
-         * @param gs {JU}
-         */
-        populateGlobals: function(gs)
+        activate: function(versionString, target)
         {
+            var i, gVar, ju = global.JU.get(versionString);
 
+            if (!ju){
+                return false;
+            }
+
+            _removeFromVersionQueue(versionString);
+            global.JU._versionQueue.push(ju.version);
+
+            for(i=0; i<ju._globalVars.length; i++){
+                gVar = ju._globalVars[i];
+                if (gVar && gVar.indexOf('.') == -1 && ju.hasOwnProperty(gVar))
+                {
+                    global.JU[gVar] = ju[gVar];
+                    if (target){
+                        target[gVar] = ju[gVar];
+                    }
+                }
+            }
+
+            return true;
         },
 
         /**
-         * Put the JU instance into the global repo.
+         * Put the __JU instance into the global repo.
          *
-         * @param gs {JU}
-         * @param populateGlobals {?bool=} - put all the library into the global scope (ie JU.Str into window.Str)
+         * @param ju {__JU}
+         * @param populateGlobals {?bool=} - put all the library into the global scope (ie __JU.Str into window.Str)
          * @param forcePush {?bool=} - replace existing version in the repo
          */
-        publish: function(gs, populateGlobals, forcePush){
-            var ver = gs.version, _repo = global._JU._repo;
+        publish: function(ju, populateGlobals, forcePush){
+            var version = ju.version, _repo = global.JU._repo;
 
-            if (!global._JU.getJu(ver)){
-                _repo.push(gs);
+            if (global.JU.get(version) && forcePush){
+                global.JU.remove(version, true);
+            }
+
+            if (!global.JU.get(version)){
+                _repo.push(ju);
 
                 // region [ Sort By Version ]
                 _repo.sort(function(a, b){
@@ -192,19 +97,22 @@
             }
 
             if (populateGlobals){
-                global._JU.populateGlobals(gs);
+                global.JU.activate(version, global);
+            }
+            else {
+                global.JU.activate(version);
             }
         },
 
         /**
-         * Get JU by version number.
+         * Get __JU by version number.
          *
          * @param versionString {?string=} - if not specified then get the latest version.
-         * @returns {JU|null}
+         * @returns {__JU|null}
          */
-        getJu: function(versionString)
+        get: function(versionString)
         {
-            var i, _repo = global._JU._repo;
+            var i, _repo = global.JU._repo;
             if (!_repo) {
                 return null;
             }
@@ -221,24 +129,59 @@
             return null;
         },
 
-        removeJu: function(versionString, removeFromVersionQueue){
-            var i, _repo = global._JU._repo, index;
+        remove: function(versionString){
+            var i, _repo = global.JU._repo;
             if (!_repo) {
                 return null;
             }
+
             for (i = 0; i < _repo.length; i++) {
                 if (_repo[i].version == versionString) {
-                    index = global._JU._versionQueue.indexOf(versionString)
-                    if (index > -1){
-                        global._JU._versionQueue.splice(index, 1);
-                    }
-
+                    _removeFromVersionQueue(versionString);
                     return _repo.splice(i, 1);
                 }
             }
             return null;
         }
+    }; // END: New JU Object
 
-    }; // END: _JU
+    // instance for constructing the library in the current version
+    __JU = {
+        '_globalVars': ['Typ', 'Arr', 'Fn', 'Str', 'Dt', 'Slct', 'Pref', 'Stl', 'UI', 'UI.Bs', 'UI.Patterns',
+            'Utl', '', '', '', '', '', '', '', '', ''],
 
-}(typeof window !== 'undefined' ? window : this, jQuery));
+        // This value must be string comparable, ie leave the padded zeros alone :)
+        version: 'v1.00.0',
+        type: 'JsUtils'
+    };
+
+    //region [ Initialize Lib Structure ]
+    for (i = 0; i < __JU._globalVars.length; i++) {
+        gVar = __JU._globalVars[i];
+
+        if (gVar) {
+            if (gVar.indexOf('.') == -1) {
+                __JU[gVar] = {
+                    'version': __JU.version,
+                    'class': gVar
+                }
+            }
+            else {
+                curObj = __JU;
+                parts = gVar.split('.');
+                for (j = 0; j < parts.length; j++) {
+                    curPart = parts[j];
+                    curObj[curPart] = {
+                        'version': __JU.version,
+                        'class': curPart
+                    };
+                    curObj = curObj[curPart];
+                }
+            }
+        }
+    }
+    //endregion
+
+    global.JU.__JU = __JU;
+
+}(typeof window !== 'undefined' ? window : this));
