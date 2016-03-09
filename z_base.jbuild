@@ -2,11 +2,11 @@ Output: z_base.min.js
 
 // jQuery must be before ALL
 
-ext/ext-package.jbuild				# base64, json2
-jq-ext/jq-ext-package.jbuild		# blockui, jq-form, caret, cookie
+ext/ext-package.jbuild				# Includes: base64, json2
+jq-ext/jq-ext-package.jbuild		# Includes: block-ui, jq-form, caret, cookie
 
 
-declarator.js
+global.js                           # declarator and global functions
 
 tmr.js								# pure js	
 date.js								# pure js
@@ -14,16 +14,16 @@ date.js								# pure js
 type.js								# req: jq
 arr.js								# req: jq
 func.js								# req: jq
-style.js								# req: jq
-str-standalone.js			# req: jq
+style.js							# req: jq
+str-standalone.js					# req: jq
 
 
 slct.js								# req: jq, str-standalone
 str-ext.js							# req: jq, date, str-standalone
 str-fuzzy.js						# req: jq, cookie.pref, str-standalone
-cookie.pref.js					# req: jq, jquery.cookie.js (lib), arr.js
+cookie.pref.js						# req: jq, jquery.cookie.js (lib), arr.js
 
-ui.js									# req: jq, blockui, 
-ui-patterns.js					# req: jq, jq-form, jq-dialog, bootstrap-ext, arr, type, func, slct, str-standalone
+ui.js								# req: jq, block-ui,
+ui-patterns.js						# req: jq, jq-form, jq-dialog, bootstrap-ext, arr, type, func, slct, str-standalone
 
-bootstrap-ext.js				# req: jq, func, ui-patterns
+bootstrap-ext.js					# req: jq, func, ui-patterns

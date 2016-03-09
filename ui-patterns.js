@@ -203,8 +203,9 @@
          * @param remoteTarget {?selector=} - if not set use localTarget
          * @param blockTarget {?selector=}
          * @param onAjaxSuccess {?function=} - function(thisArg: context, ajaxContent, ajaxCommand)
+         * @param blockOptions {?object=} - blockUI options
          */
-        Patterns.ajaxRefresh = function(localTarget, remoteTarget, blockTarget, onAjaxSuccess){
+        Patterns.ajaxRefresh = function(localTarget, remoteTarget, blockTarget, onAjaxSuccess, blockOptions){
             remoteTarget = remoteTarget || localTarget;
             blockTarget = blockTarget === undefined ? localTarget : blockTarget;
 
@@ -224,12 +225,17 @@
                     onAjaxSuccess: onAjaxSuccess
                 };
 
+            if (blockOptions)
+            {
+                ajaxCommand.options = $.extend({}, blockOptions, ajaxCommand.options);
+            }
+
             Patterns.parseAjaxCommand(ajaxCommand, blockTarget, context);
         };
         // endregion
 
         // region [ Ajax Get & Post ]
-        function remoteFetch(command, url, data, localTarget, remoteTarget, blockTarget, onAjaxSuccess){
+        function remoteFetch(command, url, data, localTarget, remoteTarget, blockTarget, onAjaxSuccess, blockOptions){
             remoteTarget = remoteTarget || localTarget;
             blockTarget = blockTarget === undefined ? localTarget : blockTarget;
 
@@ -251,6 +257,11 @@
                     onAjaxSuccess: onAjaxSuccess
                 };
 
+            if (blockOptions)
+            {
+                ajaxCommand.options = $.extend({}, blockOptions, ajaxCommand.options);
+            }
+
             Patterns.parseAjaxCommand(ajaxCommand, blockTarget, context);
         }
 
@@ -263,9 +274,10 @@
          * @param remoteTarget {?selector}
          * @param blockTarget {?selector}
          * @param onAjaxSuccess {?function=} - function(thisArg: context, ajaxContent, ajaxCommand)
+         * @param blockOptions {?object=} - blockUI options
          */
-        Patterns.ajaxGet = function(url, data, localTarget, remoteTarget, blockTarget, onAjaxSuccess){
-            remoteFetch('ajax-get', url, data, localTarget, remoteTarget, blockTarget, onAjaxSuccess);
+        Patterns.ajaxGet = function(url, data, localTarget, remoteTarget, blockTarget, onAjaxSuccess, blockOptions){
+            remoteFetch('ajax-get', url, data, localTarget, remoteTarget, blockTarget, onAjaxSuccess, blockOptions);
         };
 
         /**
@@ -277,9 +289,10 @@
          * @param remoteTarget {?selector}
          * @param blockTarget {?selector}
          * @param onAjaxSuccess {?function=} - function(thisArg: context, ajaxContent, ajaxCommand)
+         * @param blockOptions {?object=} - blockUI options
          */
-        Patterns.ajaxPost = function(url, data, localTarget, remoteTarget, blockTarget, onAjaxSuccess){
-            remoteFetch('ajax-post', url, data, localTarget, remoteTarget, blockTarget, onAjaxSuccess);
+        Patterns.ajaxPost = function(url, data, localTarget, remoteTarget, blockTarget, onAjaxSuccess, blockOptions){
+            remoteFetch('ajax-post', url, data, localTarget, remoteTarget, blockTarget, onAjaxSuccess, blockOptions);
         };
         // endregion
 
@@ -708,6 +721,7 @@
         };  // End: selectAjaxFilter
         // endregion
 
+        // region [ clearOnEscape ]
         /**
          * Clear the input when the user pressed Escape.
          *
@@ -732,6 +746,7 @@
                 $input.on('keyup', clearOnEscape);
             }
         }
+        // endregion
 
     }(global.UI.Patterns, global.UI, global.Str, global.UI.Bs, global.Fn));
 

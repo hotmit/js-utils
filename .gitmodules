@@ -19,6 +19,9 @@
 [submodule "jq-ext/jq-form"]
 	path = jq-ext/jq-form
 	url = https://github.com/malsup/form.git
+[submodule "jq-ext/nprogress"]
+	path = jq-ext/nprogress
+	url = https://github.com/rstacruz/nprogress.git	
 [submodule "bs-ext/bs-dialog"]
 	path = bs-ext/bs-dialog
 	url = https://github.com/nakupanda/bootstrap3-dialog.git
@@ -28,3 +31,5 @@
 [submodule "bs-ext/bs-tokenfield"]
 	path = bs-ext/bs-tokenfield
 	url = https://github.com/sliptree/bootstrap-tokenfield.git
+	
+
