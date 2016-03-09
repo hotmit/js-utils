@@ -623,7 +623,7 @@
          *                                      data: { selected: [] }
          * @param targetUpdated {function} - function(thisArg:targetElement, $targetElement)
          *                                          called after the target select box is updated.
-         * @param noCache {bool} - do not cache the result
+         * @param noCache {boolean} - do not cache the result
          * @param container {selector} - on() container, if not specified document.body is used.
          */
         Patterns.selectAjaxFilter = function(srcSelect, targetSelect, ajaxOpts, targetUpdated, noCache, container){

@@ -78,7 +78,7 @@
      * @param attr {!string} - the attribute to retrieve (eg. contact.addresses.0.city)
      * @param value {?object} - the value to assign
      * @param skipIfExist {bool=} - if true, don't override existing value.
-     * @return {bool} - true if value has been assigned
+     * @return {boolean} - true if value has been assigned
      */
     Utl.setAttr = function(obj, attr, value, skipIfExist){
         var attrParts, i, newObj, arrIndex, curAttr;
