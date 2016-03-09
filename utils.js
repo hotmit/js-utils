@@ -3,7 +3,6 @@
 (function (global, Utl) {
     "use strict";
 
-
     //region [ Helper Functions ]
     /**
      * Check if the object is an Array type

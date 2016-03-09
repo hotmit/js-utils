@@ -1,35 +1,33 @@
-/*global jQuery */
+/*global jQuery, __JU */
 
 // STANDALONE: jq
 
 
-(function (global, $) {
+(function (global, $, Stl) {
 	"use strict";
 
-	(function (Stl) {
-        /**
-         * Add the style to the head (string -> css style text)
-         * @param style {String|Array} - style text, http link or array of links
-         */
-        Stl.add = function(style){
-            if ($.isArray(style))
+    /**
+     * Add the style to the head (string -> css style text)
+     * @param style {String|Array} - style text, http link or array of links
+     */
+    Stl.add = function(style){
+        if ($.isArray(style))
+        {
+            $.each(style, function(i, elm){
+                $('<link href="">').attr('href', elm).appendTo('head');
+            });
+        }
+        else if ($.type(style) === 'string')
+        {
+            if (style.indexOf('http') == 0)
             {
-                $.each(style, function(i, elm){
-                    $('<link href="">').attr('href', elm).appendTo('head');
-                });
+                Stl.add([style]);
             }
-            else if ($.type(style) === 'string')
+            else
             {
-                if (style.indexOf('http') == 0)
-                {
-                    Stl.add([style]);
-                }
-                else
-                {
-                    $('<style type="text/css">' + style + '</style>').appendTo('head');
-                }
+                $('<style type="text/css">' + style + '</style>').appendTo('head');
             }
-        };
-	}(global.Stl));
+        }
+    };
 
-}(typeof window !== 'undefined' ? window : this, jQuery));
+}(typeof window !== 'undefined' ? window : this, jQuery, __JU.Stl));

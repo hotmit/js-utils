@@ -1,240 +1,237 @@
-/*global jQuery, Str */
+/*global jQuery, __JU, Str */
 
 // REQ: jq, str-standalone.js
 
 
-(function (global, $) {
+(function (global, $, Slct, Str) {
     "use strict";
 
-    (function(Slct, Str){
-        /**
-         * Get the selected value of a select element.
-         *
-         * @param selectElement {!selector|jQuery|HTMLElement|id|*} - the select box element
-         * @returns {Array|object} - return array if multiple=multiple, else return the single value of the selected option.
-         */
-        Slct.getSelectedValues = function(selectElement){
-            var $selectBox = $(selectElement), $selected = $selectBox.find('option:selected'),
-                result = [], $firstOpt;
+    /**
+     * Get the selected value of a select element.
+     *
+     * @param selectElement {!selector|jQuery|HTMLElement|id|*} - the select box element
+     * @returns {Array|object} - return array if multiple=multiple, else return the single value of the selected option.
+     */
+    Slct.getSelectedValues = function(selectElement){
+        var $selectBox = $(selectElement), $selected = $selectBox.find('option:selected'),
+            result = [], $firstOpt;
 
-            if ($selectBox.is('[multiple]')){
-                $selected.each(function(index, element){
-                   result.push(element.value);
-                });
-                return result;
-            }
-
-            $firstOpt = $selected.first();
-            if ($firstOpt.length){
-                return $firstOpt.val();
-            }
-            return null;
-        };
-
-        // region [ _createOptions ]
-        /**
-         * Convert json into jQuery options.
-         * @param options
-         * @returns {jQuery}
-         * @private
-         */
-        function _createOptions(options){
-            var $options = $('<select multiple="multiple"></select>');
-
-            $.each(options, function(index, opt){
-                var $optGroup, $newOpt;
-                if (opt.hasOwnProperty('optGroup')){
-                    $optGroup = $('<optgroup></optgroup>')
-                        .attr('label', opt.label);
-
-                    if (opt.id != undefined){
-                        $optGroup.attr('id', opt.id);
-                    }
-
-                    if (opt.options != undefined && opt.options.length){
-                        $optGroup.append(_createOptions(opt.options));
-                    }
-
-                    $options.append($optGroup);
-                    return;
-                }
-
-                $newOpt = $('<option></option>')
-                        .attr('value', opt.value)
-                        .text(opt.name);
-
-                if (opt.id != undefined){
-                    $newOpt.attr('id', opt.id);
-                }
-
-                if (opt.selected === true){
-                    $newOpt.attr('selected', 'selected');
-                }
-
-                $options.append($newOpt);
-            });
-
-            return $options.children();
-        } // End _createOptions
-        // endregion
-
-        /**
-         * Add options to select element.
-         *
-         * @param selectElement {!selector|jQuery|HTMLElement|id|*} - the select box element
-         * @param options {Array} - [ { value: "value", name: "display text", selected: "optional bool" }, ...,
-         *                            { optGroup: true, label: "optGroup label", id: "optional id", options: []}}
-         */
-        Slct.addOptions = function(selectElement, options){
-            var $selectElement = $(selectElement),
-                $options = _createOptions(options);
-            $selectElement.append($options);
-        };
-
-        /**
-         * Get options based on value or text.
-         *
-         * @param selectElement {id|HTMLElement|jQuery} - the select box element
-         * @param input - text or option.value
-         * @param byValue {boolean}
-         * @param caseSensitive {boolean}
-         * @returns {boolean}
-         * @private
-         */
-        function _getOption(selectElement, input, byValue, caseSensitive){
-            var result = false;
-            $(selectElement).find('option').each(function(i, option){
-                var $option = $(option);
-                if (byValue){
-                    if (Str.equals($option.val(),  input, caseSensitive)){
-                        result = $option;
-                        return false;
-                    }
-                }
-                else {  // By Text
-                    if (Str.equals($option.text(),  input, caseSensitive)){
-                        result = $option;
-                        return false;
-                    }
-                }
+        if ($selectBox.is('[multiple]')){
+            $selected.each(function(index, element){
+               result.push(element.value);
             });
             return result;
         }
 
-        /**
-         * Get the option by the option value.
-         *
-         * @param selectElement {id|HTMLElement|jQuery} - the select box element
-         * @param value
-         * @param caseSensitive
-         * @returns {*}
-         */
-        Slct.getOptionByValue = function(selectElement, value, caseSensitive){
-            return _getOption(selectElement, value, true, caseSensitive);
-        };
+        $firstOpt = $selected.first();
+        if ($firstOpt.length){
+            return $firstOpt.val();
+        }
+        return null;
+    };
 
-        /**
-         * Get the option by the option display text.
-         *
-         * @param selectElement {id|HTMLElement|jQuery} - the select box element
-         * @param text
-         * @param caseSensitive
-         * @returns {*}
-         */
-        Slct.getOptionByText = function(selectElement, text, caseSensitive){
-            return _getOption(selectElement, text, false, caseSensitive);
-        };
+    // region [ _createOptions ]
+    /**
+     * Convert json into jQuery options.
+     * @param options
+     * @returns {jQuery}
+     * @private
+     */
+    function _createOptions(options){
+        var $options = $('<select multiple="multiple"></select>');
 
-        /**
-         * Remove the option based on its value.
-         *
-         * @param selectElement {id|HTMLElement|jQuery} - the select box element
-         * @param value {object} - the value of the option you want to remove.
-         * @param caseSensitive - case sensitive comparison.
-         */
-        Slct.removeByValue = function(selectElement, value, caseSensitive){
-            var $option = Slct.getOptionByValue(selectElement, value, caseSensitive);
-            if ($option){
-                $option.remove();
+        $.each(options, function(index, opt){
+            var $optGroup, $newOpt;
+            if (opt.hasOwnProperty('optGroup')){
+                $optGroup = $('<optgroup></optgroup>')
+                    .attr('label', opt.label);
+
+                if (opt.id != undefined){
+                    $optGroup.attr('id', opt.id);
+                }
+
+                if (opt.options != undefined && opt.options.length){
+                    $optGroup.append(_createOptions(opt.options));
+                }
+
+                $options.append($optGroup);
+                return;
             }
-        };
 
-        /**
-         * Remove option based on the display text.
-         *
-         * @param selectElement {id|HTMLElement|jQuery} - the select box element
-         * @param text {string} - the text of the option you want to remove.
-         * @param caseSensitive - case sensitive comparison.
-         */
-        Slct.removeByText = function(selectElement, text, caseSensitive){
-            var $option = Slct.getOptionByText(selectElement, text, caseSensitive);
-            if ($option){
-                $option.remove();
+            $newOpt = $('<option></option>')
+                    .attr('value', opt.value)
+                    .text(opt.name);
+
+            if (opt.id != undefined){
+                $newOpt.attr('id', opt.id);
             }
-        };
 
-        /**
-         * Set option as selected based on its value.
-         *
-         * @param selectElement {id|HTMLElement|jQuery} - the select box element
-         * @param value
-         * @param caseSensitive
-         * @returns {boolean}
-         */
-        Slct.selectByValue = function(selectElement, value, caseSensitive){
-            var $option = Slct.getOptionByValue(selectElement, value, caseSensitive);
-            if ($option){
-                $option.prop('selected', true);
-                return true;
+            if (opt.selected === true){
+                $newOpt.attr('selected', 'selected');
             }
-            return false;
-        };
 
-        /**
-         * Set option as selected based on its display text.
-         *
-         * @param selectElement {id|HTMLElement|jQuery} - the select box element
-         * @param text
-         * @param caseSensitive
-         * @returns {boolean}
-         */
-        Slct.selectByText = function(selectElement, text, caseSensitive){
-            var $option = Slct.getOptionByText(selectElement, text, caseSensitive);
-            if ($option){
-                $option.prop('selected', true);
-                return true;
+            $options.append($newOpt);
+        });
+
+        return $options.children();
+    } // End _createOptions
+    // endregion
+
+    /**
+     * Add options to select element.
+     *
+     * @param selectElement {!selector|jQuery|HTMLElement|id|*} - the select box element
+     * @param options {Array} - [ { value: "value", name: "display text", selected: "optional bool" }, ...,
+     *                            { optGroup: true, label: "optGroup label", id: "optional id", options: []}}
+     */
+    Slct.addOptions = function(selectElement, options){
+        var $selectElement = $(selectElement),
+            $options = _createOptions(options);
+        $selectElement.append($options);
+    };
+
+    /**
+     * Get options based on value or text.
+     *
+     * @param selectElement {id|HTMLElement|jQuery} - the select box element
+     * @param input - text or option.value
+     * @param byValue {boolean}
+     * @param caseSensitive {boolean}
+     * @returns {boolean}
+     * @private
+     */
+    function _getOption(selectElement, input, byValue, caseSensitive){
+        var result = false;
+        $(selectElement).find('option').each(function(i, option){
+            var $option = $(option);
+            if (byValue){
+                if (Str.equals($option.val(),  input, caseSensitive)){
+                    result = $option;
+                    return false;
+                }
             }
-            return false;
-        };
+            else {  // By Text
+                if (Str.equals($option.text(),  input, caseSensitive)){
+                    result = $option;
+                    return false;
+                }
+            }
+        });
+        return result;
+    }
 
-        /**
-         * Select all options.
-         *
-         * @param selectElement
-         */
-        Slct.selectAll = function(selectElement){
-            $(selectElement).find('option').prop('selected', true);
-        };
+    /**
+     * Get the option by the option value.
+     *
+     * @param selectElement {id|HTMLElement|jQuery} - the select box element
+     * @param value
+     * @param caseSensitive
+     * @returns {*}
+     */
+    Slct.getOptionByValue = function(selectElement, value, caseSensitive){
+        return _getOption(selectElement, value, true, caseSensitive);
+    };
 
-        /**
-         * Clear all selection.
-         *
-         * @param selectElement
-         */
-        Slct.selectNone = function(selectElement){
-            $(selectElement).find('option').prop('selected', false);
-        };
+    /**
+     * Get the option by the option display text.
+     *
+     * @param selectElement {id|HTMLElement|jQuery} - the select box element
+     * @param text
+     * @param caseSensitive
+     * @returns {*}
+     */
+    Slct.getOptionByText = function(selectElement, text, caseSensitive){
+        return _getOption(selectElement, text, false, caseSensitive);
+    };
 
-        /**
-         * Check to see if the select box has any options.
-         *
-         * @param selectElement {id|HTMLElement|jQuery} - the select box element
-         * @returns {boolean}
-         */
-        Slct.isEmpty = function(selectElement){
-            return !$(selectElement).find('option').length;
-        };
+    /**
+     * Remove the option based on its value.
+     *
+     * @param selectElement {id|HTMLElement|jQuery} - the select box element
+     * @param value {object} - the value of the option you want to remove.
+     * @param caseSensitive - case sensitive comparison.
+     */
+    Slct.removeByValue = function(selectElement, value, caseSensitive){
+        var $option = Slct.getOptionByValue(selectElement, value, caseSensitive);
+        if ($option){
+            $option.remove();
+        }
+    };
 
-    }(global.Slct, global.Str));
+    /**
+     * Remove option based on the display text.
+     *
+     * @param selectElement {id|HTMLElement|jQuery} - the select box element
+     * @param text {string} - the text of the option you want to remove.
+     * @param caseSensitive - case sensitive comparison.
+     */
+    Slct.removeByText = function(selectElement, text, caseSensitive){
+        var $option = Slct.getOptionByText(selectElement, text, caseSensitive);
+        if ($option){
+            $option.remove();
+        }
+    };
 
-}(typeof window !== 'undefined' ? window : this, jQuery));
+    /**
+     * Set option as selected based on its value.
+     *
+     * @param selectElement {id|HTMLElement|jQuery} - the select box element
+     * @param value
+     * @param caseSensitive
+     * @returns {boolean}
+     */
+    Slct.selectByValue = function(selectElement, value, caseSensitive){
+        var $option = Slct.getOptionByValue(selectElement, value, caseSensitive);
+        if ($option){
+            $option.prop('selected', true);
+            return true;
+        }
+        return false;
+    };
+
+    /**
+     * Set option as selected based on its display text.
+     *
+     * @param selectElement {id|HTMLElement|jQuery} - the select box element
+     * @param text
+     * @param caseSensitive
+     * @returns {boolean}
+     */
+    Slct.selectByText = function(selectElement, text, caseSensitive){
+        var $option = Slct.getOptionByText(selectElement, text, caseSensitive);
+        if ($option){
+            $option.prop('selected', true);
+            return true;
+        }
+        return false;
+    };
+
+    /**
+     * Select all options.
+     *
+     * @param selectElement
+     */
+    Slct.selectAll = function(selectElement){
+        $(selectElement).find('option').prop('selected', true);
+    };
+
+    /**
+     * Clear all selection.
+     *
+     * @param selectElement
+     */
+    Slct.selectNone = function(selectElement){
+        $(selectElement).find('option').prop('selected', false);
+    };
+
+    /**
+     * Check to see if the select box has any options.
+     *
+     * @param selectElement {id|HTMLElement|jQuery} - the select box element
+     * @returns {boolean}
+     */
+    Slct.isEmpty = function(selectElement){
+        return !$(selectElement).find('option').length;
+    };
+
+}(typeof window !== 'undefined' ? window : this, jQuery, __JU.Slct, __JU.Str));
