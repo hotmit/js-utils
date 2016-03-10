@@ -1,4 +1,4 @@
-/*global jQuery, __JU, Str, Bs, Fn, BootstrapDialog, gettext, Slct, Arr, Typ */
+/*global jQuery, JU.__JU, Str, Bs, Fn, BootstrapDialog, gettext, Slct, Arr, Typ */
 
 // REQ: jq, jq-form, jq-dialog, bootstrap-ext, type, arr, func, str-standalone, slct
 
@@ -747,4 +747,4 @@
     // endregion
 
 }(typeof window !== 'undefined' ? window : this, jQuery,
-    __JU.UI.Patterns, __JU.UI, __JU.Str, __JU.Bs, __JU.Fn));
+    __JU.UI.Patterns, JU.__JU.UI, JU.__JU.Str, JU.__JU.Bs, JU.__JU.Fn));

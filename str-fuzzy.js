@@ -1,4 +1,4 @@
-/*global jQuery, __JU, Str, Dt */
+/*global jQuery, JU.__JU, Str, Dt */
 
 // REQ: str-standalone.js
 
@@ -70,4 +70,4 @@
         return r;
     };
 
-}(typeof window !== 'undefined' ? window : this, jQuery, __JU.Str));
+}(typeof window !== 'undefined' ? window : this, jQuery, JU.__JU.Str));

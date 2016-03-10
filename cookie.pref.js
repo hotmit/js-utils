@@ -1,4 +1,4 @@
-/*global jQuery, __JU, Arr, Str */
+/*global jQuery, JU.__JU, Arr, Str */
 
 // REQ: jq, arr.js, jquery.cookie.js
 
@@ -55,4 +55,4 @@
         $.removeCookie(name, opt);
     };
 
-}(typeof window !== 'undefined' ? window : this, jQuery, __JU.Pref));
+}(typeof window !== 'undefined' ? window : this, jQuery, JU.__JU.Pref));

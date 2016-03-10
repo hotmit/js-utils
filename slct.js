@@ -1,4 +1,4 @@
-/*global jQuery, __JU, Str */
+/*global jQuery, JU.__JU, Str */
 
 // REQ: jq, str-standalone.js
 
@@ -234,4 +234,4 @@
         return !$(selectElement).find('option').length;
     };
 
-}(typeof window !== 'undefined' ? window : this, jQuery, __JU.Slct, __JU.Str));
+}(typeof window !== 'undefined' ? window : this, jQuery, JU.__JU.Slct, JU.__JU.Str));

@@ -1,16 +1,16 @@
-/*global, __JU */
+/*global */
 
 // STANDALONE
 
 (function (global, undefined) {
     "use strict";
 
-    if (!global.__JU){
+    if (!global.JU.__JU){
         return;
     }
 
     // put the JU lib in the repo
-    global.JU.publish(global.__JU, global.JU._autoPublish, false);
-    delete global.__JU;
+    global.JU.publish(global.JU.__JU, global.JU._autoPublish, true);
+    delete global.JU.__JU;
 
 }(typeof window !== 'undefined' ? window : this));

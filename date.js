@@ -1,4 +1,4 @@
-/*global jQuery, __JU */
+/*global jQuery, JU.__JU */
 
 // STANDALONE: pure js
 
@@ -240,5 +240,5 @@
         return result;
     };
 
-}(typeof window !== 'undefined' ? window : this, jQuery, __JU.Dt));
+}(typeof window !== 'undefined' ? window : this, jQuery, JU.__JU.Dt));
 

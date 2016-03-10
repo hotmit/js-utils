@@ -1,4 +1,4 @@
-/*global jQuery, __JU, setTimeout */
+/*global jQuery, JU.__JU, setTimeout */
 
 // STANDALONE: pure js
 
@@ -17,4 +17,4 @@
         return setTimeout(function(){ func.call(thisArg || this); }, delay);
     };
 
-}(typeof window !== 'undefined' ? window : this, jQuery, __JU.Tmr));
+}(typeof window !== 'undefined' ? window : this, jQuery, JU.__JU.Tmr));

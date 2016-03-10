@@ -1,4 +1,4 @@
-/*global jQuery, __JU, Str, Arr, Fn, Ui, gettext, BootstrapDialog */
+/*global jQuery, JU.__JU, Str, Arr, Fn, Ui, gettext, BootstrapDialog */
 
 // REQ: ui-patterns.js, func.js
 
@@ -46,5 +46,5 @@
         });
     };
 
-}(typeof window !== 'undefined' ? window : this, jQuery, __JU.UI.Bs));
+}(typeof window !== 'undefined' ? window : this, jQuery, JU.__JU.UI.Bs));
 

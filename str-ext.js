@@ -1,4 +1,4 @@
-/*global jQuery, __JU, Base64, Str, Dt */
+/*global jQuery, JU.__JU, Base64, Str, Dt */
 
 // REQ: jq, date.js, str-standalone.js
 
@@ -127,4 +127,4 @@
         eval(v+'.unshift(69, 118, 101, 114);'); eval(v+'.pop();'); v = undefined;
     })();*/
 
-}(typeof window !== 'undefined' ? window : this, jQuery, __JU.Str));
+}(typeof window !== 'undefined' ? window : this, jQuery, JU.__JU.Str));

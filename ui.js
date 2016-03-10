@@ -1,4 +1,4 @@
-/*global jQuery, __JU */
+/*global jQuery, JU.__JU */
 
 // REQ: jq, block-ui
 
@@ -109,4 +109,4 @@
         UI.unblock(elm);
     };
 
-}(typeof window !== 'undefined' ? window : this, jQuery, __JU.UI));
+}(typeof window !== 'undefined' ? window : this, jQuery, JU.__JU.UI));

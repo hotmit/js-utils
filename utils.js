@@ -1,4 +1,4 @@
-/*global jQuery, __JU */
+/*global jQuery, JU.__JU */
 
 (function (global, Utl) {
     "use strict";
@@ -126,4 +126,4 @@
         return false;
     };
 
-}(typeof window !== 'undefined' ? window : this, __JU.Utl));
+}(typeof window !== 'undefined' ? window : this, JU.__JU.Utl));

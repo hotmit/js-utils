@@ -1,4 +1,4 @@
-/*global jQuery, __JU, Node, HTMLElement */
+/*global jQuery, JU.__JU, Node, HTMLElement */
 
 // STANDALONE: jq
 
@@ -137,6 +137,6 @@
                     && o.displayMethod != undefined && o.command != undefined);
     };
 
-}(typeof window !== 'undefined' ? window : this, jQuery, __JU.Typ));
+}(typeof window !== 'undefined' ? window : this, jQuery, JU.__JU.Typ));
 
 

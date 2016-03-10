@@ -1,4 +1,4 @@
-/*global jQuery, __JU */
+/*global jQuery, JU.__JU */
 
 // STANDALONE: jq
 
@@ -508,4 +508,4 @@
         return s.match(regex);
     };
 
-}(typeof window !== 'undefined' ? window : this, jQuery, __JU.Str));
+}(typeof window !== 'undefined' ? window : this, jQuery, JU.__JU.Str));

@@ -1,4 +1,4 @@
-/*global jQuery, __JU  */
+/*global jQuery, JU.__JU  */
 
 // STANDALONE: jq
 
@@ -117,4 +117,4 @@
         }
     };
 
-}(typeof window !== 'undefined' ? window : this, jQuery, __JU.Fn));
+}(typeof window !== 'undefined' ? window : this, jQuery, JU.__JU.Fn));

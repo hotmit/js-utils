@@ -28,7 +28,7 @@
     global.JU = global.JU || {
         '_repo': [],
         '_versionQueue': [],
-        '_autoPublish': false,
+        '_autoPublish': true,
 
         /**
          * Take the JU in the repo and put it in the global.JU and the specify target.
