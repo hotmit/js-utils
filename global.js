@@ -24,173 +24,181 @@
         }
     }
 
-    // Initialize Super Global Variable (Contains the repo of all JU versions)
+
+    /**
+     * Initialize Super Global Variable (Contains the repo of all JU versions)
+     * @type {{_repo: Array, _versionQueue: Array, _autoPublish: boolean, activate: function, deactivate: function, publish: function, get: function, remove: function}}
+     */
     global.JU = global.JU || {
-        '_repo': [],
-        '_versionQueue': [],
-        '_autoPublish': true,
+            /**
+             * The repository of all the version of JU currently available.
+             */
+            '_repo': [],
 
-        /**
-         * Take the JU in the repo and put it in the global.JU and the specify target.
-         *
-         * @param versionString {string} - the version number you want to activate
-         * @param target {object} - where you want the lib functions to reside (commonly you want the window object to be the target)
-         * @return {boolean}
-         */
-        activate: function(versionString, target)
-        {
-            var i, gVar, ju = global.JU.get(versionString);
+            /**
+             * The order or published JU version (this is use to revert back to older versions)
+             */
+            '_versionQueue': [],
 
-            if (!ju){
-                return false;
-            }
+            /**
+             * Weather to put the library to the global object (ie. window.Str for example)
+             */
+            '_autoPublish': true,
 
-            _removeFromVersionQueue(versionString);
-            global.JU._versionQueue.push(ju.version);
+            /**
+             * Take the JU in the repo and put it in the specified target.
+             *
+             * @param target {!object} - where you want the lib functions to reside (commonly you want the window object to be the target)
+             * @param versionString {?string=} - the version number you want to activate
+             * @return {boolean}
+             */
+            activate: function(target, versionString)
+            {
+                var i, gVar, ju = global.JU.get(versionString);
 
-            for(i=0; i<ju._globalVars.length; i++){
-                gVar = ju._globalVars[i];
-                if (gVar && gVar.indexOf('.') == -1 && ju.hasOwnProperty(gVar))
-                {
-                    global.JU[gVar] = ju[gVar];
-                    if (target){
+                if (!ju || !target){
+                    return false;
+                }
+
+                _removeFromVersionQueue(versionString);
+                global.JU._versionQueue.push(ju.version);
+
+                for(i=0; i<ju._globalVars.length; i++){
+                    gVar = ju._globalVars[i];
+                    if (gVar && gVar.indexOf('.') == -1 && ju.hasOwnProperty(gVar))
+                    {
                         target[gVar] = ju[gVar];
                     }
                 }
-            }
 
-            return true;
-        },
+                return true;
+            },
 
-        /**
-         * Remove the lib functions from the target.
-         *
-         * @param target {?object=} - if not specify global.JU is use instead
-         * @param versionString {?string=} - if not specify the latest version will be use.
-         * @returns {boolean}
-         */
-        deactivate: function(target, versionString){
-            if (!target){
-                target = global.JU;
-            }
-
-            if (!target){
-                return false;
-            }
-
-            var ju = global.JU.get(versionString), i, gVar;
-            for(i=0; i<ju._globalVars.length; i++){
-                gVar = ju._globalVars[i];
-                if (gVar && gVar.indexOf('.') == -1 && target.hasOwnProperty(gVar))
-                {
-                    delete target[gVar];
+            /**
+             * Remove the lib functions from the target.
+             *
+             * @param target {!object=} - if not specify global.JU is use instead
+             * @param versionString {?string=} - if not specify the latest version will be use.
+             * @returns {boolean}
+             */
+            deactivate: function(target, versionString){
+                if (!target){
+                    return false;
                 }
-            }
 
-            return true;
-        },
-
-        /**
-         * Add the JU instance into the main repo.
-         *
-         * @param ju {object}
-         * @param populateGlobals {?boolean=} - put all the library into the global scope (ie __JU.Str into window.Str)
-         * @param forcePush {?boolean=} - replace existing version in the repo
-         */
-        publish: function(ju, populateGlobals, forcePush){
-            var version = ju.version, _repo = global.JU._repo;
-
-            if (global.JU.get(version) && forcePush){
-                global.JU.remove(version, true);
-            }
-
-            if (!global.JU.get(version)){
-                _repo.push(ju);
-
-                // region [ Sort By Version ]
-                _repo.sort(function(a, b){
-                    if (''.localeCompare){
-                        return a.toString().localeCompare(b.toString());
+                var ju = global.JU.get(versionString), i, gVar;
+                for(i=0; i<ju._globalVars.length; i++){
+                    gVar = ju._globalVars[i];
+                    if (gVar && gVar.indexOf('.') == -1 && target.hasOwnProperty(gVar)
+                        && target[gVar].version == versionString)
+                    {
+                        delete target[gVar];
                     }
-
-                    if (a.toString() < b.toString()) {
-                        return -1;
-                    }
-                    if (a.toString() > b.toString()) {
-                        return 1;
-                    }
-                    return 0;
-                });
-                // endregion
-            }
-
-            if (populateGlobals){
-                global.JU.activate(version, global);
-            }
-            else {
-                global.JU.activate(version);
-            }
-        },
-
-        /**
-         * Get JU by version number.
-         *
-         * @param versionString {?string=} - if not specified then get the latest version.
-         * @returns {object|null}
-         */
-        get: function(versionString)
-        {
-            var i, _repo = global.JU._repo;
-            if (!_repo) {
-                return null;
-            }
-
-            if (!versionString) {
-                return _repo[_repo.length - 1];
-            }
-
-            for (i = 0; i < _repo.length; i++) {
-                if (_repo[i].version == versionString) {
-                    return _repo[i];
                 }
-            }
-            return null;
-        },
 
-        /**
-         * Remove the JU from the repo.
-         *
-         * @param versionString {?string=} - the version to remove, undefined to remove latest.
-         * @returns {object}
-         */
-        remove: function(versionString){
-            var i, _repo = global.JU._repo, ju;
-            if (!_repo) {
-                return null;
-            }
+                return true;
+            },
 
-            if (!versionString){
-                ju = global.JU.get();
-                if (!ju){
+            /**
+             * Add the JU instance into the main repo.
+             *
+             * @param ju {!object}
+             * @param populateGlobals {?boolean=} - put all the library into the global scope (ie __JU.Str into window.Str)
+             * @param forcePush {?boolean=} - replace existing version in the repo
+             */
+            publish: function(ju, populateGlobals, forcePush){
+                var version = ju.version, _repo = global.JU._repo;
+
+                if (global.JU.get(version) && forcePush){
+                    global.JU.remove(version);
+                }
+
+                if (!global.JU.get(version)){
+                    _repo.push(ju);
+
+                    // region [ Sort By Version ]
+                    _repo.sort(function(a, b){
+                        if (''.localeCompare){
+                            return a.toString().localeCompare(b.toString());
+                        }
+
+                        if (a.toString() < b.toString()) {
+                            return -1;
+                        }
+                        if (a.toString() > b.toString()) {
+                            return 1;
+                        }
+                        return 0;
+                    });
+                    // endregion
+                }
+
+                if (populateGlobals){
+                    global.JU.activate(global, version);
+                }
+            },
+
+            /**
+             * Get JU by version number.
+             *
+             * @param versionString {?string=} - if not specified then get the latest version.
+             * @returns {object|null}
+             */
+            get: function(versionString)
+            {
+                var i, _repo = global.JU._repo;
+                if (!_repo) {
                     return null;
                 }
-                versionString = ju.version;
-            }
 
-            for (i = 0; i < _repo.length; i++) {
-                if (_repo[i].version == versionString) {
-                    _removeFromVersionQueue(versionString);
-                    return _repo.splice(i, 1);
+                if (!versionString) {
+                    return _repo[_repo.length - 1];
                 }
-            }
-            return null;
-        }
-    }; // END: New JU Object
 
-    // instance for constructing the library in the current version
+                for (i = 0; i < _repo.length; i++) {
+                    if (_repo[i].version == versionString) {
+                        return _repo[i];
+                    }
+                }
+                return null;
+            },
+
+            /**
+             * Remove the JU from the repo.
+             *
+             * @param versionString {?string=} - the version to remove, undefined to remove latest.
+             * @returns {object}
+             */
+            remove: function(versionString){
+                var i, _repo = global.JU._repo, ju;
+                if (!_repo) {
+                    return null;
+                }
+
+                if (!versionString){
+                    ju = global.JU.get();
+                    if (!ju){
+                        return null;
+                    }
+                    versionString = ju.version;
+                }
+
+                for (i = 0; i < _repo.length; i++) {
+                    if (_repo[i].version == versionString) {
+                        _removeFromVersionQueue(versionString);
+                        return _repo.splice(i, 1);
+                    }
+                }
+                return null;
+            }
+        }; // END: New JU Object
+
+    /**
+     * The instance for constructing the library in the current version
+     * @type {{_globalVars: string[], version: string, type: string}}
+     */
     __JU = {
-        '_globalVars': ['Typ', 'Arr', 'Fn', 'Str', 'Dt', 'Slct', 'Pref', 'Stl', 'UI', 'UI.Bs', 'UI.Patterns',
-            'Utl', '', '', '', '', '', '', '', '', ''],
+        '_globalVars': ['Typ', 'Arr', 'Fn', 'Str', 'Dt', 'Slct', 'Pref', 'Stl', 'UI', 'UI.Bs', 'UI.Patterns', 'Utl'],
 
         // This value must be string comparable, ie leave the padded zeros alone :)
         version: 'v1.00.0',
@@ -224,6 +232,10 @@
     }
     //endregion
 
+    /**
+     * The instance for constructing the library in the current version
+     * @type {{_globalVars: string[], version: string, type: string}}
+     */
     global.JU.__JU = __JU;
 
 }(typeof window !== 'undefined' ? window : this));

@@ -1,6 +1,6 @@
 /*global */
 
-// STANDALONE
+// STANDALONE: pure js
 
 (function (global, undefined) {
     "use strict";
