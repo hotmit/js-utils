@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>QUnit Global Test</title>
+    <link rel="stylesheet" href="../Lib/qunit.css">
+</head>
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixture"></div>
+
+    <script src="../Lib/jquery-1.11.2.js"></script>
+    <script src="../../jq-ext/jquery-cookie/src/jquery.cookie.js"></script>
+    <script src="../Lib/qunit.js"></script>
+
+
+    <!-- Libraries -->
+    <script src="../../global.js"></script>
+    <script src="../../arr.js"></script>
+    <script src="../../str-standalone.js"></script>
+    <script src="../../str-ext.js"></script>
+    <script src="../../cookie.pref.js"></script>    <!-- has to be below str -->
+    <script src="../../utils.js"></script>
+    <script src="../../publish.js"></script>
+
+
+    <!-- Test Scripts -->
+    <script src="../Array/tests.js"></script>
+    <script src="../Pref/tests.js"></script>
+    <script src="../Str/tests.js"></script>
+    <script src="../Utils/tests.js"></script>
+
+</body>
+</html>

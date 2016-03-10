@@ -3,7 +3,7 @@
 // REQ: jq, arr.js, jquery.cookie.js
 
 
-(function (global, $, Pref) {
+(function (global, $, Pref, Str) {
     "use strict";
 
     var _defaultOptions = { expires: 90, path: '/', secure: false };
@@ -55,4 +55,5 @@
         $.removeCookie(name, opt);
     };
 
-}(typeof window !== 'undefined' ? window : this, jQuery, JU.__JU.Pref));
+}(typeof window !== 'undefined' ? window : this, jQuery,
+    JU.__JU.Pref, JU.__JU.Str));
