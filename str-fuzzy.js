@@ -26,7 +26,7 @@
      */
     Str.fuzzit = function(s, breakLine){
         /*jslint bitwise: true */
-        breakLine = breakLine === 'undefined' ? breakLine : true;
+        breakLine = !!breakLine;
 
         var r = '', k=s.length, jk=[3,5,8,13,21,34,55,89,144], j=0,
                 sl=k, ch=0, i, c, ml=Str.mtx.length;

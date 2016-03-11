@@ -2,7 +2,7 @@
 
 // STANDALONE: pure js
 
-(function (global, undefined) {
+(function (global) {
     "use strict";
 
     if (!global.JU.__JU){

@@ -67,7 +67,7 @@
     /**
      * Get a array of all the parts of a date. (N for viet day)
      *
-     * @param d {date}- the date object.
+     * @param d {Date}- the date object.
      * @returns {object}
      */
     Dt.getDateParts = function(d){
@@ -121,10 +121,10 @@
         return o;
     };
 
-    /***
+    /**
      * Get the utc equivalent of getDateParts().
      *
-     * @param d {date} - the local date time.
+     * @param d {Date} - the local date time.
      */
     Dt.getUtcParts = function(d){
         var utc = Dt.toUtc(d),
@@ -138,10 +138,10 @@
         return o;
     };
 
-    /***
+    /**
      * Convert to utc, but the getTimezoneOffset() is not zero, but the date and time is utc.
      *
-     * @param d {date} - local date object
+     * @param d {Date} - local date object
      */
     Dt.toUtc = function(d)
     {
@@ -150,10 +150,10 @@
         return new Date(d.getTime() + offset);
     };
 
-    /***
+    /**
      * Two dates has the same year, month and day.
-     * @param d1 {date}- date object
-     * @param d2 {date}- date object
+     * @param d1 {Date}- date object
+     * @param d2 {Date}- date object
      * @returns {boolean}
      */
     Dt.isSameDate = function(d1, d2)
@@ -162,10 +162,10 @@
                 && d1.getMonth() == d2.getMonth()
                 &&  d1.getDate() == d2.getDate();
     };
-    /***
+    /**
      * Two dates has the same year, month and day.
      * @param e1 {number} - milliseconds since 1970 (unix epoch). Note php time() is in seconds not milliseconds.
-     * @param e2 {number} - milliseconds since 1970 (unix epoch). Note php time() is in seconds notmillisecondss.
+     * @param e2 {number} - milliseconds since 1970 (unix epoch). Note php time() is in seconds not milliseconds.
      * @returns {boolean}
      */
     Dt.epochSameDate = function(e1, e2){
@@ -185,7 +185,7 @@
         return s.length == 2 ? s : '0' + s;
     };
 
-    /***
+    /**
      * Is Date data type
      * @param o {object} - the object to test.
      * @returns {boolean}
@@ -194,12 +194,12 @@
         return Object.prototype.toString.call(o) === "[object Date]";
     };
 
-    /***
+    /**
      * Test to see if the date is valid. Usually it bad date
      * when the string use to create the date object is bad (ie not valid date format).
      * Example: new Date("hello world");
      *
-     * @param d {date} - the date object
+     * @param d {Date} - the date object
      * @returns {boolean}
      */
     Dt.isValid = function(d){
@@ -210,9 +210,9 @@
         return false;
     };
 
-    /***
+    /**
      * Format date according to the format string.
-     * @param d {date} - date
+     * @param d {Date} - date
      * @param format {string} - format string, for format look up php date() (this function doesn't support all format)
      * MAKE SURE to double escape the backslash ie if you want to escape a letter 'h' => '\\h'
      * @return {string}

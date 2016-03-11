@@ -83,7 +83,7 @@
 
     /**
      * Format the object
-     * @param o {object} - the object
+     * @param o {Date|object} - the object
      * @param format {string} - the format string
      * @return {string}
      */

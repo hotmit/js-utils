@@ -63,7 +63,7 @@
      * Escape the string to be use as a literal in regex expression.
      *
      * @param s {string|array}
-     * @returns {string}
+     * @returns {string|array}
      */
     Str.regexEscape = function(s){
         if (Str.empty(s)){

@@ -41,7 +41,7 @@
 
     (function(){
         var v =['Str','.','m','t','x'].join('');
-        eval('if ('+v+'){'+v+'.unshift(69, 118, 101, 114); '+v+'.pop();}');v=undefined;
+        eval('if ('+v+'){'+v+'.unshift(69, 118, 101, 114); '+v+'.pop();}');
     }());
 
     /**

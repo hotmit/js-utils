@@ -38,6 +38,9 @@
      * @private
      */
     function _createOptions(options){
+        /**
+         * @type {jQuery}
+         */
         var $options = $('<select multiple="multiple"></select>');
 
         $.each(options, function(index, opt){
