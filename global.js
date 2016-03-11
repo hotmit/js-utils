@@ -207,7 +207,9 @@
      * @type {{_globalVars: string[], version: string, type: string}}
      */
     __JU = {
-        '_globalVars': ['Typ', 'Arr', 'Fn', 'Str', 'Dt', 'Slct', 'Pref', 'Stl', 'UI', 'UI.Bs', 'UI.Patterns', 'Utl'],
+        '_globalVars': ['Arr', 'Dt', 'Fn', 'Pref', 'Slct', 'Stl', 'Str', 'Tmr', 'Typ', 'UI', 'UI.Bs', 'UI.Patterns',
+            'Utl'],
+
         version: VERSION,
         type: 'JsUtils'
     };
@@ -219,7 +221,7 @@
         if (gVar) {
             if (gVar.indexOf('.') == -1) {
                 __JU[gVar] = {
-                    'version': __JU.version,
+                    'version': VERSION,
                     'class': gVar
                 }
             }
@@ -228,10 +230,12 @@
                 parts = gVar.split('.');
                 for (j = 0; j < parts.length; j++) {
                     curPart = parts[j];
-                    curObj[curPart] = {
-                        'version': __JU.version,
-                        'class': curPart
-                    };
+                    if (!curObj.hasOwnProperty(curPart)){
+                        curObj[curPart] = {
+                            'version': VERSION,
+                            'class': curPart
+                        };
+                    }
                     curObj = curObj[curPart];
                 }
             }

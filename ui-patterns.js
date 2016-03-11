@@ -747,4 +747,4 @@
     // endregion
 
 }(typeof window !== 'undefined' ? window : this, jQuery,
-    __JU.UI.Patterns, JU.__JU.UI, JU.__JU.Str, JU.__JU.Bs, JU.__JU.Fn));
+    JU.__JU.UI.Patterns, JU.__JU.UI, JU.__JU.Str, JU.__JU.Bs, JU.__JU.Fn));

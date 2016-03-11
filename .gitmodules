@@ -33,3 +33,6 @@
 	url = https://github.com/sliptree/bootstrap-tokenfield.git
 	
 
+[submodule "ext/uri-js"]
+	path = ext/uri-js
+	url = https://github.com/medialize/URI.js.git
