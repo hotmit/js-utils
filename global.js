@@ -5,7 +5,10 @@
 (function (global) {
     "use strict";
 
-    var __JU, i, j, gVar, parts, curPart, curObj;
+    var __JU, i, j, gVar, parts, curPart, curObj,
+        // This value must be string comparable, ie. leave the padded zeros alone :)
+        VERSION = 'v1.00.0';
+
 
     // gettext place holder
     if (global.gettext === undefined){
@@ -16,6 +19,7 @@
             return s;
         };
     }
+
 
     function _removeFromVersionQueue (versionString){
         var index = global.JU._versionQueue.indexOf(versionString);
@@ -44,6 +48,11 @@
              * Weather to put the library to the global object (ie. window.Str for example)
              */
             '_autoPublish': true,
+
+            /**
+             * Global JU version.
+             */
+            '_version': VERSION,
 
             /**
              * Take the JU in the repo and put it in the specified target.
@@ -199,9 +208,7 @@
      */
     __JU = {
         '_globalVars': ['Typ', 'Arr', 'Fn', 'Str', 'Dt', 'Slct', 'Pref', 'Stl', 'UI', 'UI.Bs', 'UI.Patterns', 'Utl'],
-
-        // This value must be string comparable, ie leave the padded zeros alone :)
-        version: 'v1.00.0',
+        version: VERSION,
         type: 'JsUtils'
     };
 
