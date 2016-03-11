@@ -1,10 +1,12 @@
 /*global QUnit, Utl */
 
-QUnit.test('Utl Global Object', function (assert){
+
+QUnit.test('Utils - Utl Global Object', function (assert){
     assert.ok(window.JU, 'super global');
-    assert.ok(window.JU.Utl, 'Utl global');
+    assert.notOk(window.JU.Utl, 'Utl global');
     assert.ok(window.Utl, 'window Utl global');
 });
+
 
 function getAttrTest(assert, Utl) {
     var complexObj = {
@@ -53,11 +55,16 @@ function getAttrTest(assert, Utl) {
     assert.equal(Utl.getAttr(complexObj, 'obj.nested.$illegal key', notFound), 'po po', 'complex obj sub object long space key');
 }
 
-QUnit.test('JU.Utl.getAttr', function (assert){
-    getAttrTest(assert, JU.Utl);
+
+QUnit.test('Utils - Utl.getAttr Custom Target', function (assert){
+    var arbitraryTarget = {};
+    JU.activate(arbitraryTarget);
+    assert.ok(arbitraryTarget.Utl, 'util in target')
+    getAttrTest(assert, arbitraryTarget.Utl);
 });
 
-QUnit.test('window.Utl.getAttr', function (assert){
+
+QUnit.test('Utils - window.Utl.getAttr', function (assert){
     getAttrTest(assert, window.Utl);
 });
 
@@ -94,12 +101,17 @@ function setAttrTest(assert, Utl) {
     assert.strictEqual(Utl.getAttr(simpleObj, 'hello', notFound), 'world', 'write verification');
 }
 
-QUnit.test('JU.Utl.setAttr', function (assert)
+
+QUnit.test('Utils - Utl.setAttr Custom Target', function (assert)
 {
-    setAttrTest(assert, JU.Utl);
+    var arbitraryTarget = {};
+    JU.activate(arbitraryTarget);
+    assert.ok(arbitraryTarget.Utl, 'util in target')
+    setAttrTest(assert, arbitraryTarget.Utl);
 });
 
-QUnit.test('window.Utl.setAttr', function (assert)
+
+QUnit.test('Utils - window.Utl.setAttr', function (assert)
 {
     setAttrTest(assert, window.Utl);
 });

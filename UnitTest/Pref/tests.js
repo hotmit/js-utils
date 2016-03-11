@@ -1,7 +1,7 @@
 /*global QUnit, Pref */
 
 
-QUnit.test('Equals', function (assert){
+QUnit.test('Pref - Equals', function (assert){
 	var data = ['hello', '0', 0, 1, 0.0, 1.0, {}, {n:1}];		
 	
 	for(var i=0; i<data.length; i++){
@@ -15,7 +15,7 @@ QUnit.test('Equals', function (assert){
 });
 
 
-QUnit.test('Not Deep Equals', function (assert){
+QUnit.test('Pref - Not Deep Equals', function (assert){
 	var data = [0, 1, 0.0, 1.0, {}, {n:1}];		
 	
 	for(var i=0; i<data.length; i++){
@@ -29,7 +29,7 @@ QUnit.test('Not Deep Equals', function (assert){
 });
 
 
-QUnit.test('Test Default Value', function (assert){
+QUnit.test('Pref - Test Default Value', function (assert){
 	var data = [null, undefined];		
 	
 	for(var i=0; i<data.length; i++){

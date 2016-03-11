@@ -1,7 +1,7 @@
 /*global QUnit, Str, test, equal, ok */
 
 
-QUnit.test('Str.subStr', function (assert){
+QUnit.test('Str - Str.subStr', function (assert){
 	var txt = "héllố wờrld";
 
 	assert.equal(Str.subStr(null), '', 'Null string, return ""');
@@ -35,7 +35,7 @@ QUnit.test('Str.subStr', function (assert){
 });
 
 
-QUnit.test('Str.format', function (assert){
+QUnit.test('Str - Str.format', function (assert){
 	var obj = {
 			name: 'joe',
 			age: 27,

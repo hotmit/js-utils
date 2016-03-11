@@ -1,6 +1,6 @@
 /*global QUnit, Arr */
 
-QUnit.test('Arr.isArray', function (assert) {
+QUnit.test('Array - Arr.isArray', function (assert) {
     assert.notOk(Arr.isArray());
     assert.notOk(Arr.isArray(new Date()));
     assert.notOk(Arr.isArray(0));
