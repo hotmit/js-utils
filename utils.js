@@ -81,8 +81,9 @@
      */
     Utl.setAttr = function(obj, attr, value, skipIfExist){
         var attrParts, i, newObj, arrIndex, curAttr;
+        attr = attr == undefined ? '' : attr.toString();
 
-        if (obj && attr != undefined && attr.length > 0){
+        if (obj && attr.length > 0){
             if (attr.indexOf('.') == -1){
                 if (!skipIfExist || !obj.hasOwnProperty(attr)){
                     if (_isArray(obj))
