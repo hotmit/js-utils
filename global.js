@@ -18,7 +18,7 @@
     }
 
     function _removeFromVersionQueue (versionString){
-        var index = global.JU._versionQueue.indexOf(versionString)
+        var index = global.JU._versionQueue.indexOf(versionString);
         if (index > -1){
             global.JU._versionQueue.splice(index, 1);
         }

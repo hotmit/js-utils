@@ -743,7 +743,7 @@
         else {
             $input.on('keyup', clearOnEscape);
         }
-    }
+    };
     // endregion
 
 }(typeof window !== 'undefined' ? window : this, jQuery,
