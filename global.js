@@ -5,10 +5,9 @@
 (function (global) {
     "use strict";
 
-    var __JU, i, j, gVar, parts, curPart, curObj,
+    var __JU, i, j, gVar, parts, curPart, curObj, _autoPopulateGlobal = true,
         // This value must be string comparable, ie. leave the padded zeros alone :)
-        VERSION = 'v1.00.0';
-
+        VERSION = 'v1.00.0', TYPE = 'JsUtils';
 
     // gettext place holder
     if (global.gettext === undefined){
@@ -20,7 +19,6 @@
         };
     }
 
-
     function _removeFromVersionQueue (versionString){
         var index = global.JU._versionQueue.indexOf(versionString);
         if (index > -1){
@@ -28,10 +26,17 @@
         }
     }
 
+    // If this is the very first JU, the global variable "JU_autoPopulateGlobal" can be use to disable auto populate.
+    // Any other case, use global.JU._autoPopulateGlobal to disable instead.
+    if (!global.JU && global.hasOwnProperty('JU_autoPopulateGlobal'))
+    {
+        _autoPopulateGlobal = !!global['JU_autoPopulateGlobal'];
+    }
+
 
     /**
      * Initialize Super Global Variable (Contains the repo of all JU versions)
-     * @type {{_repo: Array, _versionQueue: Array, _autoPublish: boolean, activate: function, deactivate: function, publish: function, get: function, remove: function }}
+     * @type {{_repo: Array, _versionQueue: Array, _autoPopulateGlobal: boolean, activate: function, deactivate: function, publish: function, get: function, remove: function, revert: function }}
      */
     global.JU = global.JU || {
             /**
@@ -40,14 +45,14 @@
             '_repo': [],
 
             /**
-             * The order or published JU version (this is use to revert back to older versions)
+             * The order of activated JU version (this is use to revert back to older versions)
              */
             '_versionQueue': [],
 
             /**
              * Weather to put the library to the global object (ie. window.Str for example)
              */
-            '_autoPublish': true,
+            '_autoPopulateGlobal': _autoPopulateGlobal,
 
             /**
              * Global JU version.
@@ -86,8 +91,8 @@
             /**
              * Remove the lib functions from the target.
              *
-             * @param target {!object=} - if not specify global.JU is use instead
-             * @param versionString {?string=} - if not specify the latest version will be use.
+             * @param target {!object} - the object to deactivate
+             * @param versionString {?string=} - if not specify the latest version will be use.  Specify constant '*' to remove all version.
              * @returns {boolean}
              */
             deactivate: function(target, versionString){
@@ -95,11 +100,22 @@
                     return false;
                 }
 
-                var ju = global.JU.get(versionString), i, gVar;
+                var removeAll = false, ju, i, gVar;
+                if (versionString == '*'){
+                    removeAll = true;
+                    versionString = null;
+                }
+
+                ju = global.JU.get(versionString);
+                if (!ju){
+                    return false;
+                }
+
                 for(i=0; i<ju._globalVars.length; i++){
                     gVar = ju._globalVars[i];
                     if (gVar && gVar.indexOf('.') == -1 && target.hasOwnProperty(gVar)
-                        && target[gVar].version == versionString)
+                            && (target[gVar].hasOwnProperty('type') && target[gVar].type == TYPE)
+                            && (removeAll || target[gVar].version == versionString))
                     {
                         delete target[gVar];
                     }
@@ -195,6 +211,7 @@
                 for (i = 0; i < _repo.length; i++) {
                     if (_repo[i].version == versionString) {
                         _removeFromVersionQueue(versionString);
+                        global.JU.deactivate(global, versionString);
                         return _repo.splice(i, 1);
                     }
                 }
@@ -245,8 +262,8 @@
         '_globalVars': ['Arr', 'Dt', 'Fn', 'Pref', 'Slct', 'Stl', 'Str', 'Tmr', 'Typ', 'UI', 'UI.Bs', 'UI.Patterns',
             'Utl'],
 
-        version: VERSION,
-        type: 'JsUtils'
+        'version': VERSION,
+        'type': TYPE
     };
 
     //region [ Initialize Lib Structure ]
@@ -257,7 +274,8 @@
             if (gVar.indexOf('.') == -1) {
                 __JU[gVar] = {
                     'version': VERSION,
-                    'class': gVar
+                    'class': gVar,
+                    'type': TYPE
                 }
             }
             else {
@@ -268,7 +286,8 @@
                     if (!curObj.hasOwnProperty(curPart)){
                         curObj[curPart] = {
                             'version': VERSION,
-                            'class': curPart
+                            'class': curPart,
+                            'type': TYPE
                         };
                     }
                     curObj = curObj[curPart];

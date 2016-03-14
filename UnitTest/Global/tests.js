@@ -1,4 +1,4 @@
-/*global QUnit, _JU */
+/*global QUnit */
 
 QUnit.test('Global - Versioning', function (assert){
 
