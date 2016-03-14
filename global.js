@@ -31,7 +31,7 @@
 
     /**
      * Initialize Super Global Variable (Contains the repo of all JU versions)
-     * @type {{_repo: Array, _versionQueue: Array, _autoPublish: boolean, activate: function, deactivate: function, publish: function, get: function, remove: function}}
+     * @type {{_repo: Array, _versionQueue: Array, _autoPublish: boolean, activate: function, deactivate: function, publish: function, get: function, remove: function }}
      */
     global.JU = global.JU || {
             /**
@@ -199,12 +199,47 @@
                     }
                 }
                 return null;
+            },
+
+            /**
+             * Go back to older version in the queue, if it is the last version
+             * then just remove without activate new one.
+             *
+             * @param populateGlobals {?boolean=} - put all the library into the global scope (ie __JU.Str into window.Str)
+             * @returns {object|null} - return the removed version of JU
+             */
+            revert: function(populateGlobals){
+                var _repo = global.JU._repo, queue = global.JU._versionQueue, version, ju;
+                if (_repo.length > 0 && queue.length > 0) {
+                    version = queue.pop();
+
+                    while (queue.length) {
+                        ju = global.JU.get(version);
+                        if (!ju) {
+                            version = queue.pop();
+                            continue;
+                        }
+
+                        // remove the old version from the global object (if it exist)
+                        global.JU.deactivate(global, version);
+
+                        if (populateGlobals && queue.length){
+                            version = queue[queue.length - 1];
+                            global.JU.activate(global, version);
+                        }
+
+                        return ju;
+                    }
+                }
+                return null;
             }
         }; // END: New JU Object
 
+
     /**
      * The instance for constructing the library in the current version
-     * @type {{_globalVars: string[], version: string, type: string}}
+     * @type {{_globalVars: string[], version: string, type: string,
+     *          Arr, Dt, Fn, Pref, Slct, Stl, Str, Tmr, Typ, UI: {Bs, Patterns}, Utl}}
      */
     __JU = {
         '_globalVars': ['Arr', 'Dt', 'Fn', 'Pref', 'Slct', 'Stl', 'Str', 'Tmr', 'Typ', 'UI', 'UI.Bs', 'UI.Patterns',
