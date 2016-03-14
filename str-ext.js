@@ -45,7 +45,7 @@
 
         // Syntax: {0}	or 	{0:format string}
         // Replace place holder with actual value from the parameters
-        s = s.replace(/\{(\d+)(:([^}]+?))?\}/g, function (match, index, format, style) {
+        s = s.replace(/\{(\d+)(:([^}]+?))?}/g, function (match, index, format, style) {
             if (index < args.length && args[index] != undefined){
                 if (!format){
                     return args[index];
@@ -58,7 +58,7 @@
         // Syntax: {index.key}	or 	{index.key:format string}
         // 		eg. {0.name}
         // Index of object or an array
-        s = s.replace(/\{(\d+)\.([a-zA-Z0-9_]+)(:([^}]+?))?\}/g, function (match, index, key, format, style) {
+        s = s.replace(/\{(\d+)\.([a-zA-Z0-9_]+)(:([^}]+?))?}/g, function (match, index, key, format, style) {
             if (index < args.length && args[index] != undefined && args[index].hasOwnProperty(key)){
                 if (!format){
                     return args[index][key];

@@ -245,7 +245,8 @@
 
     /**
      * The instance for constructing the library in the current version
-     * @type {{_globalVars: string[], version: string, type: string}}
+     * @type {{_globalVars: string[], version: string, type: string,
+     *          Arr, Dt, Fn, Pref, Slct, Stl, Str, Tmr, Typ, UI: {Bs, Patterns}, Utl}}
      */
     global.JU.__JU = __JU;
 
