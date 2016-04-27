@@ -47,3 +47,6 @@ if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
         }
     });
 }
+else {
+    $('#message').append('<span>Skipped Pref Test, Run In Firefox Instead.</span>');
+}
