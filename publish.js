@@ -12,7 +12,7 @@
     // AutoPopulate Flag: global.JU_autoPopulateGlobal: bool
 
     // put the JU lib in the repo
-    global.JU.publish(global.JU.__JU, global.JU._autoPopulateGlobal, true);
+    global.JU.publish(global.JU.__JU, global.JU._autoPopulateGlobal, false);
     delete global.JU.__JU;
 
 }(typeof window !== 'undefined' ? window : this));

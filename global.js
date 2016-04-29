@@ -6,8 +6,10 @@
     "use strict";
 
     var __JU, i, j, gVar, parts, curPart, curObj, _autoPopulateGlobal = true,
+
         // This value must be string comparable, ie. leave the padded zeros alone :)
-        VERSION = 'v1.00.0', TYPE = 'JsUtils';
+        VERSION = 'v1.00.0',
+        TYPE = 'JsUtils';
 
     // gettext place holder
     if (global.gettext === undefined){
