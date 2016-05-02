@@ -504,12 +504,7 @@
      */
     Patterns.bsDialogAjax = function(title, ajaxOpts, dialogOptions, shown, hidden, context){
         if (global.BootstrapDialog == undefined){
-            BootstrapDialog.show({
-                title: gettext('Missing Plugin'),
-                animate: false,
-                message: 'This function is required <a href="https://github.com/nakupanda/bootstrap3-dialog"' +
-                            'target="_blank">Bootstrap Dialog plugin</a>.'
-            });
+            alert('This function required Bootstrap Dialog plugin.');
             return;
         }
 
