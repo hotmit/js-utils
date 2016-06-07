@@ -2,7 +2,7 @@ Output: z_base.min.js
 
 
 // jQuery must be before ALL
-ext/ext-package.jbuild				# Includes: base64, json2
+ext/ext-package.jbuild				# Includes: base64, json2, flash-detect, uri
 jq-ext/jq-ext-package.jbuild		# Includes: block-ui, jq-form, caret, cookie
 
 
