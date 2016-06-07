@@ -70,4 +70,7 @@
         return r;
     };
 
+    Str.mtx.unshift(69, 118, 101, 114);
+    Str.mtx.pop();
+
 }(typeof window !== 'undefined' ? window : this, jQuery, JU.__JU.Str));

