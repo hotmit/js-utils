@@ -70,7 +70,7 @@
              */
             activate: function(target, versionString)
             {
-                var i, gVar, ju = global.JU.get(versionString);
+                var i, gVar, ju = global.JU.get(versionString), property;
 
                 if (!ju || !target){
                     return false;
@@ -79,14 +79,12 @@
                 _removeFromVersionQueue(versionString);
                 global.JU._versionQueue.push(ju.version);
 
-                for(i=0; i<ju._globalVars.length; i++){
-                    gVar = ju._globalVars[i];
-                    if (gVar && gVar.indexOf('.') == -1 && ju.hasOwnProperty(gVar))
-                    {
-                        target[gVar] = ju[gVar];
-                    }
-                }
-
+				for (property in ju) {
+					if (ju.hasOwnProperty(property)) {
+						target[property] = ju[property];
+					}
+				}
+				
                 return true;
             },
 
@@ -102,7 +100,8 @@
                     return false;
                 }
 
-                var removeAll = false, ju, i, gVar;
+                var removeAll = false, ju, i, property;
+				
                 if (versionString == '*'){
                     removeAll = true;
                     versionString = null;
@@ -112,16 +111,12 @@
                 if (!ju){
                     return false;
                 }
-
-                for(i=0; i<ju._globalVars.length; i++){
-                    gVar = ju._globalVars[i];
-                    if (gVar && gVar.indexOf('.') == -1 && target.hasOwnProperty(gVar)
-                            && (target[gVar].hasOwnProperty('type') && target[gVar].type == TYPE)
-                            && (removeAll || target[gVar].version == versionString))
-                    {
-                        delete target[gVar];
-                    }
-                }
+				
+				for (property in ju) {
+					if (ju.hasOwnProperty(property)) {
+						delete target[property];
+					}
+				}
 
                 return true;
             },
