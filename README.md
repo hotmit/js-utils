@@ -12,5 +12,17 @@ git submodule update --init --recursive
 git submodule foreach git pull origin master
 ```
 
+# Publish Manually
+```javascript
+
+// if you skipped publish.js, this how you activate JU manually
+
+var myLib = {};
+
+JU.publish(JU.__JU, false, false);
+delete JU.__JU;
+JU.activate(myLib);
+```
+
 
 
