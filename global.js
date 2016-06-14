@@ -100,7 +100,7 @@
                     return false;
                 }
 
-                var removeAll = false, ju, i, property;
+                var removeAll = false, ju, i, gVar;
 				
                 if (versionString == '*'){
                     removeAll = true;
@@ -112,11 +112,15 @@
                     return false;
                 }
 				
-				for (property in ju) {
-					if (ju.hasOwnProperty(property)) {
-						delete target[property];
-					}
-				}
+                for(i=0; i<ju._globalVars.length; i++){
+                    gVar = ju._globalVars[i];
+                    if (gVar && gVar.indexOf('.') == -1 && target.hasOwnProperty(gVar)
+                            && (target[gVar].hasOwnProperty('type') && target[gVar].type == TYPE)
+                            && (removeAll || target[gVar].version == versionString))
+                    {
+                        delete target[gVar];
+                    }
+                }
 
                 return true;
             },
