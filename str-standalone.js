@@ -508,4 +508,74 @@
         return s.match(regex);
     };
 
+    function _getWords(s){
+        s = s.replace(/(\w)([A-Z][a-z])/, '$1-$2');
+        s = s.replace(' ', '-');
+        s = s.replace('_', '-');
+        s = s.replace(/-+/g, '-');
+
+        return s.split('-')
+    }
+
+    /**
+     * Convert any string to camel case.
+     *
+     * @param s
+     */
+    Str.toCamelCase = function(s){
+        var words = _getWords(s), result = '', i, word;
+        for (i=0; i<words.length; i++){
+            word = words[i];
+            if (i == 0){
+                result += word.toLowerCase();
+            }
+            else {
+                result += word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
+            }
+        }
+        return result;
+    };
+
+    /**
+     * Convert any string to title case.
+     *
+     * @param s
+     */
+    Str.toTitleCase = function(s){
+        var words = _getWords(s), result = '', i, word;
+        for (i=0; i<words.length; i++){
+            word = words[i];
+            result += word.charAt(0).toUpperCase() + word.substr(1).toLowerCase() + ' ';
+        }
+        return Str.trimEnd(result);
+    };
+
+    /**
+     * Convert any string to snake case.
+     *
+     * @param s
+     */
+    Str.toSnakeCase = function(s){
+        var words = _getWords(s), result = '', i, word;
+        for (i=0; i<words.length; i++){
+            word = words[i];
+            result += word.toLowerCase() + '_';
+        }
+        return Str.trimEnd(result, '_');
+    };
+
+    /**
+     * Convert any string to snake case.
+     *
+     * @param s
+     */
+    Str.toKebabCase = function(s){
+        var words = _getWords(s), result = '', i, word;
+        for (i=0; i<words.length; i++){
+            word = words[i];
+            result += word.toLowerCase() + '-';
+        }
+        return Str.trimEnd(result, '-');
+    };
+
 }(typeof window !== 'undefined' ? window : this, jQuery, JU.__JU.Str));
