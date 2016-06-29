@@ -2,4 +2,6 @@ Output: D:\Projects\Js\public\gm-utils.min.js
 
 z_base.jbuild
 
+^jq-ext/jq-ext-package.jbuild
+^ext/ext-package.jbuild
 ^publish.js
