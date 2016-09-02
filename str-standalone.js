@@ -442,7 +442,12 @@
         }
 
         try {
-            return $.parseJSON(s);
+            if ($.type(s) === 'string'){
+                return $.parseJSON(s);
+            }
+
+            // it already an object
+            return s;
         }
         catch(err){
             return defaultValue;
