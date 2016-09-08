@@ -6,19 +6,18 @@ ext/ext-package.jbuild				# Includes: base64, json2, flash-detect, uri
 jq-ext/jq-ext-package.jbuild		# Includes: block-ui, jq-form, caret, cookie
 
 
-global.js                           # pure js: decorator and global functions
+global.js                           # pure js: decorator and global functions [Must be FIRST]
 
 tmr.js								# pure js	
 date.js								# pure js
-utils.js                            # pure js
-
+obj.js								# pure js
 
 type.js								# req: jq
 arr.js								# req: jq
 func.js								# req: jq
 style.js							# req: jq
 str-standalone.js					# req: jq
-
+utils.js                            # req: jq, str
 
 slct.js								# req: jq, str-standalone
 str-ext.js							# req: jq, date, str-standalone
@@ -30,4 +29,4 @@ ui-patterns.js						# req: jq, jq-form, jq-dialog, bootstrap-ext, arr, type, fun
 
 bootstrap-ext.js					# req: jq, func, ui-patterns
 
-publish.js                          # pure js
+publish.js                          # pure js [Must be LAST]

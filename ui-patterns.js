@@ -3,7 +3,7 @@
 // REQ: jq, jq-form, jq-dialog, bootstrap-ext, type, arr, func, str-standalone, slct
 
 
-(function (global, $, Patterns, UI, Str, Bs, Fn) {
+(function (global, $, Patterns, UI, Str, Bs, Fn, Utl, Obj) {
     "use strict";
 
     // region [ formAutoFocus ]
@@ -324,7 +324,8 @@
             }
         }
 
-        var defaultBlockUiOptions, blockOptions, defaultBsDialogOpts,
+        var defaultBlockUiOptions, blockOptions, bsDialogOpts, defaultBsDialogOpts,
+            toastrOpts, defaultToastrOpts, toastrType, toastrTitle,
             displayMethod = ajaxCommand.displayMethod, command = ajaxCommand.command,
             options = ajaxCommand.options, hasSyncAction, canDisplayAsyncTask = false;
 
@@ -436,7 +437,7 @@
                 delay: hasSyncAction ? 300 : 2000
             };
 
-            blockOptions = $.extend({}, defaultBlockUiOptions, options);
+            blockOptions = Utl.getPrefixedOptions(options, 'blockUi', defaultBlockUiOptions);
             UI.block(blockOptions.blockTarget, blockOptions);
 
             executeAsyncActions();
@@ -471,8 +472,27 @@
             };
 
             executeAsyncActions();
-            defaultBsDialogOpts = $.extend({}, defaultBsDialogOpts, options);
-            BootstrapDialog.show(defaultBsDialogOpts);
+            bsDialogOpts = Utl.getPrefixedOptions(options, 'bsDialog', defaultBsDialogOpts);
+            BootstrapDialog.show(bsDialogOpts);
+        }
+        else if (displayMethod == 'toastr')
+        {
+            defaultToastrOpts = {
+                title: undefined,
+                type: 'success',
+                closeButton: true,
+                newestOnTop: true,
+                positionClass: 'toast-top-right',
+                onHidden: function(){
+                    executeSyncActions();
+                }
+            };
+
+            executeAsyncActions();
+            toastrOpts = Utl.getPrefixedOptions(options, 'toastr', defaultToastrOpts);
+            toastrType = Obj.pop(toastrOpts, 'type', 'success');
+            toastrTitle = Obj.pop(toastrOpts, 'title', undefined);
+            toastr[toastrType](options.message, toastrTitle, toastrOpts)
         }
         else if (displayMethod == 'alert'){
             executeAsyncActions();
@@ -742,4 +762,4 @@
     // endregion
 
 }(typeof window !== 'undefined' ? window : this, jQuery,
-    JU.__JU.UI.Patterns, JU.__JU.UI, JU.__JU.Str, JU.__JU.Bs, JU.__JU.Fn));
+    JU.__JU.UI.Patterns, JU.__JU.UI, JU.__JU.Str, JU.__JU.Bs, JU.__JU.Fn, JU.__JU.Utl, JU.__JU.Obj));

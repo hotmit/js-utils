@@ -8,7 +8,7 @@
     var __JU, i, j, gVar, parts, curPart, curObj, _autoPopulateGlobal = true,
 
         // This value must be string comparable, ie. leave the padded zeros alone :)
-        VERSION = 'v1.00.0',
+        VERSION = 'v1.01.0',
         TYPE = 'JsUtils';
 
     // gettext place holder
@@ -257,10 +257,10 @@
     /**
      * The instance for constructing the library in the current version
      * @type {{_globalVars: string[], version: string, type: string,
-     *          Arr, Dt, Fn, Pref, Slct, Stl, Str, Tmr, Typ, UI: {Bs, Patterns}, Utl}}
+     *          Arr, Dt, Fn, Obj, Pref, Slct, Stl, Str, Tmr, Typ, UI: {Bs, Patterns}, Utl}}
      */
     __JU = {
-        '_globalVars': ['Arr', 'Dt', 'Fn', 'Pref', 'Slct', 'Stl', 'Str', 'Tmr', 'Typ', 'UI', 'UI.Bs', 'UI.Patterns',
+        '_globalVars': ['Arr', 'Dt', 'Fn', 'Obj', 'Pref', 'Slct', 'Stl', 'Str', 'Tmr', 'Typ', 'UI', 'UI.Bs', 'UI.Patterns',
             'Utl'],
 
         'version': VERSION,
@@ -301,7 +301,7 @@
     /**
      * The instance for constructing the library in the current version
      * @type {{_globalVars: string[], version: string, type: string,
-     *          Arr, Dt, Fn, Pref, Slct, Stl, Str, Tmr, Typ, UI: {Bs, Patterns}, Utl}}
+     *          Arr, Dt, Fn, Obj, Pref, Slct, Stl, Str, Tmr, Typ, UI: {Bs, Patterns}, Utl}}
      */
     global.JU.__JU = __JU;
 
