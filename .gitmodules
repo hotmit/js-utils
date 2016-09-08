@@ -4,8 +4,8 @@
 [submodule "ext/js-base64"]
 	path = ext/js-base64
 	url = https://github.com/dankogai/js-base64.git
-[submodule "ext/json-js"]
-	path = ext/json-js
+[submodule "ext/JSON-js"]
+	path = ext/JSON-js
 	url = https://github.com/douglascrockford/JSON-js.git
 [submodule "jq-ext/jquery-cookie"]
 	path = jq-ext/jquery-cookie
