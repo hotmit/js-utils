@@ -4,6 +4,7 @@
 *.min.js
 *.gz
 *.lnk
+zt_*.jbuild
 
 
 # folders

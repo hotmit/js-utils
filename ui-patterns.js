@@ -60,12 +60,8 @@
             defaultAjaxOptions, ajaxFormOpts,
             userBeforeSubmit, userSuccessFunc;
 
-        if (!$.fn.hasOwnProperty('ajaxForm')){
-            BootstrapDialog.show({
-                title: gettext('UI.Patterns.submitForm Error'),
-                message: gettext("This function requires jQuery Form (https://github.com/malsup/form.git)."),
-                animate: false
-            });
+        if (!Patterns.dependencyCheck('ajaxForm', gettext('UI.Patterns.submitForm Error'),
+            gettext('This function requires jQuery Form (https://github.com/malsup/form.git).'))){
             return;
         }
 
@@ -477,6 +473,11 @@
         }
         else if (displayMethod == 'toastr')
         {
+            if (!Patterns.dependencyCheck(global.toastr, gettext('UI.Patterns.parseAjaxCommand Toastr Error'),
+                    gettext('This function requires toastr plugins (https://github.com/CodeSeven/toastr).'))){
+                return;
+            }
+
             defaultToastrOpts = {
                 title: undefined,
                 type: 'success',
@@ -758,6 +759,50 @@
         else {
             $input.on('keyup', clearOnEscape);
         }
+    };
+    // endregion
+
+    // region [ dependencyCheck ]
+    /**
+     * Check for plugins/lib dependency.
+     *
+     * @param testObj - if a string then test for jq $.fn, if false display error message then return false.,
+     * @param title - title of the error message
+     * @param message - the error message
+     * @returns {boolean}
+     */
+    Patterns.dependencyCheck = function (testObj, title, message) {
+        // Preference: dialog, toastr, and then last resort => alert
+        var result = false;
+
+        if (testObj){
+            if ($.type(testObj) == 'string'){
+                result = $.fn.hasOwnProperty(testObj);
+            }
+            else {
+                result = true;
+            }
+        }
+
+        if (result){
+            return true;
+        }
+
+        if ($.fn.hasOwnProperty('ajaxForm')) {
+            BootstrapDialog.show({
+                title: title,
+                message: message,
+                animate: false
+            });
+        }
+        else if (global.toastr != undefined){
+            global.toastr.error(message, title);
+        }
+        else {
+            alert(title + "\n" + message);
+        }
+
+        return false;
     };
     // endregion
 
