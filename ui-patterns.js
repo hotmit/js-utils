@@ -480,7 +480,7 @@
 
             defaultToastrOpts = {
                 title: undefined,
-                type: 'success',
+                type: options.status == 'error' ? 'error' : 'success',
                 closeButton: true,
                 newestOnTop: true,
                 positionClass: 'toast-top-right',
