@@ -493,7 +493,7 @@
             toastrOpts = Utl.getPrefixedOptions(options, 'toastr', defaultToastrOpts);
             toastrType = Obj.pop(toastrOpts, 'type', 'success');
             toastrTitle = Obj.pop(toastrOpts, 'title', undefined);
-            toastr[toastrType](options.message, toastrTitle, toastrOpts)
+            toastr[toastrType](ajaxCommand.message, toastrTitle, toastrOpts)
         }
         else if (displayMethod == 'alert'){
             executeAsyncActions();
