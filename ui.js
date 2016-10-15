@@ -13,25 +13,24 @@
     };
 
     UI.darkOverlayCSS = {
-        background: '#000 url(/static/ltgt//images/ajax-loader.gif) no-repeat center',
+        background: '#000 url(/static/ltgt/images/ajax-loader.gif) no-repeat center',
         backgroundSize: '16px 16px',
         opacity: 0.6
     };
 
+    UI.defaultBlockOpts = {
+        message: null,
+        overlayCSS: UI.lightOverlayCSS
+    };
+
     function _prepBlockUIOptions(options) {
-        var defaultOpts;
         if ($.type(options) === 'string') {
             options = {
                 message: options
             };
         }
 
-        defaultOpts = {
-            message: null,
-            overlayCSS: UI.lightOverlayCSS
-        };
-
-        options = $.extend({}, defaultOpts, options);
+        options = $.extend({}, UI.defaultBlockOpts, options);
         return options;
     }
 

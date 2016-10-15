@@ -4,8 +4,8 @@
 [submodule "ext/js-base64"]
 	path = ext/js-base64
 	url = https://github.com/dankogai/js-base64.git
-[submodule "ext/json-js"]
-	path = ext/json-js
+[submodule "ext/JSON-js"]
+	path = ext/JSON-js
 	url = https://github.com/douglascrockford/JSON-js.git
 [submodule "jq-ext/jquery-cookie"]
 	path = jq-ext/jquery-cookie
@@ -19,20 +19,6 @@
 [submodule "jq-ext/jq-form"]
 	path = jq-ext/jq-form
 	url = https://github.com/malsup/form.git
-[submodule "jq-ext/nprogress"]
-	path = jq-ext/nprogress
-	url = https://github.com/rstacruz/nprogress.git	
-[submodule "bs-ext/bs-dialog"]
-	path = bs-ext/bs-dialog
-	url = https://github.com/nakupanda/bootstrap3-dialog.git
-[submodule "bs-ext/bs-toggle"]
-	path = bs-ext/bs-toggle
-	url = https://github.com/minhur/bootstrap-toggle.git
-[submodule "bs-ext/bs-tokenfield"]
-	path = bs-ext/bs-tokenfield
-	url = https://github.com/sliptree/bootstrap-tokenfield.git
-	
-
 [submodule "ext/uri-js"]
 	path = ext/uri-js
 	url = https://github.com/medialize/URI.js.git

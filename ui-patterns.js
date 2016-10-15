@@ -3,7 +3,7 @@
 // REQ: jq, jq-form, jq-dialog, bootstrap-ext, type, arr, func, str-standalone, slct
 
 
-(function (global, $, Patterns, UI, Str, Bs, Fn) {
+(function (global, $, Patterns, UI, Str, Bs, Fn, Utl, Obj) {
     "use strict";
 
     // region [ formAutoFocus ]
@@ -60,12 +60,8 @@
             defaultAjaxOptions, ajaxFormOpts,
             userBeforeSubmit, userSuccessFunc;
 
-        if (!$.fn.hasOwnProperty('ajaxForm')){
-            BootstrapDialog.show({
-                title: gettext('UI.Patterns.submitForm Error'),
-                message: gettext("This function requires jQuery Form (https://github.com/malsup/form.git)."),
-                animate: false
-            });
+        if (!Patterns.dependencyCheck('ajaxForm', gettext('UI.Patterns.submitForm Error'),
+            gettext('This function requires jQuery Form (https://github.com/malsup/form.git).'))){
             return;
         }
 
@@ -324,7 +320,8 @@
             }
         }
 
-        var defaultBlockUiOptions, blockOptions, defaultBsDialogOpts,
+        var defaultBlockUiOptions, blockOptions, bsDialogOpts, defaultBsDialogOpts,
+            toastrOpts, defaultToastrOpts, toastrType, toastrTitle,
             displayMethod = ajaxCommand.displayMethod, command = ajaxCommand.command,
             options = ajaxCommand.options, hasSyncAction, canDisplayAsyncTask = false;
 
@@ -436,7 +433,7 @@
                 delay: hasSyncAction ? 300 : 2000
             };
 
-            blockOptions = $.extend({}, defaultBlockUiOptions, options);
+            blockOptions = Utl.getPrefixedOptions(options, 'blockUi', defaultBlockUiOptions);
             UI.block(blockOptions.blockTarget, blockOptions);
 
             executeAsyncActions();
@@ -471,8 +468,32 @@
             };
 
             executeAsyncActions();
-            defaultBsDialogOpts = $.extend({}, defaultBsDialogOpts, options);
-            BootstrapDialog.show(defaultBsDialogOpts);
+            bsDialogOpts = Utl.getPrefixedOptions(options, 'bsDialog', defaultBsDialogOpts);
+            BootstrapDialog.show(bsDialogOpts);
+        }
+        else if (displayMethod == 'toastr')
+        {
+            if (!Patterns.dependencyCheck(global.toastr, gettext('UI.Patterns.parseAjaxCommand Toastr Error'),
+                    gettext('This function requires toastr plugins (https://github.com/CodeSeven/toastr).'))){
+                return;
+            }
+
+            defaultToastrOpts = {
+                title: undefined,
+                type: options.status == 'error' ? 'error' : 'success',
+                closeButton: true,
+                newestOnTop: true,
+                positionClass: 'toast-top-right',
+                onHidden: function(){
+                    executeSyncActions();
+                }
+            };
+
+            executeAsyncActions();
+            toastrOpts = Utl.getPrefixedOptions(options, 'toastr', defaultToastrOpts);
+            toastrType = Obj.pop(toastrOpts, 'type', 'success');
+            toastrTitle = Obj.pop(toastrOpts, 'title', undefined);
+            toastr[toastrType](ajaxCommand.message, toastrTitle, toastrOpts)
         }
         else if (displayMethod == 'alert'){
             executeAsyncActions();
@@ -741,5 +762,49 @@
     };
     // endregion
 
+    // region [ dependencyCheck ]
+    /**
+     * Check for plugins/lib dependency.
+     *
+     * @param testObj - if a string then test for jq $.fn, if false display error message then return false.,
+     * @param title - title of the error message
+     * @param message - the error message
+     * @returns {boolean}
+     */
+    Patterns.dependencyCheck = function (testObj, title, message) {
+        // Preference: dialog, toastr, and then last resort => alert
+        var result = false;
+
+        if (testObj){
+            if ($.type(testObj) == 'string'){
+                result = $.fn.hasOwnProperty(testObj);
+            }
+            else {
+                result = true;
+            }
+        }
+
+        if (result){
+            return true;
+        }
+
+        if ($.fn.hasOwnProperty('ajaxForm')) {
+            BootstrapDialog.show({
+                title: title,
+                message: message,
+                animate: false
+            });
+        }
+        else if (global.toastr != undefined){
+            global.toastr.error(message, title);
+        }
+        else {
+            alert(title + "\n" + message);
+        }
+
+        return false;
+    };
+    // endregion
+
 }(typeof window !== 'undefined' ? window : this, jQuery,
-    JU.__JU.UI.Patterns, JU.__JU.UI, JU.__JU.Str, JU.__JU.Bs, JU.__JU.Fn));
+    JU.__JU.UI.Patterns, JU.__JU.UI, JU.__JU.Str, JU.__JU.Bs, JU.__JU.Fn, JU.__JU.Utl, JU.__JU.Obj));

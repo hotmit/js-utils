@@ -1,6 +1,6 @@
 /*global jQuery, JU.__JU */
 
-(function (global, Utl) {
+(function (global, Utl, Str) {
     "use strict";
 
     //region [ Helper Functions ]
@@ -127,4 +127,23 @@
         return false;
     };
 
-}(typeof window !== 'undefined' ? window : this, JU.__JU.Utl));
+    /**
+     * Extract prefixed options from data or attr.
+     *
+     * @param obj - the object that contains the options
+     * @param prefix - the prefix string
+     * @param defaultOptions
+     *
+     * return: bsDialogTitle => { title: }
+     */
+    Utl.getPrefixedOptions = function(obj, prefix, defaultOptions){
+        var opts = {};
+        $.each(obj, function(key, value){
+            if (Str.startsWith(key, prefix)){
+                opts[Str.toCamelCase(key.replace(prefix, ''))] = value;
+            }
+        });
+        return $.extend({}, defaultOptions || {}, opts)
+    };
+
+}(typeof window !== 'undefined' ? window : this, JU.__JU.Utl, JU.__JU.Str));
