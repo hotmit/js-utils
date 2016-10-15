@@ -112,10 +112,10 @@
     };
 
     /**
-     * Split the array into multiple smaller arrays with the specified trunk size length.
+     * Split the array into multiple smaller arrays with the specified trunk size length (modify arr).
      *  eg. [1,2,3,4,5] trunk size 2 => [[1,2], [3,4], [5]]
      *
-     * @param arr {!Array}
+     * @param arr {!Array} - this array will be emptied at the end.
      * @param chunkSize {number}
      * @returns {Array<Array>}
      */
@@ -127,5 +127,19 @@
         }
         return result;
     };
+
+    /**
+     * Split arr into chunks (leave arr intact)
+     *
+     * @param arr {!Array}
+     * @param chunkSize {number}
+     * @returns {Array}
+     */
+    Arr.chunks = function (arr, chunkSize) {
+        var result = [];
+        for (var i=0,len=arr.length; i<len; i+=chunkSize)
+            result.push(arr.slice(i,i+chunkSize));
+        return result;
+    }
 
 }(typeof window !== 'undefined' ? window : this, jQuery, JU.__JU.Arr));
