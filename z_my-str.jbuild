@@ -1,8 +1,0 @@
-Output: z_my-str.min.js
-
-
-global.js                           # pure js: decorator and global functions
-date.js								# pure js
-str-standalone.js					# req: jq
-str-ext.js							# req: jq, date, str-standalone
-publish.js                          # pure js
