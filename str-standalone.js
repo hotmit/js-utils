@@ -570,7 +570,7 @@
     };
 
     /**
-     * Convert any string to snake case.
+     * Convert any string to-kabab-case.
      *
      * @param s
      */
