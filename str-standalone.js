@@ -71,7 +71,7 @@
         }
 
         if ($.type(s) === 'string'){
-            return s.replace(/([.?*+\^$\[\]\\(){}|\-])/g, "\\$1");
+            return s.replace(/([.?*+\^$\[\]\\(){}|\-])/g, '\\$1');
         }
         else if ($.isArray(s)) {
             var result = [];
@@ -300,11 +300,11 @@
      * @return {string}
      */
     Str.repeat = function(s, count) {
-        var newS = "", i;
+        var result = '', i;
         for (i=0; i<count; i++) {
-            newS += s;
+            result += s;
         }
-        return newS;
+        return result;
     };
 
     /**
