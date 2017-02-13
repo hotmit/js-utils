@@ -1,10 +1,42 @@
-/*global jQuery, JU.__JU */
+/*global JU.__JU */
 
-// STANDALONE: jq
-
+// STANDALONE: pure js
 
 (function (global, $, Str) {
     "use strict";
+
+    // region [ Private Functions ]
+    /**
+     * Test if the specified object is an array.
+     * @param obj {Array|object}
+     * @returns {boolean}
+     * @private
+     */
+    function _isArray(obj){
+        return Object.prototype.toString.call(obj) === '[object Array]';
+    }
+
+    /**
+     * Convert json string into js object.
+     * @param s
+     * @private
+     */
+    function _parseJson(s) {
+        var _parser;
+        if (typeof global.JSON !== 'undefined'){
+            _parser = global.JSON.parse;
+        }
+        else if (typeof window.jQuery !== 'undefined'){
+            _parser = window.jQuery.parseJson;
+        }
+
+        if (typeof _parser === 'undefined'){
+            alert('No Json parser!');
+            return;
+        }
+        return _parser(s);
+    }
+    // endregion
 
     /**
      * Check for undefined, null, zero length, blanks or s is false.
@@ -15,9 +47,9 @@
     Str.empty = function(s) {
         // s == undefined	 <= double equals is deliberate, check for null and undefined
         return !!(s == undefined
-            || s.length === 0
-            || Str.trim(s).length === 0
-            || !s);
+        || s.length === 0
+        || Str.trim(s).length === 0
+        || !s);
 
     };
 
@@ -62,22 +94,22 @@
     /**
      * Escape the string to be use as a literal in regex expression.
      *
-     * @param s {string|array}
-     * @returns {string|array}
+     * @param s {string|Array}
+     * @returns {string|Array}
      */
     Str.regexEscape = function(s){
         if (Str.empty(s)){
             return '';
         }
 
-        if ($.type(s) === 'string'){
+        if (typeof s === 'string'){
             return s.replace(/([.?*+\^$\[\]\\(){}|\-])/g, '\\$1');
         }
-        else if ($.isArray(s)) {
-            var result = [];
-            $.each(s, function(i, v){
-                result.push(Str.regexEscape(v));
-            });
+        else if (_isArray(s)) {
+            var result = [], i;
+            for (i = 0; i < s.length; i++){
+                result.push(Str.regexEscape(s[i]));
+            }
             return result;
         }
         return s;
@@ -139,7 +171,7 @@
      */
     Str.containsAll = function(s, needles, caseSensitive){
         var i=0;
-        if ($.isArray(needles)){
+        if (_isArray(needles)){
             for(i=0; i < needles.length; i++){
                 if (!Str.contains(s, needles[i], caseSensitive)){
                     return false;
@@ -159,7 +191,7 @@
      */
     Str.containsAny = function(s, needles, caseSensitive) {
         var i;
-        if ($.isArray(needles)){
+        if (_isArray(needles)){
             for(i=0; i < needles.length; i++){
                 if (Str.contains(s, needles[i], caseSensitive)){
                     return true;
@@ -176,7 +208,7 @@
      * @returns {boolean}
      */
     Str.isString = function (o) {
-        return $.type(o) === 'string';
+        return typeof o === 'string';
     };
 
     /**
@@ -204,13 +236,13 @@
      * @param s
      * @param c {string|Array=} - supports Str.trimStart(s, ['0x0', '0', 'x']);
      */
-    Str.trimStart = function(s, c){
+     Str.trimStart = function(s, c){
         if (c == undefined || c == ''){
             return s.replace(/^\s+/, '');
         }
 
         var trims = c, regex, result;
-        if (!$.isArray(c)){
+        if (!_isArray(c)){
             trims = [c];
         }
         trims = Str.regexEscape(trims).join('|');
@@ -230,7 +262,7 @@
             return s.replace(/\s+$/, '');
         }
         var trims = c, regex, result;
-        if (!$.isArray(c)){
+        if (!_isArray(c)){
             trims = [c];
         }
         trims = Str.regexEscape(trims).join('|');
@@ -386,14 +418,14 @@
      */
     Str.stripViet = function(s) {
         /*
-        data = data.replace(/[àáâãăạảấầẩẫậắằẳẵặ]/g, 'a');
-        data = data.replace(/[òóôõơọỏốồổỗộớờởỡợ]/g, 'o');
-        data = data.replace(/[èéêẹẻẽếềểễệ]/g, 'e');
-        data = data.replace(/[ùúũưụủứừửữự]/g, 'u');
-        data = data.replace(/[ìíĩỉị]/g, 'i');
-        data = data.replace(/[ýỳỵỷỹ]/g, 'y');
-        data = data.replace(/[đðĐ]/g, 'd');
-        */
+         data = data.replace(/[àáâãăạảấầẩẫậắằẳẵặ]/g, 'a');
+         data = data.replace(/[òóôõơọỏốồổỗộớờởỡợ]/g, 'o');
+         data = data.replace(/[èéêẹẻẽếềểễệ]/g, 'e');
+         data = data.replace(/[ùúũưụủứừửữự]/g, 'u');
+         data = data.replace(/[ìíĩỉị]/g, 'i');
+         data = data.replace(/[ýỳỵỷỹ]/g, 'y');
+         data = data.replace(/[đðĐ]/g, 'd');
+         */
 
         if (Str.empty(s))
         {
@@ -442,8 +474,8 @@
         }
 
         try {
-            if ($.type(s) === 'string'){
-                return $.parseJSON(s);
+            if (typeof s === 'string'){
+                return _parseJson(s);
             }
 
             // it already an object
@@ -570,7 +602,7 @@
     };
 
     /**
-     * Convert any string to-kabab-case.
+     * Convert any string to-kebab-case.
      *
      * @param s
      */

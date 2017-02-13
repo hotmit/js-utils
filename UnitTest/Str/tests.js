@@ -83,3 +83,65 @@ QUnit.test('Str - Str.format', function (assert){
 	*/
 	
 });
+
+
+QUnit.test('Str - Str.regexEscape', function (assert) {
+    var pattern = '.?*+^$[]\\(){}|-';
+    var escaped = Str.regexEscape(pattern);
+    var re = new RegExp(escaped);
+    var m = re.exec(pattern);
+
+    assert.equal(pattern, m[0], 'The escaped pattern must match the original pattern');
+    var a1 = Str.regexEscape([pattern, pattern]);
+    var a2 = [escaped, escaped];
+    assert.deepEqual(a1, a2, 'Escape array');
+});
+
+
+QUnit.test('Str - Str.contains', function (assert) {
+    var sample = 'aBCd;de';
+
+    assert.ok(Str.containsAll(sample, 'Bc'), 'Contains string');
+    assert.ok(Str.containsAll(sample, ['Bc', 'dE']), 'Contains all string');
+
+    assert.notOk(Str.containsAll(sample, 'xx'), 'not found');
+    assert.notOk(Str.containsAll(sample, 'Bc', true), 'case sensitive');
+    assert.notOk(Str.containsAll(sample, ['Bc', 'dE'], true), 'case sensitive 2');
+    assert.notOk(Str.containsAll(sample, ['Bc', 'dE', 'x']), 'not found');
+
+	assert.ok(Str.containsAny(sample, 'Bc'), 'Contains string');
+	assert.ok(Str.containsAny(sample, ['Bc', 'dE']), 'Contains all string');
+	assert.ok(Str.containsAny(sample, ['Bcx', 'dE']), 'Contains one string');
+
+	assert.notOk(Str.containsAny(sample, 'xx'), 'not found');
+	assert.notOk(Str.containsAny(sample, 'Bc', true), 'case sensitive');
+	assert.notOk(Str.containsAny(sample, ['xxxx', 'dE'], true), 'contains one');
+	assert.notOk(Str.containsAny(sample, ['x', 'dEx', 'x']), 'not found');
+});
+
+
+QUnit.test('Str - Type Tests', function (assert) {
+    assert.ok(Str.isString(''), 'blank');
+    assert.ok(Str.isString('str'), 'not blank');
+
+	assert.notOk(Str.isString({}), 'obj');
+	assert.notOk(Str.isString([]), 'arr');
+	assert.notOk(Str.isString(1), 'num');
+	assert.notOk(Str.isString(1.0), 'float');
+});
+
+
+QUnit.test('Str - Str.trim', function (assert) {
+	var sample = '  aabbcc  ';
+
+    assert.equal(Str.trimStart(sample), 'aabbcc  ', 'just space');
+    assert.equal(Str.trimStart(sample, [' ', 'a']), 'bbcc  ', 'remove multiple chars');
+    assert.equal(Str.trimStart(sample, ['x']), sample, 'remove nothing');
+
+    // assert.equal(Str.trimEnd(['']), '', '');
+});
+
+
+QUnit.test('Str - Str.parseJson', function (assert) {
+    assert.equal(Str.parseJson(''), '', '');
+});
