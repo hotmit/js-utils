@@ -2,7 +2,7 @@
 
 // STANDALONE: pure js
 
-(function (global, $, Str) {
+(function (global, Str) {
     "use strict";
 
     // region [ Private Functions ]
@@ -12,7 +12,7 @@
      * @returns {boolean}
      * @private
      */
-    function _isArray(obj){
+    function _isArray(obj) {
         return Object.prototype.toString.call(obj) === '[object Array]';
     }
 
@@ -23,19 +23,19 @@
      */
     function _parseJson(s) {
         var _parser;
-        if (typeof global.JSON !== 'undefined'){
+        if (typeof global.JSON !== 'undefined') {
             _parser = global.JSON.parse;
         }
-        else if (typeof window.jQuery !== 'undefined'){
-            _parser = window.jQuery.parseJson;
+        else if (typeof window.jQuery !== 'undefined') {
+            _parser = window.jQuery.parseJSON;
         }
 
-        if (typeof _parser === 'undefined'){
-            alert('No Json parser!');
-            return;
+        if (typeof _parser === 'undefined') {
+            throw 'Undefined JSON method';
         }
         return _parser(s);
     }
+
     // endregion
 
     /**
@@ -44,7 +44,7 @@
      * @returns {boolean}
      * Unit Test: http://jsfiddle.net/wao20/TGP3N/
      */
-    Str.empty = function(s) {
+    Str.empty = function (s) {
         // s == undefined	 <= double equals is deliberate, check for null and undefined
         return !!(s == undefined
         || s.length === 0
@@ -60,15 +60,12 @@
      * @param caseSensitive {boolean=}
      * @returns {boolean}
      */
-    Str.equals = function(s1, s2, caseSensitive)
-    {
-        if (s1 == undefined || s2 == undefined)
-        {
+    Str.equals = function (s1, s2, caseSensitive) {
+        if (s1 == undefined || s2 == undefined) {
             return false;
         }
 
-        if (caseSensitive)
-        {
+        if (caseSensitive) {
             return s1 == s2;
         }
         return s1.toLowerCase() == s2.toLowerCase();
@@ -80,12 +77,12 @@
      * @param s {?string}
      * @returns {boolean}
      */
-    Str.boolVal = function(s) {
-        if (Str.empty(s)){
+    Str.boolVal = function (s) {
+        if (Str.empty(s)) {
             return false;
         }
         s = Str.trim(s).toLowerCase();
-        if (s == '0' || s == '0.0' || s == 'false'){
+        if (s == '0' || s == '0.0' || s == 'false') {
             return false;
         }
         return !!s;
@@ -97,17 +94,17 @@
      * @param s {string|Array}
      * @returns {string|Array}
      */
-    Str.regexEscape = function(s){
-        if (Str.empty(s)){
+    Str.regexEscape = function (s) {
+        if (!s) {
             return '';
         }
 
-        if (typeof s === 'string'){
+        if (typeof s === 'string') {
             return s.replace(/([.?*+\^$\[\]\\(){}|\-])/g, '\\$1');
         }
         else if (_isArray(s)) {
             var result = [], i;
-            for (i = 0; i < s.length; i++){
+            for (i = 0; i < s.length; i++) {
                 result.push(Str.regexEscape(s[i]));
             }
             return result;
@@ -123,8 +120,8 @@
      * @param caseSensitive {boolean=}
      * @return {boolean}
      */
-    Str.startsWith = function(s, pattern, caseSensitive) {
-        if (caseSensitive){
+    Str.startsWith = function (s, pattern, caseSensitive) {
+        if (caseSensitive) {
             return s.indexOf(pattern) === 0;
         }
         return s.toLowerCase().indexOf(pattern.toLowerCase()) === 0;
@@ -137,9 +134,9 @@
      * @param caseSensitive {boolean=}
      * @returns {boolean}
      */
-    Str.endsWith = function(s, pattern, caseSensitive) {
+    Str.endsWith = function (s, pattern, caseSensitive) {
         var d = s.length - pattern.length;
-        if (caseSensitive){
+        if (caseSensitive) {
             return d >= 0 && s.lastIndexOf(pattern) === d;
         }
         return d >= 0 && s.toLowerCase().lastIndexOf(pattern.toLowerCase()) === d;
@@ -152,11 +149,11 @@
      * @param caseSensitive {boolean=}
      * @return {boolean}
      */
-    Str.contains = function(s, needle, caseSensitive) {
-        if (Str.empty(s) || Str.empty(needle)){
+    Str.contains = function (s, needle, caseSensitive) {
+        if (Str.empty(s) || Str.empty(needle)) {
             return false;
         }
-        if (caseSensitive){
+        if (caseSensitive) {
             return s.indexOf(needle) > -1;
         }
         return s.toLowerCase().indexOf(needle.toLowerCase()) > -1;
@@ -169,11 +166,11 @@
      * @param caseSensitive {boolean=}
      * @return {boolean}
      */
-    Str.containsAll = function(s, needles, caseSensitive){
-        var i=0;
-        if (_isArray(needles)){
-            for(i=0; i < needles.length; i++){
-                if (!Str.contains(s, needles[i], caseSensitive)){
+    Str.containsAll = function (s, needles, caseSensitive) {
+        var i = 0;
+        if (_isArray(needles)) {
+            for (i = 0; i < needles.length; i++) {
+                if (!Str.contains(s, needles[i], caseSensitive)) {
                     return false;
                 }
             }
@@ -189,11 +186,11 @@
      * @param caseSensitive {boolean=}
      * @return {boolean}
      */
-    Str.containsAny = function(s, needles, caseSensitive) {
+    Str.containsAny = function (s, needles, caseSensitive) {
         var i;
-        if (_isArray(needles)){
-            for(i=0; i < needles.length; i++){
-                if (Str.contains(s, needles[i], caseSensitive)){
+        if (_isArray(needles)) {
+            for (i = 0; i < needles.length; i++) {
+                if (Str.contains(s, needles[i], caseSensitive)) {
                     return true;
                 }
             }
@@ -217,13 +214,13 @@
      * @param c {string=}
      * @return {string}
      */
-    Str.trim = function(s, c) {
-        if (!Str.isString(s)){
+    Str.trim = function (s, c) {
+        if (!Str.isString(s)) {
             return s;
         }
 
-        if (c == undefined || c == ' '){
-            if (String.prototype.trim){
+        if (c == undefined || c == ' ') {
+            if (String.prototype.trim) {
                 return String.prototype.trim.call(s);
             }
             return s.replace(/^\s+/, '').replace(/\s+$/, '');
@@ -236,13 +233,13 @@
      * @param s
      * @param c {string|Array=} - supports Str.trimStart(s, ['0x0', '0', 'x']);
      */
-     Str.trimStart = function(s, c){
-        if (c == undefined || c == ''){
+    Str.trimStart = function (s, c) {
+        if (c == undefined || c == '') {
             return s.replace(/^\s+/, '');
         }
 
         var trims = c, regex, result;
-        if (!_isArray(c)){
+        if (!_isArray(c)) {
             trims = [c];
         }
         trims = Str.regexEscape(trims).join('|');
@@ -257,12 +254,12 @@
      * @param s {string}
      * @param c {string|Array=} - supports Str.trimEnd(s, ['0x0', '0', 'x']);
      */
-    Str.trimEnd = function(s, c){
-        if (c == undefined){
+    Str.trimEnd = function (s, c) {
+        if (c == undefined) {
             return s.replace(/\s+$/, '');
         }
         var trims = c, regex, result;
-        if (!_isArray(c)){
+        if (!_isArray(c)) {
             trims = [c];
         }
         trims = Str.regexEscape(trims).join('|');
@@ -280,22 +277,21 @@
      * @param len {number=} - number of char to take starting from the index to the right (even when index is negative)
      * @return {string}
      */
-    Str.subStr = function(s, index, len){
-        if (s == undefined){
+    Str.subStr = function (s, index, len) {
+        if (s == undefined) {
             return '';
         }
 
         len = len || 0;
 
-        if (Math.abs(index) > s.length)
-        {
+        if (Math.abs(index) > s.length) {
             return s;
         }
 
         // regular substring
-        if (index > -1){
-            if (len > 0 && (index + len) < s.length){
-                return s.substring(index, index+len);
+        if (index > -1) {
+            if (len > 0 && (index + len) < s.length) {
+                return s.substring(index, index + len);
             }
             return s.substring(index);
         }
@@ -303,8 +299,8 @@
         // Negative index, take string from the right
         // Index is negative	=> subStr ('hello', -3)	=> 'llo'
         var start = s.length + index;
-        if (len > 0 && (start + len) < s.length){
-            return s.substring(start, start+len);
+        if (len > 0 && (start + len) < s.length) {
+            return s.substring(start, start + len);
         }
         return s.substring(start);
     };
@@ -316,10 +312,10 @@
      * @param caseSensitive {boolean=}
      * @returns {number}
      */
-    Str.subCount = function(s, sub, caseSensitive){
+    Str.subCount = function (s, sub, caseSensitive) {
         sub = Str.regexEscape(sub);
 
-        if (caseSensitive){
+        if (caseSensitive) {
             return s.split(sub).length - 1;
         }
         return s.toLowerCase().split(sub.toLowerCase()).length - 1;
@@ -331,9 +327,9 @@
      * @param count {number} - Number of times to repeat s
      * @return {string}
      */
-    Str.repeat = function(s, count) {
+    Str.repeat = function (s, count) {
         var result = '', i;
-        for (i=0; i<count; i++) {
+        for (i = 0; i < count; i++) {
             result += s;
         }
         return result;
@@ -347,8 +343,8 @@
      * @param totalLength {!number} - the final length after padding
      * @return {string}
      */
-    Str.padLeft = function(s, padStr, totalLength){
-        return s.length >= totalLength ? s : Str.repeat(padStr, (totalLength-s.length)/padStr.length) + s;
+    Str.padLeft = function (s, padStr, totalLength) {
+        return s.length >= totalLength ? s : Str.repeat(padStr, (totalLength - s.length) / padStr.length) + s;
     };
 
     /**
@@ -359,8 +355,8 @@
      * @param totalLength {number} - the final length after padding
      * @return {string}
      */
-    Str.padRight = function(s, padStr, totalLength){
-        return s.length >= totalLength  ? s : s + Str.repeat(padStr, (totalLength-s.length)/padStr.length);
+    Str.padRight = function (s, padStr, totalLength) {
+        return s.length >= totalLength ? s : s + Str.repeat(padStr, (totalLength - s.length) / padStr.length);
     };
 
     /**
@@ -372,8 +368,8 @@
      * @param padRight {boolean} - pad right if true, pad left otherwise
      * @return {string}
      */
-    Str.pad = function(s, padStr, totalLength, padRight){
-        if (padRight){
+    Str.pad = function (s, padStr, totalLength, padRight) {
+        if (padRight) {
             return Str.padRight(s, padStr, totalLength);
         }
         return Str.padLeft(s, padStr, totalLength);
@@ -384,7 +380,7 @@
      * @param s {string}
      * @return {string}
      */
-    Str.stripTags = function(s) {
+    Str.stripTags = function (s) {
         return s.replace(/<\/?[^>]+>/gi, '');
     };
 
@@ -395,8 +391,8 @@
      * @param s {string}
      * @return {string}
      */
-    Str.escapeHTML = function(s) {
-        s = s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    Str.escapeHTML = function (s) {
+        s = s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         return s;
     };
 
@@ -407,8 +403,8 @@
      * @param s {string}
      * @return {string}
      */
-    Str.unescapeHTML = function(s) {
-        return Str.stripTags(s).replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+    Str.unescapeHTML = function (s) {
+        return Str.stripTags(s).replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
     };
 
     /**
@@ -416,7 +412,7 @@
      * @param s {string}
      * @return {string}
      */
-    Str.stripViet = function(s) {
+    Str.stripViet = function (s) {
         /*
          data = data.replace(/[àáâãăạảấầẩẫậắằẳẵặ]/g, 'a');
          data = data.replace(/[òóôõơọỏốồổỗộớờởỡợ]/g, 'o');
@@ -427,8 +423,7 @@
          data = data.replace(/[đðĐ]/g, 'd');
          */
 
-        if (Str.empty(s))
-        {
+        if (Str.empty(s)) {
             return s;
         }
 
@@ -447,10 +442,10 @@
      * Use this to constructs multi lines string
      *
      * eg. Str.multiLines(true,
-     * 						'hello',
-     * 						'world'
-     * 						);
-     * 					returns: "hello\nworld"
+     *                        'hello',
+     *                        'world'
+     *                        );
+     *                    returns: "hello\nworld"
      *
      * @param glue {string} - the separator between each line (eg. '\n', ', ' or ' ')
      * @param args {...string} - each line
@@ -467,21 +462,21 @@
      * @param defaultValue {boolean|object=} - if not specified defaultValue=false
      * @returns {boolean|object}
      */
-    Str.parseJson = function(s, defaultValue){
+    Str.parseJson = function (s, defaultValue) {
         defaultValue = defaultValue === undefined ? false : defaultValue;
-        if (Str.empty(s)){
+        if (Str.empty(s)) {
             return defaultValue;
         }
 
         try {
-            if (typeof s === 'string'){
+            if (typeof s === 'string') {
                 return _parseJson(s);
             }
 
             // it already an object
             return s;
         }
-        catch(err){
+        catch (err) {
             return defaultValue;
         }
     };
@@ -490,7 +485,7 @@
      * Escape the attribute, make sure it doesn't break the attribute select or to be use a an attribute.
      * @param s {string} - the string
      */
-    Str.escapeAttribute = function (s){
+    Str.escapeAttribute = function (s) {
         return s.replace(/"/g, '\\"');
     };
 
@@ -500,8 +495,8 @@
      * @param s
      * @returns {*}
      */
-    Str.reverse = function(s){
-        if (s){
+    Str.reverse = function (s) {
+        if (s) {
             return s.split('').reverse().join('');
         }
         return s;
@@ -515,15 +510,15 @@
      * @param index {Number} - the index of the match.
      * @returns {Array}
      */
-    Str.matchAll = function(s, regex, index){
+    Str.matchAll = function (s, regex, index) {
         var m, result = [];
         index = index || 0;
 
-        if (!s){
+        if (!s) {
             return [];
         }
 
-        while (m = regex.exec(s)){
+        while (m = regex.exec(s)) {
             result.push(m[index]);
         }
         return result;
@@ -536,16 +531,16 @@
      * @param chunkSize
      * @returns {Array}
      */
-    Str.chop = function(s, chunkSize){
+    Str.chop = function (s, chunkSize) {
         var regex;
-        if (!s){
+        if (!s) {
             return [];
         }
         regex = new RegExp('.{1,' + chunkSize + '}', 'g');
         return s.match(regex);
     };
 
-    function _getWords(s){
+    function _getWords(s) {
         s = s.replace(/(\w)([A-Z][a-z])/, '$1-$2');
         s = s.replace(' ', '-');
         s = s.replace('_', '-');
@@ -559,11 +554,11 @@
      *
      * @param s
      */
-    Str.toCamelCase = function(s){
+    Str.toCamelCase = function (s) {
         var words = _getWords(s), result = '', i, word;
-        for (i=0; i<words.length; i++){
+        for (i = 0; i < words.length; i++) {
             word = words[i];
-            if (i == 0){
+            if (i == 0) {
                 result += word.toLowerCase();
             }
             else {
@@ -578,9 +573,9 @@
      *
      * @param s
      */
-    Str.toTitleCase = function(s){
+    Str.toTitleCase = function (s) {
         var words = _getWords(s), result = '', i, word;
-        for (i=0; i<words.length; i++){
+        for (i = 0; i < words.length; i++) {
             word = words[i];
             result += word.charAt(0).toUpperCase() + word.substr(1).toLowerCase() + ' ';
         }
@@ -592,9 +587,9 @@
      *
      * @param s
      */
-    Str.toSnakeCase = function(s){
+    Str.toSnakeCase = function (s) {
         var words = _getWords(s), result = '', i, word;
-        for (i=0; i<words.length; i++){
+        for (i = 0; i < words.length; i++) {
             word = words[i];
             result += word.toLowerCase() + '_';
         }
@@ -606,13 +601,13 @@
      *
      * @param s
      */
-    Str.toKebabCase = function(s){
+    Str.toKebabCase = function (s) {
         var words = _getWords(s), result = '', i, word;
-        for (i=0; i<words.length; i++){
+        for (i = 0; i < words.length; i++) {
             word = words[i];
             result += word.toLowerCase() + '-';
         }
         return Str.trimEnd(result, '-');
     };
 
-}(typeof window !== 'undefined' ? window : this, jQuery, JU.__JU.Str));
+}(typeof window !== 'undefined' ? window : this, JU.__JU.Str));
