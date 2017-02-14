@@ -12,6 +12,9 @@
      * @returns {boolean}
      */
     Arr.isArray = function(o){
+        if (Array.isArray){
+            return Array.isArray(o);
+        }
         return $.type(o) == 'array';
     };
 
