@@ -1,5 +1,3 @@
-/*global */
-
 // STANDALONE: pure js
 
 (function (global) {

@@ -1,11 +1,11 @@
 Output: z_base.min.js
 
-
 // jQuery must be before ALL
 ext/ext-package.jbuild				# Includes: base64, json2, flash-detect, uri
 jq-ext/jq-ext-package.jbuild		# Includes: block-ui, jq-form, caret, cookie
 
 
+header.min.js                       # pure js: copyright header
 global.js                           # pure js: decorator and global functions [Must be FIRST]
 
 tmr.js								# pure js	

@@ -1,0 +1,28 @@
+Output: z_no_ext.min.js
+
+
+z_base.jbuild
+
+# bower install js-base64 --save
+# bower install json2 --save
+# bower install flashdetect --save
+# bower install uri.js --save
+#
+# bower install jquery.blockUI --save
+# bower install jquery-form --save
+# bower install jquery-caret --save
+# bower install jquery-cookie --save
+#    "jquery": "^3.2.1",
+#    "urijs": "uri.js#^1.18.10",
+#    "blockUI": "jquery.blockUI#*",
+#    "jquery-form": "^4.2.1",
+#    "jquery-caret": "*"
+#    "jquery.cookie": "jquery-cookie#^1.4.1",
+#        <script src="{% static 'urijs/src/URI.js' %}"></script>
+#        <script src="{% static 'blockUI/jquery.blockUI.js' %}"></script>
+#        <script src="{% static 'jquery-form/src/jquery.form.js' %}"></script>
+#        <script src="{% static 'jquery-caret/jquery.caret.js' %}"></script>
+#        <script src="{% static 'jquery.cookie/jquery.cookie.js' %}"></script>
+
+^ext/ext-package.jbuild				# Includes: base64, json2, flash-detect, uri
+^jq-ext/jq-ext-package.jbuild		# Includes: block-ui, jq-form, caret, cookie
