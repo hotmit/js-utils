@@ -97,7 +97,7 @@
     };
 
     /**
-     * Combine multiple functions together to run at once,
+     * Combine multiple functions together and run one after another,
      * all functions must have the same parameters.
      *
      * @param thisArg {object}
@@ -115,6 +115,25 @@
                 }
             }
         }
+    };
+
+    /**
+     /**
+     * Attach your own function to existing functions.
+     *  ie. good to latch your function to another function
+     *
+     * @param primaryFunc {function} - the main function, this function return will be the return on the final result
+     * @param trailingFunc {function} - the latch function, the return value for this will be ignore
+     * @param thisArgs {object} - the "this" object, the default is the reference to the primary function
+     * @returns {function} - returns the combined function
+     */
+    Fn.combine = function(primaryFunc, trailingFunc, thisArgs){
+        return function () {
+            var args = Array.prototype.splice.call(arguments),
+                primaryResult = primaryFunc.apply(thisArgs || this, args);
+            trailingFunc.apply(thisArgs || primaryFunc, args);
+            return primaryResult;
+        };
     };
 
 }(typeof window !== 'undefined' ? window : this, jQuery, JU.__JU.Fn));
