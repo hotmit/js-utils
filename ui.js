@@ -7,13 +7,13 @@
     "use strict";
 
     UI.lightOverlayCSS = {
-        background: '#eee url(/static/ltgt/images/ajax-loader.gif) no-repeat center',
+        background: '#eee url(/static/lazifier/images/ajax-loader.gif) no-repeat center',
         backgroundSize: '16px 16px',
         opacity: 0.5
     };
 
     UI.darkOverlayCSS = {
-        background: '#000 url(/static/ltgt/images/ajax-loader.gif) no-repeat center',
+        background: '#000 url(/static/lazifier/images/ajax-loader.gif) no-repeat center',
         backgroundSize: '16px 16px',
         opacity: 0.6
     };

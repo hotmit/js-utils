@@ -130,7 +130,7 @@
 
                 if ($fileInput.length){
                     // restore file upload if there is an error in the form
-                    $localTarget = $($localTarget.selector);
+                    $localTarget = $(formSelector);
                     Arr.eachJq($fileInput, function($fileFieldWithAttachment){
                         if ($fileFieldWithAttachment.val()) {
                             var fieldName = $fileFieldWithAttachment.attr('name'),
@@ -141,7 +141,7 @@
                 }
 
                 // reload the frm instance, it could be replaced by the ajax content
-                $frm = $($frm.selector);
+                $frm = $(formSelector);
                 setupFormSubmit();
 
                 Patterns.formAutoFocus($frm);
