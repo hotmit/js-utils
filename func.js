@@ -1,9 +1,9 @@
-/*global jQuery, JU.__JU  */
+/*global jQuery, JU.__JU, Utl, Typ  */
 
-// STANDALONE: jq
+// REQ: jq, utils, type
 
 
-(function (global, $, Fn) {
+(function (global, $, Fn, Utl, Typ) {
     "use strict";
 
     /**
@@ -130,10 +130,55 @@
     Fn.combine = function(primaryFunc, trailingFunc, thisArgs){
         return function () {
             var args = Array.prototype.splice.call(arguments),
-                primaryResult = primaryFunc.apply(thisArgs || this, args);
-            trailingFunc.apply(thisArgs || primaryFunc, args);
+                primaryResult;
+
+            if (primaryFunc){
+                primaryResult = primaryFunc.apply(thisArgs || this, args)
+            }
+            trailingFunc.apply(thisArgs || this, args);
             return primaryResult;
         };
     };
 
-}(typeof window !== 'undefined' ? window : this, jQuery, JU.__JU.Fn));
+    /**
+     * Use this to hitch a list of functions to the end of another function,
+     * but not certain if the main function exist.
+     *  eg. global.factory.onLoad = Fn.combineWithContext(global, 'factory.onLoad', HideAfterLoad);
+     *      once the "onLoad" function is execute it also execute the HideAfterLoad() function and return the result
+     *      of the main onLoad function
+     *
+     * @param context {object} - the object the has the function
+     * @param funcAttr {function} - the attribute name to retrieve the primary function
+     * @param thisArg {object} - the "this" value
+     * @param args - {function} - *args, list of all the functions you want to attach to the primary function
+     * @returns {function}
+     */
+    Fn.combineWithContext = function(context, funcAttr, thisArg, args){
+        var funcList = Array.prototype.splice.call(arguments, 3), primaryFunc = Utl.getAttr(context, funcAttr);
+
+        // put the primary function in the front of the func list
+        funcList.splice(0, 0, primaryFunc);
+
+        // get the first non-null function in the array
+        while(!(funcList.length && (primaryFunc = funcList.shift()))){}
+
+        if (!primaryFunc){
+            // if nothing is specified then just return a dummy func
+            return function(){};
+        }
+
+        return function(){
+            var callArgs = Array.prototype.splice.call(arguments),
+                result = primaryFunc.apply(thisArg || this, callArgs), secondaryFunc, i;
+
+            for(i=0; i<funcList.length; i++){
+                secondaryFunc = funcList[i];
+                if (Typ.isFunc(secondaryFunc)){
+                    secondaryFunc.apply(thisArg || this, callArgs);
+                }
+            }
+            return result;
+        }
+    };
+
+}(typeof window !== 'undefined' ? window : this, jQuery, JU.__JU.Fn, JU.__JU.Utl, JU.__JU.Typ));

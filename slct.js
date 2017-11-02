@@ -16,7 +16,7 @@
         var $selectBox = $(selectElement), $selected = $selectBox.find('option:selected'),
             result = [], $firstOpt;
 
-        if ($selectBox.is('[multiple]')){
+        if (Slct.isMultiple($selectBox)){
             $selected.each(function(index, element){
                result.push(element.value);
             });
@@ -237,4 +237,45 @@
         return !$(selectElement).find('option').length;
     };
 
+    /**
+     * Determine if the select box allow multiple select.
+     *
+     * @param selector {id|HTMLElement|jQuery} - the select box selector
+     * @returns {boolean}
+     */
+    Slct.isMultiple = function(selector){
+        return $(selector).is('[multiple]');
+    };
+
+    /**
+     * Auto save and load last selected index when page reload.
+     *
+     * @param selector {id|HTMLElement|jQuery} - the select box
+     * @param cookieName {string} - the cookie name to store the selected options
+     * @param region {id|HTMLElement|jQuery} - restrict to only elements with the specified region, default $('body')
+     */
+    Slct.autoSaveSelection = function(selector, cookieName, region){
+        var $selectBox = $(selector), $region = $(region || 'body'),
+            selectedValue = $.cookie(cookieName);
+
+        if (!Str.empty(selectedValue)){
+            if (Slct.isMultiple($selectBox)){
+                selectedValue = selectedValue.split(',')
+            }
+            $selectBox.val(selectedValue).change();
+        }
+
+        $region.on('change', selector, function(){
+            var selectedValue = $(this).val();
+            if (selectedValue != null){
+                if (Slct.isMultiple($selectBox)) {
+                    selectedValue = selectedValue.join(',');
+                }
+                $.cookie(cookieName, selectedValue);
+            }
+            else {
+                $.removeCookie(cookieName)
+            }
+        });
+    }
 }(typeof window !== 'undefined' ? window : this, jQuery, JU.__JU.Slct, JU.__JU.Str));
