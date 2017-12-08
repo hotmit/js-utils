@@ -335,7 +335,7 @@
             return;
         }
 
-        function executeSyncActions()
+        function executeActions()
         {
             var htmlContent = ajaxCommand.options.htmlContent;
             if (htmlContent && ajaxCommand.options.contentSelector) {
@@ -439,7 +439,7 @@
             executeAsyncActions();
 
             setTimeout(function () {
-                executeSyncActions();
+                executeActions();
 
                 if (!hasSyncAction) {
                     // if redirect or refresh the block stay on indefinitely
@@ -463,7 +463,7 @@
                     }
                 }],
                 onhidden: function(){
-                    executeSyncActions();
+                    executeActions();
                 }
             };
 
@@ -485,7 +485,6 @@
                 newestOnTop: true,
                 positionClass: 'toast-top-right',
                 onHidden: function(){
-                    executeSyncActions();
                 }
             };
 
@@ -493,16 +492,18 @@
             toastrOpts = Utl.getPrefixedOptions(options, 'toastr', defaultToastrOpts);
             toastrType = Obj.pop(toastrOpts, 'type', 'success');
             toastrTitle = Obj.pop(toastrOpts, 'title', undefined);
-            toastr[toastrType](ajaxCommand.message, toastrTitle, toastrOpts)
+            toastr[toastrType](ajaxCommand.message, toastrTitle, toastrOpts);
+
+            executeActions();
         }
         else if (displayMethod == 'alert'){
             executeAsyncActions();
             alert(ajaxCommand.message);
-            executeSyncActions();
+            executeActions();
         }
         else {
             executeAsyncActions();
-            executeSyncActions();
+            executeActions();
         }
 
         return ajaxCommand;
