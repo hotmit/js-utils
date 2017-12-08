@@ -26,3 +26,9 @@ $('your element').unblock();
     
 ---
 ## $.cookie
+```
+$.cookie()                  # read all cookies
+$.cookie('key')             # read, return undefined if not found
+$.cookie('key', 'value')    # write
+$.removeCookie('name')      # remove cookie, return bool as status 
+```

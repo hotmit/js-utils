@@ -1,8 +1,8 @@
-/*global jQuery, JU.__JU */
+/*global jQuery, JU.__JU, Str */
 
-// STANDALONE: jq
+// REQ: jq, str
 
-(function (global, $, Arr) {
+(function (global, $, Arr, Str) {
     "use strict";
 
     /**
@@ -143,6 +143,29 @@
         for (var i=0, len=arr.length; i<len; i+=chunkSize)
             result.push(arr.slice(i, i+chunkSize));
         return result;
-    }
+    };
 
-}(typeof window !== 'undefined' ? window : this, jQuery, JU.__JU.Arr));
+    /**
+     * Remove any emptied items in the array
+     *
+     * @param arr {Array} - the array to trim
+     * @param callback {?function} - optional test function(element), return true to keep the item.
+     * @returns {Array}
+     */
+    Arr.trim = function(arr, callback){
+        var i, result = [];
+        if (!arr){
+            return result;
+        }
+        callback = callback || function(elm){
+                return !Str.empty(elm);
+            };
+        for(i=0; i<arr.length; i++){
+            var itm = arr[i];
+            if (callback.call(itm, itm)){
+                result.push(itm);
+            }
+        }
+        return result;
+    };
+}(typeof window !== 'undefined' ? window : this, jQuery, JU.__JU.Arr, JU.__JU.Str));
