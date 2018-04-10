@@ -522,8 +522,9 @@
      * @param hidden {function=} - function(thisArg:dialogRef)
      * @param context {object=} - the object contains the functions specified by onPreParse and onPostParse.
      *                              If not specified the window object is used.
+     * @param dataParser {function=) - parse ajax data to extract the html
      */
-    Patterns.bsDialogAjax = function(title, ajaxOpts, dialogOptions, shown, hidden, context){
+    Patterns.bsDialogAjax = function(title, ajaxOpts, dialogOptions, shown, hidden, context, dataParser){
         if (global.BootstrapDialog == undefined){
             alert('This function required Bootstrap Dialog plugin.');
             return;
@@ -546,9 +547,11 @@
                 $.ajax(ajaxOpts)
                     .done(function(data){
                         var result = Str.parseJson(data, false);
+
                         // html returned from ajax call
                         if (result === false) {
-                            $modalDialog.find('.modal-body').empty().append(data);
+                            var formHtml = dataParser ? dataParser.call(context, data) : data;
+                            $modalDialog.find('.modal-body').empty().append(formHtml);
 
                             Patterns.formAutoFocus($modalDialog);
                             Fn.apply(shown, $dialogRef, [data]);
