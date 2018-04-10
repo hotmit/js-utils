@@ -7,13 +7,13 @@
     "use strict";
 
     UI.lightOverlayCSS = {
-        background: '#eee url(/static/ltgt/images/ajax-loader.gif) no-repeat center',
+        background: '#eee url(/static/lazifier/images/ajax-loader.gif) no-repeat center',
         backgroundSize: '16px 16px',
         opacity: 0.5
     };
 
     UI.darkOverlayCSS = {
-        background: '#000 url(/static/ltgt/images/ajax-loader.gif) no-repeat center',
+        background: '#000 url(/static/lazifier/images/ajax-loader.gif) no-repeat center',
         backgroundSize: '16px 16px',
         opacity: 0.6
     };
@@ -106,6 +106,78 @@
 
         clearTimeout(timer);
         UI.unblock(elm);
+    };
+
+    /**
+     * Get user input (textarea)
+     *
+     * @param title {string} - The title of the dialog box
+     * @param $content {jQuery} - any jquery element with class .txt-prompt-result
+     * @param bootstrapDialogOpts - any bootstrap dialog box options
+     * @param callback {function} - call back when the user press "OK", function(text, $dialogBox)
+     *                                  return true to close dialog box.
+     */
+    function _prompt(title, $content, bootstrapDialogOpts, callback){
+        var opts = $.extend({
+            closeByBackdrop: false
+        }, bootstrapDialogOpts, {
+            title: title,
+            message: $content,
+            onshown: Fn.combineWithContext(bootstrapDialogOpts, 'onshown', bootstrapDialogOpts, function(){
+                $content.find('.txt-prompt-result').focus();
+            }),
+            buttons: [{
+                    label: BootstrapDialog.DEFAULT_TEXTS['CANCEL'],
+                    cssClass: 'btn-warn',
+                    action: function (dialogRef) {
+                        dialogRef.close();
+                    }
+                },
+                {
+                    label: BootstrapDialog.DEFAULT_TEXTS['OK'],
+                    cssClass: 'btn-primary',
+                    action: function (dialogRef) {
+                        if (callback.call(dialogRef, $content.find('.txt-prompt-result').val(), dialogRef)){
+                            dialogRef.close();
+                        }
+                    }
+                }
+            ]
+        });
+
+        if (!UI.Patterns.dependencyCheck(BootstrapDialog, gettext('UI.prompt'),
+            gettext('This function requires BootstrapDialog'))){
+            return;
+        }
+
+        BootstrapDialog.show(opts);
+    }
+
+    /**
+     * Get user input (textbox)
+     *
+     * @param title {string} - The title of the dialog box
+     * @param bootstrapDialogOpts - any bootstrap dialog box options
+     * @param callback {function} - call back when the user press "OK", function(text, $dialogBox)
+     *                                  return true to close dialog box.
+     */
+    UI.prompt = function(title, bootstrapDialogOpts, callback){
+        var $textbox = $('<div class="form-group"><input type="text" class="txt-prompt-result form-control"></div>');
+        _prompt(title, $textbox, bootstrapDialogOpts, callback);
+    };
+
+    /**
+     * Get user input (textarea)
+     *
+     * @param title {string} - The title of the dialog box
+     * @param bootstrapDialogOpts - any bootstrap dialog box options
+     * @param callback {function} - call back when the user press "OK", function(text, $dialogBox)
+     *                                  return true to close dialog box.
+     */
+    UI.promptText = function(title, bootstrapDialogOpts, callback){
+        var $textarea = $('<div class="form-group"><textarea class="txt-prompt-result form-control"></textarea></div>');
+        $textarea.find('textarea').css('min-height', '270px');
+        _prompt(title, $textarea, bootstrapDialogOpts, callback);
     };
 
 }(typeof window !== 'undefined' ? window : this, jQuery, JU.__JU.UI));

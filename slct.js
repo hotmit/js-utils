@@ -16,7 +16,7 @@
         var $selectBox = $(selectElement), $selected = $selectBox.find('option:selected'),
             result = [], $firstOpt;
 
-        if ($selectBox.is('[multiple]')){
+        if (Slct.isMultiple($selectBox)){
             $selected.each(function(index, element){
                result.push(element.value);
             });
