@@ -355,7 +355,7 @@
                 global.location.reload(true);
             }
             else if (command == 'redirect') {
-                global.location = ajaxCommand.options.redirectUrl;
+                global.location.href = ajaxCommand.options.redirectUrl;
             }
             else if (command == 'replace-html'){
                 $(ajaxCommand.options.localTarget).replaceWith(htmlContent);
