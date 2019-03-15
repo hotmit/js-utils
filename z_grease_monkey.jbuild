@@ -1,8 +1,0 @@
-Output: D:\Projects\Js\public\gm-ju.min.js
-
-z_base.jbuild
-
-^jq-ext/jq-ext-package.jbuild
-^ext/ext-package.jbuild
-^publish.js
-publish-private.js
