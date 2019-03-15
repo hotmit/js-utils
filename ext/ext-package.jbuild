@@ -1,7 +1,0 @@
-Output: ext-package.min.js
-
-js-base64/base64.js
-JSON-js/json2.js
-flash-detect/flash-detect.js
-uri-js/src/URI.js
-uri-ext.js
