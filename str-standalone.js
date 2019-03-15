@@ -486,7 +486,7 @@
      * @param s {string} - the string
      */
     Str.escapeAttribute = function (s) {
-        return s.replace(/"/g, '\\"');
+        return s.replace(/"/g, '\\"').replace(/'/g, '\\\'');
     };
 
     /**

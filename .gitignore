@@ -1,12 +1,16 @@
 
-
 # files
 *.min.js
 *.gz
 *.lnk
-zt_*.jbuild
+z*.jbuild
 
 
 # folders
 +*/
 .idea/
+node_modules/
+
+# dist
+!dist/*.min.js
+!dist/*.gz
