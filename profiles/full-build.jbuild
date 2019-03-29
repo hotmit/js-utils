@@ -1,7 +1,0 @@
-# Full build including external package
-Output: ../dist/js-utils-full.min.js
-
-optional/external-packages.jbuild	# Includes: base64, json2, flash-detect, uri
-		                            #           block-ui, jq-form, caret, cookie
-
-../release.jbuild
