@@ -1,0 +1,43 @@
+{
+  "release" : {
+    "filename": "js-utils.js",
+    "header": "src/header.min.js",
+    "src" : [
+      "src/global.js",
+      "src/tmr.js",
+      "src/date.js",
+      "src/obj.js",
+      "src/type.js",
+      "src/arr.js",
+      "src/func.js",
+      "src/style.js",
+      "src/str-standalone.js",
+      "src/utils.js",
+      "src/slct.js",
+      "src/str-ext.js",
+      "src/str-fuzzy.js",
+      "src/cookie.pref.js",
+      "src/ui.js",
+      "src/ui-patterns.js",
+      "src/bootstrap-ext.js",
+      "src/publish.js"
+    ],
+    "externals": [],
+    "dest" : "dist/"
+  },
+  "single": {
+    "filename": "js-utils-private.js"
+  },
+  "full_build": {
+    "filename": "js-utils-full.js",
+    "externals": [
+      "node_modules/js-base64/base64.js",
+      "node_modules/flash-detect/FlashDetect.js",
+      "node_modules/urijs/src/URI.js",
+      "node_modules/blockui-npm/jquery.blockUI.js",
+      "node_modules/jquery-form/dist/jquery.form.min.js",
+      "node_modules/jquery-caret-lm/jquery.caret.js",
+      "node_modules/jquery.cookie/jquery.cookie.js"
+    ]
+  }
+}

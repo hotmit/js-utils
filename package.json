@@ -1,6 +1,6 @@
 {
   "name": "js-utils-hm",
-  "version": "1.2.0",
+  "version": "1.2.2",
   "description": "Collection javascript helpers",
   "main": "index.js",
   "directories": {
@@ -8,7 +8,8 @@
     "example": "examples"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npm install && gulp release",
+    "start": ""
   },
   "repository": {
     "type": "git",
@@ -24,14 +25,21 @@
   },
   "homepage": "https://github.com/hotmit/js-utils#readme",
   "dependencies": {
-    "JSON": "^1.0.0",
+    "jquery": "^3.3.1"
+  },
+  "devDependencies": {
     "blockui-npm": "^1.0.0",
     "flash-detect": "^1.1.1",
-    "jquery": "^3.3.1",
+    "gulp": "^4.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-eslint": "^5.0.0",
+    "gulp-rename": "^1.4.0",
+    "gulp-uglify": "^3.0.2",
     "jquery-caret-lm": "^1.0.0",
     "jquery-form": "^4.2.2",
     "jquery.cookie": "^1.4.1",
     "js-base64": "^2.5.1",
+    "merge-stream": "^1.0.1",
     "urijs": "^1.19.1"
   }
 }

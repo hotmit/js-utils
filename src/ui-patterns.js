@@ -628,7 +628,7 @@
     // endregion
 
     // region [ selectAjaxFilter ]
-    var cache_selectAjaxFilter = {};
+    var cacheSelectAjaxFilter = {};
 
     /**
      * Populate target select box based on the value of the src selected values.
@@ -656,8 +656,8 @@
                 errorMessage = gettext('Error occurred while retrieving data from the server.'),
                 opt = {
                     data: {
-                        src_name: $srcSelect.attr('name'),
-                        target_name: $targetSelect.attr('name')
+                        "src_name": $srcSelect.attr('name'),
+                        "target_name": $targetSelect.attr('name')
                     }
                 },
                 token = $.cookie('csrftoken'), cacheKey;
@@ -689,9 +689,9 @@
                 Fn.apply(targetUpdated, $targetSelect.get(0), [$targetSelect]);
             }
 
-            if (!noCache && cache_selectAjaxFilter.hasOwnProperty(cacheKey))
+            if (!noCache && cacheSelectAjaxFilter.hasOwnProperty(cacheKey))
             {
-                loadOptions(cache_selectAjaxFilter[cacheKey]);
+                loadOptions(cacheSelectAjaxFilter[cacheKey]);
                 return;
             }
 
@@ -699,7 +699,7 @@
                 .done(function(data){
                     var options = Str.parseJson(data, false), targetId, targetName, selector, $options, $data;
                     if (options !== false){
-                        cache_selectAjaxFilter[cacheKey] = options;
+                        cacheSelectAjaxFilter[cacheKey] = options;
                         loadOptions(options);
                     }
                     else {
@@ -717,7 +717,7 @@
                         }
 
                         if ($options.length){
-                            cache_selectAjaxFilter[cacheKey] = $options.children();
+                            cacheSelectAjaxFilter[cacheKey] = $options.children();
                             loadOptions($options.children());
                         }
                         else {

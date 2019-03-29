@@ -1,4 +1,5 @@
 Output: dist/js-utils.min.js
+Root: src/
 
 header.min.js                       # pure js: copyright header
 global.js                           # pure js: decorator and global functions [Must be FIRST]

@@ -1,7 +1,6 @@
 Output: external-packages.min.js
 
 ../../node_modules/js-base64/base64.js
-../../node_modules/JSON/json2.js
 ../../node_modules/flash-detect/FlashDetect.js
 ../../node_modules/urijs/src/URI.js
 

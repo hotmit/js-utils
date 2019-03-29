@@ -1,5 +1,5 @@
 /*!
- * js-utils v1.01.0
+ * js-utils v1.2.2
  * https://github.com/hotmit/js-utils
  *
  * Copyright Du Dang
@@ -904,15 +904,16 @@
      */
     Arr.chunks = function (arr, chunkSize) {
         var result = [];
-        for (var i=0, len=arr.length; i<len; i+=chunkSize)
+        for (var i=0, len=arr.length; i<len; i+=chunkSize){
             result.push(arr.slice(i, i+chunkSize));
+        }
         return result;
     };
 
     /**
      * Remove any emptied items in the array
      *
-     * @param arr {Array} - the array to trim
+     * @param arr {Array} - the array to trimf
      * @param callback {?function} - optional test function(element), return true to keep the item.
      * @returns {Array}
      */
@@ -1095,6 +1096,7 @@
         funcList.splice(0, 0, primaryFunc);
 
         // get the first non-null function in the array
+        // eslint-disable-next-line no-empty
         while(!(funcList.length && (primaryFunc = funcList.shift()))){}
 
         if (!primaryFunc){
@@ -1638,7 +1640,7 @@
      * @param s {string} - the string
      */
     Str.escapeAttribute = function (s) {
-        return s.replace(/"/g, '\\"');
+        return s.replace(/"/g, '\\"').replace(/'/g, '\\\'');
     };
 
     /**
@@ -3270,7 +3272,7 @@
     // endregion
 
     // region [ selectAjaxFilter ]
-    var cache_selectAjaxFilter = {};
+    var cacheSelectAjaxFilter = {};
 
     /**
      * Populate target select box based on the value of the src selected values.
@@ -3298,8 +3300,8 @@
                 errorMessage = gettext('Error occurred while retrieving data from the server.'),
                 opt = {
                     data: {
-                        src_name: $srcSelect.attr('name'),
-                        target_name: $targetSelect.attr('name')
+                        "src_name": $srcSelect.attr('name'),
+                        "target_name": $targetSelect.attr('name')
                     }
                 },
                 token = $.cookie('csrftoken'), cacheKey;
@@ -3331,9 +3333,9 @@
                 Fn.apply(targetUpdated, $targetSelect.get(0), [$targetSelect]);
             }
 
-            if (!noCache && cache_selectAjaxFilter.hasOwnProperty(cacheKey))
+            if (!noCache && cacheSelectAjaxFilter.hasOwnProperty(cacheKey))
             {
-                loadOptions(cache_selectAjaxFilter[cacheKey]);
+                loadOptions(cacheSelectAjaxFilter[cacheKey]);
                 return;
             }
 
@@ -3341,7 +3343,7 @@
                 .done(function(data){
                     var options = Str.parseJson(data, false), targetId, targetName, selector, $options, $data;
                     if (options !== false){
-                        cache_selectAjaxFilter[cacheKey] = options;
+                        cacheSelectAjaxFilter[cacheKey] = options;
                         loadOptions(options);
                     }
                     else {
@@ -3359,7 +3361,7 @@
                         }
 
                         if ($options.length){
-                            cache_selectAjaxFilter[cacheKey] = $options.children();
+                            cacheSelectAjaxFilter[cacheKey] = $options.children();
                             loadOptions($options.children());
                         }
                         else {

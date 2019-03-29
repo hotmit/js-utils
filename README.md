@@ -3,13 +3,11 @@
  > [docs/](Documentations)
 
 
-# Get Submodules
+# Build
 ```
-// Start the first pull (ie like a clone)
-git submodule update --init --recursive
-
-// Update there after
-git submodule foreach git pull origin master
+npm run build
+    OR
+gulp release
 ```
 
 # Publish Manually
@@ -22,6 +20,9 @@ var myLib = {};
 JU.publish(JU.__JU, false, false);
 delete JU.__JU;
 JU.activate(myLib);
+
+// eg.
+myLib.Str.contains('hello', 'll');  // => true
 ```
 
 
