@@ -1,5 +1,5 @@
 /*!
- * js-utils v1.2.2
+ * js-utils v1.2.3
  * https://github.com/hotmit/js-utils
  *
  * Copyright Du Dang
