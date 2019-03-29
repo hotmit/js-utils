@@ -3518,14 +3518,11 @@
         return;
     }
 
-    var populateGlobals = false, forcePush = false;
+    // AutoPopulate Flag: global.JU_autoPopulateGlobal: bool
+    var forcePush = false;
 
-    // put the libraries into the private object _ju instead of the global namespace
-    // eg. Str becomes _ju.Str
-    global._ju = {};
-
-    JU.publish(JU.__JU, populateGlobals, forcePush);
-    delete JU.__JU;
-    JU.activate(global._ju);
+    // put the JU lib in the repo and publish all the libraries into the global namespace
+    global.JU.publish(global.JU.__JU, global.JU._autoPopulateGlobal, forcePush);
+    delete global.JU.__JU;
 
 }(typeof window !== 'undefined' ? window : this));
