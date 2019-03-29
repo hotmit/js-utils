@@ -1,7 +1,9 @@
 // npm install --global gulp
-// npm install --save-dev gulp gulp-eslint gulp-uglify gulp-concat gulp-rename merge-stream
+// npm install --save-dev gulp gulp-header gulp-eslint gulp-uglify gulp-concat gulp-rename merge-stream
 
 const gulp = require('gulp'),
+    fs = require('fs'),
+    header = require('gulp-header'),
     eslint = require('gulp-eslint'),
     uglify = require('gulp-uglify'),
     concat = require('gulp-concat'),
@@ -10,7 +12,7 @@ const gulp = require('gulp'),
     config = require('./config.json');
 
 function build(cfg) {
-    let mainPackage = gulp.src([...cfg.externals, 'src/header.js', ...cfg.src]);
+    let mainPackage = gulp.src([...cfg.externals, cfg.header, ...cfg.src]);
 
     mainPackage = mainPackage
         .pipe(eslint({
@@ -38,6 +40,7 @@ function build(cfg) {
         .pipe(concat(cfg.filename))
         .pipe(gulp.dest(cfg.dest))
         .pipe(uglify())
+        .pipe(header(fs.readFileSync(cfg.header, 'utf8')))
         .pipe(rename({extname: '.min.js'}))
         .pipe(gulp.dest(cfg.dest));
 

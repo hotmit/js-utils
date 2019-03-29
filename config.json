@@ -1,7 +1,7 @@
 {
   "release" : {
     "filename": "js-utils.js",
-    "header": "src/header.min.js",
+    "header": "src/header.js",
     "src" : [
       "src/global.js",
       "src/tmr.js",
