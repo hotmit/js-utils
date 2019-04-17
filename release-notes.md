@@ -1,5 +1,8 @@
 # Release Notes
 
+* v1.2.4
+    - Removed flash-detect
+
 * v1.2.1
     - Converted to gulp build system 
 

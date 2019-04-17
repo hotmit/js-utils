@@ -32,7 +32,6 @@
     "filename": "js-utils-full.js",
     "externals": [
       "node_modules/js-base64/base64.js",
-      "node_modules/flash-detect/FlashDetect.js",
       "node_modules/urijs/src/URI.js",
       "node_modules/blockui-npm/jquery.blockUI.js",
       "node_modules/jquery-form/dist/jquery.form.min.js",
