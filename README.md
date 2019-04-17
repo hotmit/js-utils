@@ -7,7 +7,7 @@
 ```
 npm run build
     OR
-gulp release
+gulp bump && gulp release
 ```
 
 # Publish Manually

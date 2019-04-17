@@ -1,5 +1,5 @@
 // npm install --global gulp
-// npm install --save-dev gulp gulp-header gulp-eslint gulp-uglify gulp-concat gulp-rename merge-stream
+// npm install --save-dev gulp gulp-header gulp-eslint gulp-uglify gulp-concat gulp-rename merge-stream gulp-bump
 
 const gulp = require('gulp'),
     fs = require('fs'),
@@ -9,6 +9,7 @@ const gulp = require('gulp'),
     concat = require('gulp-concat'),
     rename = require('gulp-rename'),
     merge = require('merge-stream'),
+    bump = require('gulp-bump'),
     config = require('./config.json');
 
 function build(cfg) {
@@ -60,4 +61,26 @@ gulp.task('release', function () {
         build(single),
         build(fullBuild)
     );
+});
+
+var getPackageVersion = function () {
+  return 'v' + JSON.parse(fs.readFileSync('./package.json', 'utf8')).version;
+};
+
+gulp.task('bump', done => {
+    gulp.src(['./package.json'])
+        .pipe(bump())
+        .pipe(gulp.dest('./'));
+
+    let headerPath = config.release.header,
+        header = fs.readFileSync(headerPath, 'utf-8'),
+        version = getPackageVersion();
+
+    header = header.replace(/v?\d\.\d\.\d/, version);
+    header = header.replace(/Date: .+/i, 'Date: ' + new Date().toJSON());
+
+    fs.writeFileSync(headerPath, header);
+    console.log('git tag -a ' + version + ' -m "release ' + version + '"');
+
+    done();
 });
